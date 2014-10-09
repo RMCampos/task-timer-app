@@ -332,7 +332,7 @@ public class Programa {
         return;
       }
       
-      final String cabecalho = "CODIGO - NOME - SOLICITANTE - TEMPO_TOTAL - DATA - HORA_INICIO - HORA_FIM - OBS";
+      final String cabecalho = "CODIGO;NOME;SOLICITANTE;TEMPO TOTAL;DATA;HORA INICIO;HORA FIM;OBS";
       DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
       String dataAtual = formatter.format( new Date() );
       String camArquivo;
@@ -343,10 +343,10 @@ public class Programa {
       else {
         camArquivo = System.getProperty( "user.home" ) + "/";
       }
-      String nomeArquivo = (this.frame.getTxfNomeArquivo().isEmpty())? "Contador.txt" : this.frame.getTxfNomeArquivo();
+      String nomeArquivo = (this.frame.getTxfNomeArquivo().isEmpty())? "Contador.csv" : this.frame.getTxfNomeArquivo();
 
-      if( !nomeArquivo.endsWith( ".txt" ) )
-        nomeArquivo += ".txt";
+      if( !nomeArquivo.endsWith( ".csv" ) )
+        nomeArquivo += ".csv";
 
       File desktop = new File( camArquivo );
 
@@ -362,7 +362,7 @@ public class Programa {
       }
       catch( IOException e ) {
         System.out.println( "IOException: " + e.getMessage() );
-        arquivo = new FileWriter( "Contador.txt" );
+        arquivo = new FileWriter( "Contador.csv" );
       }
 
       PrintWriter gravarArq = new PrintWriter(arquivo);
@@ -374,15 +374,15 @@ public class Programa {
         * CODIGO - NOME - SOLICITANTE - TEMPO_TOTAL - DATA - HORA_INICIO - HORA_FIM - OBS
         */
         String linha =
-          ((dia.getCodigo().isEmpty())? " N " : dia.getCodigo()) + " - " +
-          dia.getNome() + " - " +
-          ((dia.getSolicitante().isEmpty())? " N " : dia.getSolicitante()) + " - " +
-          dia.getDuracao() + " - " +
-          dataAtual + " - " +
-          dia.getHoraInicio() + " - " +
-          dia.getHoraTermino() + " - " +
-          dia.getDuracao() + " - " +
-          ((dia.getObs().isEmpty())? " N " : dia.getObs()) + "\r\n";
+          ((dia.getCodigo().isEmpty())? " N " : dia.getCodigo()) + ";" +
+          dia.getNome() + ";" +
+          ((dia.getSolicitante().isEmpty())? " N " : dia.getSolicitante()) + ";" +
+          dia.getDuracao() + ";" +
+          dataAtual + ";" +
+          dia.getHoraInicio() + ";" +
+          dia.getHoraTermino() + ";" +
+          //dia.getDuracao() + ";" +
+          ((dia.getObs().isEmpty())? "Nenhuma." : dia.getObs()) + "\r\n";
 
         System.out.println( "gravando a linha: " + linha );
 

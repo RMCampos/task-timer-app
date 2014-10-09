@@ -6,7 +6,7 @@ import javax.swing.*;
 public class Mensagem {
   public static void informacao(String mensagem, JFrame f) {
     setFont( new Font( "Monospaced", 0, 12 ) );
-    JOptionPane.showMessageDialog(f, mensagem, "InformaÃ§Ã£o", JOptionPane.INFORMATION_MESSAGE );
+    JOptionPane.showMessageDialog(f, mensagem, "Informação", JOptionPane.INFORMATION_MESSAGE );
   }
 
   public static void setFont(Font font) {
@@ -17,7 +17,7 @@ public class Mensagem {
   public static boolean confirmar( String mensagem, JFrame f ) {
     int resposta;
     
-    resposta = JOptionPane.showConfirmDialog( f, mensagem, "ConfirmaÃ§Ã£o" , JOptionPane.QUESTION_MESSAGE );
+    resposta = JOptionPane.showConfirmDialog( f, mensagem, "Confirmação" , JOptionPane.QUESTION_MESSAGE );
     
     return( resposta == JOptionPane.YES_OPTION );
   }

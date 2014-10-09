@@ -26,11 +26,11 @@ public class DiagramaModel extends DefaultTableModel {
   @Override
   public String getColumnName( int column ) {
     switch( column ) {
-      case COL_COD: return( "CÃ³digo" );
+      case COL_COD: return( "Código" );
       case COL_NOME: return( "Nome" );
       case COL_SOL: return( "Solicitante" );
-      case COL_INICIO: return( "InÃ­cio" );
-      case COL_TERMINO: return( "TÃ©rmino" );
+      case COL_INICIO: return( "Início" );
+      case COL_TERMINO: return( "Término" );
       case COL_DECORRIDO: return( "Decorrido" );
       case COL_ATIVO: return( "Ativo" );
       default: return( "" );

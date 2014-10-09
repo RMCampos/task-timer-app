@@ -203,14 +203,22 @@ public class Tela extends JFrame {
     this.pnlInferior.setLayout( null );
     this.pnlInferior.setBorder( BorderFactory.createEtchedBorder() );
     
-    this.lblCodigo = new JLabel( "CÃ³digo:" );
+    this.lblCodigo = new JLabel( "Código:" );
     this.lblCodigo.setHorizontalAlignment( JLabel.RIGHT );
     this.lblCodigo.setBounds( 10, 10, 90, 21 ); // y = 31 + 5 // x = 100
     this.lblCodigo.setFont( new Font( "Verdana", 0, 12 ) );
-    
+
     this.txfCodigo = new JTextField();
     this.txfCodigo.setBounds( 105, 10, 90, 21);
     this.txfCodigo.setFont( new Font( "Monospaced", 0, 12 ) );
+	this.txfCodigo.addKeyListener( new KeyAdapter() {
+        @Override
+		public void keyPressed( KeyEvent kev ) {
+			if( kev.getKeyCode() == KeyEvent.VK_ENTER ) {
+				txfNome.requestFocus();
+			}
+		}
+	});
     
     this.lblNome = new JLabel( "Nome:" );
     this.lblNome.setHorizontalAlignment( JLabel.RIGHT );
@@ -220,6 +228,14 @@ public class Tela extends JFrame {
     this.txfNome = new JTextField();
     this.txfNome.setBounds( 105, 36, 300, 21);
     this.txfNome.setFont( new Font( "Monospaced", 0, 12 ) );
+	this.txfNome.addKeyListener( new KeyAdapter() {
+        @Override
+		public void keyPressed( KeyEvent kev ) {
+			if( kev.getKeyCode() == KeyEvent.VK_ENTER ) {
+				txfSolicitante.requestFocus();
+			}
+		}
+	});
     
     this.lblSolicitante = new JLabel( "Solicitante:" );
     this.lblSolicitante.setHorizontalAlignment( JLabel.RIGHT );
@@ -229,6 +245,14 @@ public class Tela extends JFrame {
     this.txfSolicitante = new JTextField();
     this.txfSolicitante.setBounds( 105, 62, 120, 21);
     this.txfSolicitante.setFont( new Font( "Monospaced", 0, 12 ) );
+	this.txfSolicitante.addKeyListener( new KeyAdapter() {
+        @Override
+		public void keyPressed( KeyEvent kev ) {
+			if( kev.getKeyCode() == KeyEvent.VK_ENTER ) {
+				txfObs.requestFocus();
+			}
+		}
+	});
     
     this.lblObs = new JLabel( "Obs:" );
     this.lblObs.setHorizontalAlignment( JLabel.RIGHT );
@@ -252,11 +276,19 @@ public class Tela extends JFrame {
         AOMODIFICARtxfObs();
       }
     });
+	this.txfObs.addKeyListener( new KeyAdapter() {
+        @Override
+		public void keyPressed( KeyEvent kev ) {
+			if( kev.getKeyCode() == KeyEvent.VK_ENTER ) {
+				comandoTela = "ADICIONAR_DIAGRAMA";
+			}
+		}
+	});
     
     this.btnAdd = new JButton( "Adicionar" );
     this.btnAdd.setBounds( 650, 83, 100, 30 );
     this.btnAdd.setFont( new Font( "Verdana", 0, 12 ) );
-    this.btnAdd.setToolTipText( "Adiciona o diagrama ao grid." );
+    this.btnAdd.setToolTipText( "Adiciona o diagrama ao GRID." );
     this.btnAdd.addKeyListener( new KeyAdapter() {
       @Override
       public void keyPressed(KeyEvent e) {
@@ -308,7 +340,7 @@ public class Tela extends JFrame {
     this.btnExportar = new JButton( "Exportar" );
     this.btnExportar.setBounds( 616, 140, 144, 30 ); // y = 135 + 5
     this.btnExportar.setFont( new Font( "Verdana", 0, 12 ) );
-    this.btnExportar.setToolTipText( "Exporta para um arquivo TXT." );
+    this.btnExportar.setToolTipText( "Exporta para um arquivo CSV." );
     this.btnExportar.addActionListener( new ActionListener() {
       @Override
       public void actionPerformed( ActionEvent e ) {
@@ -386,7 +418,7 @@ public class Tela extends JFrame {
     
     this.txfNomeArquivo = new JTextField();
     DateFormat df = new SimpleDateFormat( "yyyy_MM_dd" );
-    this.txfNomeArquivo.setText( "Tarefas_" + df.format( new Date() ) + ".txt" );
+    this.txfNomeArquivo.setText( "Tarefas_" + df.format( new Date() ) + ".csv" );
     this.txfNomeArquivo.setText( txfNomeArquivo.getText() );
     this.txfNomeArquivo.setBounds( 130, 45, 200, 21 );
     this.txfNomeArquivo.setFont( new Font( "Monospaced", 0, 12 ) );
