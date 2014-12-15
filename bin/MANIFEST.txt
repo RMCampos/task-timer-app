@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Created-By: Ricardo Campos
+Main-Class: contador.Programa
+Class-Path: lib\sqlite-jdbc-3.7.15-SNAPSHOT-2.jar
