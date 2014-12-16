@@ -17,4 +17,9 @@ Implementada: Sim [16/12/2014]
 Descrição: Centralizar células cabeçalho e células com S ou N
 Solicitado por: Ricardo Montania
 Data solicitação: 16/12/2014
-Implementada: Não
+Implementada: Sim [16/12/2014]
+---
+Descrição: Incluir botão para abrir ERP no modo correcao
+Solicitado por: Ricardo Montania
+Data solicitação: 16/12/2014
+Implementada: Sim [16/12/2014]

@@ -110,6 +110,7 @@ public class Tela extends JFrame {
     private JTextField txfObs;
 	private JButton btnTray;
 	private JButton btnMSSQL;
+	private JButton btnERP;
     private JButton btnAdd;
     private JButton btnContinuar;
     private JButton btnParar;
@@ -586,14 +587,25 @@ public class Tela extends JFrame {
 			}
 		});
 
-		this.btnMSSQL = new JButton( "SQL Server" );
-		this.btnMSSQL.setBounds( 650, 45, 100, 30 );
+		this.btnMSSQL = new JButton( new ImageIcon( getClass().getResource( "sql.png" ) ) );
+		this.btnMSSQL.setBounds( 650, 45, 45, 30 );
 		this.btnMSSQL.setToolTipText( "Abrir SQL Server conectando no portal selecionado" );
 		this.btnMSSQL.setFocusable( false );
 		this.btnMSSQL.addActionListener( new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed( java.awt.event.ActionEvent evt ) {
 				iniciarSQLServer();
+			}
+		});
+		
+		this.btnERP = new JButton( new ImageIcon( getClass().getResource( "erp.png" ) ) );
+		this.btnERP.setBounds( 700, 45, 45, 30 );
+		this.btnERP.setToolTipText( "Abrir ERP." );
+		this.btnERP.setFocusable( false );
+		this.btnERP.addActionListener( new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed( java.awt.event.ActionEvent evt ) {
+				iniciarERP();
 			}
 		});
 
@@ -928,6 +940,7 @@ public class Tela extends JFrame {
         this.containerCampos.add( this.txfObs );
 		this.containerCampos.add( this.btnTray );
 		this.containerCampos.add( this.btnMSSQL );
+		this.containerCampos.add( this.btnERP );
 		this.containerCampos.add( this.btnAdd );
 		this.containerCampos.add( this.btnParar );
 		this.containerCampos.add( this.btnContinuar );
@@ -1011,6 +1024,34 @@ public class Tela extends JFrame {
 						}
 						catch( IOException e ){
 							System.out.println( "IOException: " + e.getMessage() );
+						}
+					}
+				};
+				
+				thread.start();
+			}
+		});
+	}
+	
+	private void iniciarERP() {
+		SwingUtilities.invokeLater( new Runnable() {
+			@Override
+			public void run() {
+				Thread thread = new Thread(){
+					public void run(){
+						Tarefa tarefa = getLinhaSelecionada();
+						try {
+							final URI uri = new URI( "http://192.168.18.12/config/bighost/admin/controle_acesso.asp?operacao=1&d=d&equipe=2&portal=" + tarefa.getPortal().trim() + "&homologacao=S&correcaoFFC=S" );
+							System.out.println(uri.toString());
+							if( Desktop.isDesktopSupported() ) {
+								Desktop.getDesktop().browse( uri );
+							}
+						}
+						catch( IOException e ){
+							System.out.println( "IOException: " + e.getMessage() );
+						}
+						catch( URISyntaxException u ) {
+							System.out.println( "URISyntaxException: " + u.getMessage() );
 						}
 					}
 				};
