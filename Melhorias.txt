@@ -1,8 +1,8 @@
 [Modelo]
-Descrição: Mostrar tal coisa
-Solicitado por: Ricardo Montania
-Data solicitação: 12/12/2014
-Implementada: Não
+Descrição:
+Solicitado por:
+Data solicitação:
+Implementada:
 ---
 Descrição: Mostrar S/N ao invés de checkbox nas colunas da busca
 Solicitado por: Ricardo Montania
@@ -13,3 +13,8 @@ Descrição: Número do BD do portal não fica na frente do número do portal.
 Solicitado por: Ricardo Montania
 Data solicitação: 16/12/2014
 Implementada: Sim [16/12/2014]
+---
+Descrição: Centralizar células cabeçalho e células com S ou N
+Solicitado por: Ricardo Montania
+Data solicitação: 16/12/2014
+Implementada: Não

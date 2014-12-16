@@ -1071,6 +1071,9 @@ public class Tela extends JFrame {
 					String url = "http://a-srv63/suporte/followup_find.asp?OBJETO_ID=" + value;
 					((JLabel) comp).setText( "<html><a href=\"" + url + "\">" + value + "</a>" );
 				}
+				else if( column == 6 ) {
+					((JLabel) comp).setHorizontalAlignment( JLabel.CENTER );
+				}
 
 				if( isSelected ){
 					comp.setBackground( new Color( comp.getBackground().getRed() - 40, comp.getBackground().getGreen() - 40, comp.getBackground().getBlue() - 40 ) );
@@ -1145,6 +1148,8 @@ public class Tela extends JFrame {
 		this.popm.add( menuItem );
 
 		this.contadorTable.setComponentPopupMenu(this.popm);
+		
+		((DefaultTableCellRenderer)contadorTable.getTableHeader().getDefaultRenderer()).setHorizontalAlignment( JLabel.CENTER );
 	}
 
 	public void AOPRESSIONARSetas(KeyEvent ke) {
@@ -1660,7 +1665,7 @@ public class Tela extends JFrame {
 		this.resultadoTable.getColumnModel().getColumn(1).setPreferredWidth( 80 );
 		this.resultadoTable.getColumnModel().getColumn(2).setPreferredWidth( 300 );
 		this.resultadoTable.getColumnModel().getColumn(3).setPreferredWidth( 110 );
-		this.resultadoTable.getColumnModel().getColumn(4).setPreferredWidth( 110 );
+		this.resultadoTable.getColumnModel().getColumn(4).setPreferredWidth( 90 );
 
 		this.pnlResultado.setLayout( new BorderLayout() );
 		this.pnlResultado.add( new JScrollPane( resultadoTable ) );
@@ -1675,6 +1680,10 @@ public class Tela extends JFrame {
 				}
 				else{
 					comp.setBackground(new Color(254, 254, 254));
+				}
+				
+				if( column == 4 || column == 5 ) {
+					((JLabel) comp).setHorizontalAlignment( JLabel.CENTER );
 				}
 
 				if( isSelected ){
@@ -1713,6 +1722,7 @@ public class Tela extends JFrame {
 		this.resultadoTable.setDefaultRenderer( Boolean.class, new RRendererDois() );
 
 		this.resultadoTable.getColumnModel().getColumn(0).setCellRenderer(new CheckBoxRenderer());
+		((DefaultTableCellRenderer)resultadoTable.getTableHeader().getDefaultRenderer()).setHorizontalAlignment( JLabel.CENTER );
 	}
 
 	public void addTarefaResultado( TarefaResultado t ) {
