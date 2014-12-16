@@ -1532,19 +1532,19 @@ public class Tela extends JFrame {
 
 		for( String linha : pConteudo.split("\n") ) {
 			if( linha.toUpperCase().contains( "PORTAL" ) ) {
-				String temp = linha.substring( linha.toUpperCase().indexOf( "PORTAL" )+6 );
 				int numeroEncontrado = 0;
-				for( int i=0; i<temp.length(); i++ ){
+				for( int i=0; i<linha.length(); i++ ){
+					Character charAtual = linha.charAt( i );
 
 					if( numeroEncontrado == 1 ) {
-						portal += new Character( temp.charAt( i ) ).toString();
+						portal += charAtual.toString();
 					}
 
-					if( temp.charAt( i ) >= '0' && temp.charAt( i ) <= '9' && numeroEncontrado == 0 ) {
+					if( charAtual >= '0' && charAtual <= '9' && numeroEncontrado == 0 ) {
 						numeroEncontrado++;
-						portal += new Character( temp.charAt( i ) ).toString();
+						portal += charAtual.toString();
 					}
-					else if (numeroEncontrado == 1 && (temp.charAt( i ) == ' ' || i == temp.length()-1 ) ) {
+					else if (numeroEncontrado == 1 && (charAtual == ' ' || i == linha.length()-1 ) ) {
 						posicaoInicio = new Integer( i );
 						break;
 					}
@@ -1561,11 +1561,11 @@ public class Tela extends JFrame {
 					tarefa.setPortal( portal );
 				}
 				
-				if( linha.substring( 0, posicaoInicio+portal.length()+3 ).length() >= linha.length() ) {
+				if( linha.substring( 0, posicaoInicio ).length() >= linha.length() ) {
 					resultadoDaBusca += linha + " (" + enderecoBD + ")\n";
 				}
 				else {
-					resultadoDaBusca += linha.substring( 0, posicaoInicio+portal.length()+2 ) + " (" + enderecoBD + ") " + linha.substring( posicaoInicio+portal.length()+3 ) + "\n";
+					resultadoDaBusca += linha.substring( 0, posicaoInicio ) + " (" + enderecoBD + ") " + linha.substring( posicaoInicio ) + "\n";
 				}
 				posicaoInicio = -1;
 				portal = "";

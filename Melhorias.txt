@@ -1,11 +1,15 @@
 [Modelo]
-DescriÁ„o: Mostrar tal coisa
+Descri√ß√£o: Mostrar tal coisa
 Solicitado por: Ricardo Montania
-Data solicitaÁ„o: 12/12/2014
-Implementada: N„o
+Data solicita√ß√£o: 12/12/2014
+Implementada: N√£o
 ---
-DescriÁ„o: Mostrar S/N ao invÈs de checkbox nas colunas da busca
+Descri√ß√£o: Mostrar S/N ao inv√©s de checkbox nas colunas da busca
 Solicitado por: Ricardo Montania
-Data solicitaÁ„o: 16/12/2014
+Data solicita√ß√£o: 16/12/2014
 Implementada: Sim [16/12/2014]
 ---
+Descri√ß√£o: N√∫mero do BD do portal n√£o fica na frente do n√∫mero do portal.
+Solicitado por: Ricardo Montania
+Data solicita√ß√£o: 16/12/2014
+Implementada: Sim [16/12/2014]
