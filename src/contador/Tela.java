@@ -1056,23 +1056,27 @@ public class Tela extends JFrame {
 
 		class RRenderer extends DefaultTableCellRenderer {
 			@Override
-			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column ) {
-				Component comp = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+			public Component getTableCellRendererComponent( JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column ) {
+				Component comp = super.getTableCellRendererComponent( table, value, isSelected, hasFocus, row, column );
 
 				if( row % 2 == 0 ) {
-					comp.setBackground(new Color(202, 225, 255));
+					comp.setBackground( new Color( 202, 225, 255 ) );
 				}
 				else{
-					comp.setBackground(new Color(254, 254, 254));
+					comp.setBackground( new Color( 254, 254, 254 ) );
 				}
 
 				if( column == 0 ) {
 					//final JLabel label = new JLabel("<html><a href=\"http://a-srv63/suporte/followup_find.asp?OBJETO_ID=" + value + "\">" + value "</a>");
 					String url = "http://a-srv63/suporte/followup_find.asp?OBJETO_ID=" + value;
 					((JLabel) comp).setText( "<html><a href=\"" + url + "\">" + value + "</a>" );
+					((JLabel) comp).setHorizontalAlignment( JLabel.LEFT );
 				}
 				else if( column == 6 ) {
 					((JLabel) comp).setHorizontalAlignment( JLabel.CENTER );
+				}
+				else {
+					((JLabel) comp).setHorizontalAlignment( JLabel.LEFT );
 				}
 
 				if( isSelected ){
@@ -1093,6 +1097,7 @@ public class Tela extends JFrame {
 
 		this.contadorTable.setDefaultRenderer( Object.class, new RRenderer() );
 		this.contadorTable.setDefaultRenderer( String.class, new RRenderer() );
+		this.contadorTable.setDefaultRenderer( Character.class, new RRenderer() );
 
 		// Adiciona evento para clique do link da tarefa
 		this.contadorTable.addMouseListener( new MouseAdapter() {
@@ -1137,7 +1142,7 @@ public class Tela extends JFrame {
 
 		this.popm = new JPopupMenu();
 
-		JMenuItem menuItem = new JMenuItem("Finalizar Atendimento");
+		JMenuItem menuItem = new JMenuItem( "Finalizar Atendimento" );
 		menuItem.addActionListener( new ActionListener() {
 			@Override
 			public void actionPerformed( ActionEvent e ) {
