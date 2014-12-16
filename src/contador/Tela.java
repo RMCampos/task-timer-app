@@ -1709,11 +1709,10 @@ public class Tela extends JFrame {
 
 		this.resultadoTable.setDefaultRenderer( Object.class, new RRendererDois() );
 		this.resultadoTable.setDefaultRenderer( String.class, new RRendererDois() );
+		this.resultadoTable.setDefaultRenderer( Character.class, new RRendererDois() );
 		this.resultadoTable.setDefaultRenderer( Boolean.class, new RRendererDois() );
 
 		this.resultadoTable.getColumnModel().getColumn(0).setCellRenderer(new CheckBoxRenderer());
-		this.resultadoTable.getColumnModel().getColumn(4).setCellRenderer(new CheckBoxRenderer());
-		this.resultadoTable.getColumnModel().getColumn(5).setCellRenderer(new CheckBoxRenderer());
 	}
 
 	public void addTarefaResultado( TarefaResultado t ) {

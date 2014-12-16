@@ -7,5 +7,5 @@ Implementada: Não
 Descrição: Mostrar S/N ao invés de checkbox nas colunas da busca
 Solicitado por: Ricardo Montania
 Data solicitação: 16/12/2014
-Implementada: Não
+Implementada: Sim [16/12/2014]
 ---

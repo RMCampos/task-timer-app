@@ -25,8 +25,8 @@ public class TarefaResultadoModel extends DefaultTableModel {
 			case COL_CODIGO: return( String.class );
 			case COL_NOME: return( String.class );
 			case COL_SOLICITANTE: return( String.class );
-			case COL_ANDAMENTO: return( Boolean.class );
-			case COL_FINALIZADA: return( Boolean.class );
+			case COL_ANDAMENTO: return( Character.class );
+			case COL_FINALIZADA: return( Character.class );
 			default: return( String.class );
 		}
 	}

@@ -5,16 +5,16 @@ public class TarefaResultado {
 	private String codigo;
 	private String nome;
 	private String solicitante;
-	private Boolean emAndamento;
-	private Boolean finalizada;
+	private Character emAndamento;
+	private Character finalizada;
 
 	public TarefaResultado() {
 		this.selecionada = new Boolean(false);
 		this.codigo = "";
 		this.nome = "";
 		this.solicitante = "";
-		this.emAndamento = new Boolean(false);
-		this.finalizada = new Boolean(false);
+		this.emAndamento = new Character( ' ' );
+		this.finalizada = new Character( ' ' );
 	}
 
 	public String getCodigo() {
@@ -29,11 +29,11 @@ public class TarefaResultado {
 		return( this.solicitante );
 	}
 
-	public Boolean emAndamento() {
+	public Character emAndamento() {
 		return( emAndamento );
 	}
 
-	public Boolean finalizada(){
+	public Character finalizada(){
 		return( this.finalizada );
 	}
 	
@@ -53,11 +53,11 @@ public class TarefaResultado {
 		this.solicitante = cliente;
 	}
 
-	public void setEmAndamento( Boolean sim ) {
+	public void setEmAndamento( Character sim ) {
 		this.emAndamento = sim;
 	}
 
-	public void setFinalizada( Boolean pFin ){
+	public void setFinalizada( Character pFin ){
 		this.finalizada = pFin;
 	}
 

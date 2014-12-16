@@ -33,8 +33,8 @@ public class TarefaResultadoDAO {
 						tarefa.setCodigo( String.valueOf( rs.getInt( "codigo" ) ) );
 						tarefa.setNome( rs.getString( "descricao" ) );
 						tarefa.setSoliciante( rs.getString( "solicitante" ) );
-						tarefa.setEmAndamento( rs.getString( "emAndamento" ).charAt(0) == 'S' );
-						tarefa.setFinalizada( rs.getString( "finalizada" ).charAt(0) == 'S' );
+						tarefa.setEmAndamento( rs.getString( "emAndamento" ).charAt(0) );
+						tarefa.setFinalizada( rs.getString( "finalizada" ).charAt(0) );
 
 						tarefaList.add( tarefa );
 					}
