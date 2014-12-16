@@ -50,6 +50,7 @@ public class Programa {
 		//                     - possibilidade de consultar tp
 		// 010      12/12/2014 - opcao de excluir lotes, reativar lotes, buscar tarefa
 		//                     - busca o numero do BD do portal
+		// 011      16/12/2014 - incluido botao de radio para filtrar nao finalizadas
 		obterNomeCidade( s );
 		this.frame = new Tela( this.nomeCidade );
 
@@ -67,7 +68,7 @@ public class Programa {
 		}
 
 
-		this.frame.setTitle( "Contador de Tarefas - Versão 010 (12/12/2014)" );
+		this.frame.setTitle( "Contador de Tarefas - Versão 011 (16/12/2014)" );
 		this.frame.setVisible( true );
 		this.tempoTotal = "00:00:00";
 		this.transacao = 'I';
@@ -215,6 +216,9 @@ public class Programa {
 
 		if( this.frame.getStatusTarefaBuscar() == StatusTarefa.FINALIZADAS ) {
 			querySQL += " AND finalizada = 'S'";
+		}
+		else if( this.frame.getStatusTarefaBuscar() == StatusTarefa.NAO_FINALIZADAS ) {
+			querySQL += " AND finalizada = 'N'";
 		}
 		else if( this.frame.getStatusTarefaBuscar() == StatusTarefa.EM_ANDAMENTO ) {
 			querySQL += " AND emAndamento = 'S'";

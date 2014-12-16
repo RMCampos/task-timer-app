@@ -145,6 +145,7 @@ public class Tela extends JFrame {
 	private JLabel lblStatusBuscar;
 	private JRadioButton rbtTodos;
 	private JRadioButton rbtFinalizados;
+	private JRadioButton rbtNaoFinalizados;
 	private JRadioButton rbtEmAndamento;
 	private JButton btnBuscar;
 	private JPanel pnlResultado;
@@ -863,19 +864,24 @@ public class Tela extends JFrame {
 		this.rbtFinalizados = new JRadioButton( "Finalizadas" );
 		this.rbtFinalizados.setBounds( 190, 60, 100, 21 );
 		this.rbtFinalizados.setFont( new Font( "Verdana", 0, 12 ) );
+		
+		this.rbtNaoFinalizados = new JRadioButton( "Não Finalizadas" );
+		this.rbtNaoFinalizados.setSelected( true );
+		this.rbtNaoFinalizados.setBounds( 300, 60, 130, 21 );
+		this.rbtNaoFinalizados.setFont( new Font( "Verdana", 0, 12 ) );
 
-		this.rbtEmAndamento = new JRadioButton( "Em Andamento" );
-		this.rbtEmAndamento.setSelected( true );
-		this.rbtEmAndamento.setBounds( 300, 60, 120, 21 );
+		this.rbtEmAndamento = new JRadioButton( "Em Desenvolvimento" );
+		this.rbtEmAndamento.setBounds( 440, 60, 160, 21 );
 		this.rbtEmAndamento.setFont( new Font( "Verdana", 0, 12 ) );
 
 		ButtonGroup bg = new ButtonGroup();
 		bg.add( this.rbtTodos );
 		bg.add( this.rbtFinalizados );
+		bg.add( this.rbtNaoFinalizados );
 		bg.add( this.rbtEmAndamento );
 
 		this.btnBuscar = new JButton( "Buscar" );
-		this.btnBuscar.setBounds( 440, 55, 100, 30 );
+		this.btnBuscar.setBounds( 610, 55, 100, 30 );
 		this.btnBuscar.setToolTipText( "Buscar Tarefas" );
 		this.btnBuscar.setFocusable( false );
 		this.btnBuscar.addActionListener( new java.awt.event.ActionListener() {
@@ -957,6 +963,7 @@ public class Tela extends JFrame {
 		this.pnlBuscar.add( this.lblStatusBuscar );
 		this.pnlBuscar.add( this.rbtTodos );
 		this.pnlBuscar.add( this.rbtFinalizados );
+		this.pnlBuscar.add( this.rbtNaoFinalizados );
 		this.pnlBuscar.add( this.rbtEmAndamento );
 		this.pnlBuscar.add( this.btnBuscar );
 		this.pnlBuscar.add( this.pnlResultado );
@@ -1736,6 +1743,9 @@ public class Tela extends JFrame {
 	public Integer getStatusTarefaBuscar() {
 		if( this.rbtEmAndamento.isSelected() ) {
 			return( StatusTarefa.EM_ANDAMENTO );
+		}
+		else if( this.rbtNaoFinalizados.isSelected() ) {
+			return( StatusTarefa.NAO_FINALIZADAS );
 		}
 		else if( this.rbtFinalizados.isSelected() ) {
 			return( StatusTarefa.FINALIZADAS );
