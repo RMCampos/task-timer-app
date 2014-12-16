@@ -1041,17 +1041,11 @@ public class Tela extends JFrame {
 					public void run(){
 						Tarefa tarefa = getLinhaSelecionada();
 						try {
-							final URI uri = new URI( "http://192.168.18.12/config/bighost/admin/controle_acesso.asp?operacao=1&d=d&equipe=2&portal=" + tarefa.getPortal().trim() + "&homologacao=S&correcaoFFC=S" );
-							System.out.println(uri.toString());
-							if( Desktop.isDesktopSupported() ) {
-								Desktop.getDesktop().browse( uri );
-							}
+							String comando = "C:\\Program Files\\Internet Explorer\\iexplore.exe http://192.168.18.12/config/bighost/admin/controle_acesso.asp?operacao=1&d=d&equipe=2&portal=" + tarefa.getPortal().trim() + "&homologacao=S&correcaoFFC=S";
+							Runtime.getRuntime().exec( comando );
 						}
 						catch( IOException e ){
 							System.out.println( "IOException: " + e.getMessage() );
-						}
-						catch( URISyntaxException u ) {
-							System.out.println( "URISyntaxException: " + u.getMessage() );
 						}
 					}
 				};
