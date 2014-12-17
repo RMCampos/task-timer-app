@@ -1614,7 +1614,7 @@ public class Tela extends JFrame {
 					resultadoDaBusca += linha + " (" + enderecoBD + ")\n";
 				}
 				else {
-					resultadoDaBusca += linha.substring( 0, posicaoInicio ) + " (" + enderecoBD + ") " + linha.substring( posicaoInicio ) + "\n";
+					resultadoDaBusca += linha.substring( 0, posicaoInicio+1 ) + " (" + enderecoBD + ") " + linha.substring( posicaoInicio+1 ) + "\n";
 				}
 				posicaoInicio = -1;
 				portal = "";
