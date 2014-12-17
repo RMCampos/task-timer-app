@@ -1595,6 +1595,10 @@ public class Tela extends JFrame {
 					}
 				}
 			}
+			
+			if( linha.toUpperCase().contains( "DATA:" ) ){
+				linha = "------------------------------\n" + linha;
+			}
 
 			if( posicaoInicio > -1 ) {
 				Tarefa tarefa = getLinhaSelecionada();

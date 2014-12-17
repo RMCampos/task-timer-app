@@ -28,3 +28,8 @@ Descrição: Forçar abrir ERP no IE
 Solicitado por: Ricardo Montania
 Data solicitação: 16/12/2014
 Implementada: Sim [16/12/2014]
+---
+Descrição: Incluir separador de movimentação
+Solicitado por: Jehniffer Chepli
+Data solicitação: 17/12/2014
+Implementada: Sim [17/12/2014]
