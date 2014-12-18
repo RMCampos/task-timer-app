@@ -160,6 +160,7 @@ public class Tela extends JFrame {
 	private TrayIcon trayIcon;
 	private SystemTray tray;
 	private JPopupMenu popm;
+	private JScrollPane scpBusca;
 
 	public Tela( String pNomeCidade ) {
 		try {
@@ -321,6 +322,11 @@ public class Tela extends JFrame {
 
 		// ajusta a largura e altura do painel de resultado
 		this.pnlResultado.setBounds( 10, 100, pnlBuscar.getWidth()-60, pnlBuscar.getHeight()-170 );
+		this.scpBusca.setBounds( 10, 100, pnlBuscar.getWidth()-60, pnlBuscar.getHeight()-170 );
+		
+		// ajusta a posicao dos botoes do painel de busca
+		this.btnReativarBusca.setBounds( 20, pnlResultado.getHeight()+105, 150, 30 );
+		this.btnExcluirBusca.setBounds( 190, pnlResultado.getHeight()+105, 150, 30 );
 	}
 
 	private void setarIcones() {
@@ -1712,7 +1718,8 @@ public class Tela extends JFrame {
 		this.resultadoTable.getColumnModel().getColumn(4).setPreferredWidth( 90 );
 
 		this.pnlResultado.setLayout( new BorderLayout() );
-		this.pnlResultado.add( new JScrollPane( resultadoTable ) );
+		this.scpBusca = new JScrollPane( resultadoTable );
+		this.pnlResultado.add( this.scpBusca );
 
 		class RRendererDois extends DefaultTableCellRenderer {
 			@Override

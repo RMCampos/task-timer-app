@@ -38,3 +38,8 @@ Descrição: Corrigir endereço BD no meio do código do portal
 Solicitado por: Ricardo Montania
 Data solicitação: 17/12/2014
 Implementada: Sim [17/12/2014]
+---
+Descrição: Botões de exclusão e reativação da aba de busca somem ao maximizar
+Solicitado por: Ricardo Montania
+Data solicitação: 18/12/2014
+Implementada: Sim [18/12/2014 v12.1]
