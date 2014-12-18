@@ -43,3 +43,8 @@ Descrição: Botões de exclusão e reativação da aba de busca somem ao maximi
 Solicitado por: Ricardo Montania
 Data solicitação: 18/12/2014
 Implementada: Sim [18/12/2014 v12.1]
+---
+Descrição: Ao clicar no botão ERP, abrir de acordo com o cadastro de enum PortalUsuario
+Solicitado por: Thiago Correa
+Data solicitação: 16/12/2014
+Implementada: Sim [18/12/2014 v12.2]

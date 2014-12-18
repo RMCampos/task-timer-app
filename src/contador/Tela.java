@@ -161,6 +161,8 @@ public class Tela extends JFrame {
 	private SystemTray tray;
 	private JPopupMenu popm;
 	private JScrollPane scpBusca;
+	
+	private String usuarioLogado;
 
 	public Tela( String pNomeCidade ) {
 		try {
@@ -198,6 +200,7 @@ public class Tela extends JFrame {
 		}
 
 		this.lblLogin.setText( this.lblLogin.getText() + s.getName() );
+		this.usuarioLogado = s.getName();
 	}
 
 	private void adicionarListener() {
@@ -1046,8 +1049,19 @@ public class Tela extends JFrame {
 				Thread thread = new Thread(){
 					public void run(){
 						Tarefa tarefa = getLinhaSelecionada();
+						String destinoUsuario = null;
+						PortalUsuario destinoUsuarioEnum = PortalUsuario.getPortalPorCodigo( usuarioLogado );
+						
+						if( destinoUsuarioEnum == null ) {
+							destinoUsuario = "correcaoERP";
+						}
+						else {
+							destinoUsuario = destinoUsuarioEnum.getPortalUsuario();
+						}
+						
 						try {
-							String comando = "C:\\Program Files\\Internet Explorer\\iexplore.exe http://192.168.18.12/config/bighost/admin/controle_acesso.asp?operacao=1&d=d&equipe=2&portal=" + tarefa.getPortal().trim() + "&homologacao=S&correcaoFFC=S";
+							String comando = "C:\\Program Files\\Internet Explorer\\iexplore.exe http://192.168.18.12/config/bighost/admin/controle_acesso.asp?operacao=1&d=d&equipe=2&portal=" + tarefa.getPortal().trim() + "&homologacao=S&" + destinoUsuario + "=S";
+							System.out.println( "Iniciando o ERP: " + comando);
 							Runtime.getRuntime().exec( comando );
 						}
 						catch( IOException e ){

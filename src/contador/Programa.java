@@ -68,7 +68,7 @@ public class Programa {
 		}
 
 
-		this.frame.setTitle( "Contador de Tarefas - v12.1 (18/12/2014)" );
+		this.frame.setTitle( "Contador de Tarefas - v12.2 (18/12/2014)" );
 		this.frame.setVisible( true );
 		this.tempoTotal = "00:00:00";
 		this.transacao = 'I';
