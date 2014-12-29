@@ -7,6 +7,7 @@ public class TarefaResultado {
 	private String solicitante;
 	private Character emAndamento;
 	private Character finalizada;
+	private String dataHoraFinalizacao;
 
 	public TarefaResultado() {
 		this.selecionada = new Boolean(false);
@@ -15,6 +16,7 @@ public class TarefaResultado {
 		this.solicitante = "";
 		this.emAndamento = new Character( ' ' );
 		this.finalizada = new Character( ' ' );
+		this.dataHoraFinalizacao = "";
 	}
 
 	public String getCodigo() {
@@ -41,6 +43,10 @@ public class TarefaResultado {
 		return( this.selecionada );
 	}
 
+	public String getDataHoraFinalizacao() {
+		return( this.dataHoraFinalizacao );
+	}
+
 	public void setCodigo(String pCodigo) {
 		this.codigo = pCodigo;
 	}
@@ -63,5 +69,9 @@ public class TarefaResultado {
 
 	public void setSelecionada( Boolean pSel ){
 		this.selecionada = pSel;
+	}
+
+	public void setDataHoraFinalizacao( String pDataHoraFinalizacao ) {
+		this.dataHoraFinalizacao = pDataHoraFinalizacao;
 	}
 }

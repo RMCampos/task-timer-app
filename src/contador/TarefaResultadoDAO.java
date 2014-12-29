@@ -6,6 +6,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
+import java.text.ParseException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 public class TarefaResultadoDAO {
 	private Connection connection;
@@ -24,17 +28,27 @@ public class TarefaResultadoDAO {
 			System.out.println( "SQL: " + pQuery );
 
 			ResultSet rs = st.executeQuery( pQuery );
+			DateFormat df = new SimpleDateFormat( "dd/MM/yyyy HH:mm:ss" );
 
 			if( rs.next() ) {
 				do {
 					if( rs.getString( 2 ) != null ) {
 						TarefaResultado tarefa = new TarefaResultado();
+						Date dt;
 
 						tarefa.setCodigo( String.valueOf( rs.getInt( "codigo" ) ) );
 						tarefa.setNome( rs.getString( "descricao" ) );
 						tarefa.setSoliciante( rs.getString( "solicitante" ) );
 						tarefa.setEmAndamento( rs.getString( "emAndamento" ).charAt(0) );
 						tarefa.setFinalizada( rs.getString( "finalizada" ).charAt(0) );
+
+						try {
+							dt = df.parse( rs.getString( "dataHoraTermino" ) );
+							tarefa.setDataHoraFinalizacao( "Finalizada em: " + df.format(dt) );
+						}
+						catch( ParseException pe ){
+							tarefa.setDataHoraFinalizacao( "" );
+						}
 
 						tarefaList.add( tarefa );
 					}

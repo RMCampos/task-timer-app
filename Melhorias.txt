@@ -48,3 +48,8 @@ Descrição: Ao clicar no botão ERP, abrir de acordo com o cadastro de enum Por
 Solicitado por: Thiago Correa
 Data solicitação: 16/12/2014
 Implementada: Sim [18/12/2014 v12.2]
+---
+Descrição: Mostrar tooltip de data de finalização na pesquisa das terefas
+Solicitado por: Ricardo Montania
+Data solicitação: 29/12/2014
+Implementada: Sim [29/12/2014 v12.3]

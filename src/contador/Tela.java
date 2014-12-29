@@ -1417,6 +1417,11 @@ public class Tela extends JFrame {
 		return( this.contadorModel.getLinha( linha ) );
 	}
 
+	public TarefaResultado getLinhaResultadoSelecionada() {
+		int linha = this.resultadoTable.getSelectedRow();
+		return( this.resultadoModel.getLinha( linha ) );
+	}
+
 	public Collection<Tarefa> getLinhas() {
 		return( this.contadorModel.getLinhas() );
 	}
@@ -1753,6 +1758,18 @@ public class Tela extends JFrame {
 
 				if( isSelected ){
 					comp.setBackground( new Color( comp.getBackground().getRed() - 40, comp.getBackground().getGreen() - 40, comp.getBackground().getBlue() - 40 ) );
+
+					try {
+						TarefaResultado t = getLinhaResultadoSelecionada();
+
+						if( !t.getDataHoraFinalizacao().isEmpty() ) {
+							String toolTip = t.getDataHoraFinalizacao();
+							((JLabel) comp).setToolTipText( toolTip );
+						}
+					}
+					catch( Exception ex ){
+						System.out.println( "erro: " + ex.getMessage() );
+					}
 				}
 				return( comp );
 			}
