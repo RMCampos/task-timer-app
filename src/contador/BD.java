@@ -15,8 +15,8 @@ public class BD {
 	}
 
 	public String getDatabaseURL() {
-		if( System.getProperty( "os.name" ).toUpperCase().contains( "WIN" ) ) {
-			String base = System.getenv("APPDATA");
+		if( OS.isWindows() ) {
+			String base = System.getenv( "APPDATA" );
 			File f = new File( base );
 
 			if( f.exists() && f.isDirectory() ) {
@@ -34,9 +34,9 @@ public class BD {
 
 	private void conectar() throws SQLException, ClassNotFoundException {
 		Class.forName( "org.sqlite.JDBC" );
-		System.out.println( "Driver: " + getDatabaseURL() );
+		System.out.println( "LOG: Driver: " + getDatabaseURL() );
 		this.connection = DriverManager.getConnection( getDatabaseURL(), "", "" );
-		System.out.println( "Connection Established!" );
+		System.out.println( "LOG: Connection Established!" );
 	}
 
 	public Connection getConnection(){

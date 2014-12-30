@@ -193,6 +193,10 @@ public class Tarefa {
 		return( this.dataHoraTermino );
 	}
 
+	public boolean existeBdInformado() {
+		return( !this.enderecoBD.isEmpty() );
+	}
+
 	public void setDataHoraTermino( String pData ){
 		this.dataHoraTermino = pData;
 	}

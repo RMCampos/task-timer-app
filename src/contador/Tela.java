@@ -89,7 +89,7 @@ import com.sun.security.auth.module.NTSystem;
 public class Tela extends JFrame {
 	private String comandoTela;
 	private Timer  relogio;
-	private Tarefa TarefaAtual;
+	private Tarefa tarefaAtual;
 	private FrameConsole console;
 
 	private JPanel pnlSuperior;
@@ -130,6 +130,8 @@ public class Tela extends JFrame {
     private JLabel lblNomeArquivo;
     private JTextField txfNomeArquivo;
 	private JPanel pnlEvolucao;
+	private JButton btnMiniSQL;
+	private JButton btnMiniERP;
     private JLabel lblTarefa;
 	private JTextField txfCodTarefa;
 	private JLabel lblDescrTarefa;
@@ -161,7 +163,7 @@ public class Tela extends JFrame {
 	private SystemTray tray;
 	private JPopupMenu popm;
 	private JScrollPane scpBusca;
-	
+
 	private String usuarioLogado;
 
 	public Tela( String pNomeCidade ) {
@@ -326,7 +328,7 @@ public class Tela extends JFrame {
 		// ajusta a largura e altura do painel de resultado
 		this.pnlResultado.setBounds( 10, 100, pnlBuscar.getWidth()-60, pnlBuscar.getHeight()-170 );
 		this.scpBusca.setBounds( 10, 100, pnlBuscar.getWidth()-60, pnlBuscar.getHeight()-170 );
-		
+
 		// ajusta a posicao dos botoes do painel de busca
 		this.btnReativarBusca.setBounds( 20, pnlResultado.getHeight()+105, 150, 30 );
 		this.btnExcluirBusca.setBounds( 190, pnlResultado.getHeight()+105, 150, 30 );
@@ -426,7 +428,7 @@ public class Tela extends JFrame {
 	}
 
 	private void iniciarComponentes() {
-		this.TarefaAtual = null;
+		this.tarefaAtual = null;
 		// Fonte: http://stackoverflow.com/questions/2959718/dynamic-clock-in-java
 		ActionListener updateClockAction = new ActionListener() {
 			@Override
@@ -435,8 +437,8 @@ public class Tela extends JFrame {
 				DateFormat hora = new SimpleDateFormat( "HH:mm:ss" );
 				lblHora.setText( hora.format( new Date() ) );
 				setDataPainel( obterData( "" ) );
-				if( TarefaAtual != null ) {
-					setLblTotalPr( TarefaAtual.getCronometro() );
+				if( tarefaAtual != null ) {
+					setLblTotalPr( tarefaAtual.getCronometro() );
 				}
 			}
 		};
@@ -606,7 +608,7 @@ public class Tela extends JFrame {
 				iniciarSQLServer();
 			}
 		});
-		
+
 		this.btnERP = new JButton( new ImageIcon( getClass().getResource( "erp.png" ) ) );
 		this.btnERP.setBounds( 700, 45, 45, 30 );
 		this.btnERP.setToolTipText( "Abrir ERP." );
@@ -765,18 +767,39 @@ public class Tela extends JFrame {
 		this.pnlEvolucao.setName( "Evolução" );
 		this.pnlEvolucao.setBorder( BorderFactory.createEtchedBorder() );
 
+		this.btnMiniSQL = new JButton( new ImageIcon( getClass().getResource( "sql16.png" ) ) );
+		this.btnMiniSQL.setBounds( 10, 15, 21, 21 );
+		this.btnMiniSQL.setFocusable( false );
+		this.btnMiniSQL.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed( java.awt.event.ActionEvent evt ) {
+				iniciarSQLServer();
+			}
+		});
+
+		this.btnMiniERP = new JButton( new ImageIcon( getClass().getResource( "erp16.png" ) ) );
+		this.btnMiniERP.setBounds( 35, 15, 21, 21 );
+		this.btnMiniERP.setFocusable( false );
+		this.btnMiniERP.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed( java.awt.event.ActionEvent evt ) {
+				iniciarERP();
+			}
+		});
+
 		this.lblTarefa = new JLabel( "Tarefa: " );
 		this.lblTarefa.setHorizontalAlignment( JLabel.RIGHT );
-		this.lblTarefa.setBounds( 10, 15, 100, 21 );
+		this.lblTarefa.setBounds( 40, 15, 80, 21 );
 		this.lblTarefa.setFont( new Font( "Verdana", 0, 12 ) );
 
 		this.txfCodTarefa = new JTextField( "" );
 		this.txfCodTarefa.setFont( new Font( "Verdana", 0, 12 ) );
-		this.txfCodTarefa.setBounds( 110, 15, 100, 21 );
+		this.txfCodTarefa.setBounds( 120, 15, 100, 21 );
 		this.txfCodTarefa.addKeyListener( new KeyAdapter(){
 			@Override
 			public void keyPressed( KeyEvent ke ){
 				if( ke.getKeyCode() == KeyEvent.VK_ENTER ){
+					lblDescrTarefa.setText( "" );
 					carregarPaginaEvolucao();
 				}
 			}
@@ -784,7 +807,7 @@ public class Tela extends JFrame {
 
 		this.lblDescrTarefa = new JLabel( "" );
 		this.lblDescrTarefa.setFont( new Font( "Verdana", 0, 12 ) );
-		this.lblDescrTarefa.setBounds( 220, 15, 700, 21 );
+		this.lblDescrTarefa.setBounds( 235, 15, 700, 21 );
 
 		this.pnlParse = new JTextArea();
 		this.pnlParse.setLayout( null );
@@ -885,7 +908,7 @@ public class Tela extends JFrame {
 		this.rbtFinalizados = new JRadioButton( "Finalizadas" );
 		this.rbtFinalizados.setBounds( 190, 60, 100, 21 );
 		this.rbtFinalizados.setFont( new Font( "Verdana", 0, 12 ) );
-		
+
 		this.rbtNaoFinalizados = new JRadioButton( "Não Finalizadas" );
 		this.rbtNaoFinalizados.setSelected( true );
 		this.rbtNaoFinalizados.setBounds( 300, 60, 130, 21 );
@@ -971,6 +994,8 @@ public class Tela extends JFrame {
 		this.pnlExportar.add( this.txfNomeArquivo );
 		this.pnlExportar.add( this.btnExportar );
 		this.tbpPainelAbas.add( this.pnlEvolucao, null );
+		this.pnlEvolucao.add( this.btnMiniSQL );
+		this.pnlEvolucao.add( this.btnMiniERP );
 		this.pnlEvolucao.add( this.lblTarefa );
 		this.pnlEvolucao.add( this.txfCodTarefa );
 		this.pnlEvolucao.add( this.lblDescrTarefa );
@@ -1023,12 +1048,22 @@ public class Tela extends JFrame {
 				Thread thread = new Thread(){
 					public void run(){
 						Tarefa tarefa = getLinhaSelecionada();
+
+						if( tarefa == null ) {
+							tarefa = getTarefa();
+
+							if( tarefa == null ) {
+								return;
+							}
+						}
+
 						try {
 							String fileName = "temp.sql";
 							FileWriter sqlFile = new FileWriter( fileName );
 							sqlFile.write( "USE portal_" + tarefa.getPortal() );
 							sqlFile.close();
 							String comando = "Ssms.exe -S " + tarefa.getEnderecoBD() + " -U usr_suporte -P @@#vx3Wt$6v -nosplash " + fileName;
+							System.out.println( "LOG: Iniciando SQL Server: " + comando);
 							Runtime.getRuntime().exec( comando );
 						}
 						catch( IOException e ){
@@ -1036,12 +1071,12 @@ public class Tela extends JFrame {
 						}
 					}
 				};
-				
+
 				thread.start();
 			}
 		});
 	}
-	
+
 	private void iniciarERP() {
 		SwingUtilities.invokeLater( new Runnable() {
 			@Override
@@ -1049,19 +1084,28 @@ public class Tela extends JFrame {
 				Thread thread = new Thread(){
 					public void run(){
 						Tarefa tarefa = getLinhaSelecionada();
+
+						if( tarefa == null ) {
+							tarefa = getTarefa();
+
+							if( tarefa == null ) {
+								return;
+							}
+						}
+
 						String destinoUsuario = null;
 						PortalUsuario destinoUsuarioEnum = PortalUsuario.getPortalPorCodigo( usuarioLogado );
-						
+
 						if( destinoUsuarioEnum == null ) {
 							destinoUsuario = "correcaoERP";
 						}
 						else {
 							destinoUsuario = destinoUsuarioEnum.getPortalUsuario();
 						}
-						
+
 						try {
 							String comando = "C:\\Program Files\\Internet Explorer\\iexplore.exe http://192.168.18.12/config/bighost/admin/controle_acesso.asp?operacao=1&d=d&equipe=2&portal=" + tarefa.getPortal().trim() + "&homologacao=S&" + destinoUsuario + "=S";
-							System.out.println( "Iniciando o ERP: " + comando);
+							System.out.println( "LOG: Iniciando ERP: " + comando);
 							Runtime.getRuntime().exec( comando );
 						}
 						catch( IOException e ){
@@ -1069,7 +1113,7 @@ public class Tela extends JFrame {
 						}
 					}
 				};
-				
+
 				thread.start();
 			}
 		});
@@ -1208,7 +1252,7 @@ public class Tela extends JFrame {
 		this.popm.add( menuItem );
 
 		this.contadorTable.setComponentPopupMenu(this.popm);
-		
+
 		((DefaultTableCellRenderer)contadorTable.getTableHeader().getDefaultRenderer()).setHorizontalAlignment( JLabel.CENTER );
 	}
 
@@ -1370,11 +1414,11 @@ public class Tela extends JFrame {
 	}
 
 	public void setTarefa( Tarefa dParam ) {
-		this.TarefaAtual = dParam;
+		this.tarefaAtual = dParam;
 	}
 
 	public Tarefa getTarefa() {
-		return( this.TarefaAtual );
+		return( this.tarefaAtual );
 	}
 
 	public void carregarTarefaPosicaoA( Tarefa pDia, char pPosicao ) {
@@ -1554,9 +1598,6 @@ public class Tela extends JFrame {
 		}
 		catch( Exception e ) {
 			System.out.println( "Exception: " + e.getMessage() );
-		}
-
-		if( url == null ) {
 			return;
 		}
 
@@ -1565,9 +1606,6 @@ public class Tela extends JFrame {
 		}
 		catch( IOException ex ) {
 			System.out.println( "IOException: " + ex.getMessage() );
-		}
-
-		if( in == null ) {
 			return;
 		}
 
@@ -1620,21 +1658,26 @@ public class Tela extends JFrame {
 					}
 				}
 			}
-			
+
 			if( linha.toUpperCase().contains( "DATA:" ) ){
 				linha = "------------------------------\n" + linha;
 			}
 
 			if( posicaoInicio > -1 ) {
 				Tarefa tarefa = getLinhaSelecionada();
-				
+
+				if( tarefa == null ) {
+					tarefa = new Tarefa();
+					setTarefa( tarefa );
+				}
+
 				String enderecoBD = buscarEnderecoBDPortal( portal );
-				
-				if( tarefa != null && tarefa.getEnderecoBD().isEmpty() ){
+
+				if( !tarefa.existeBdInformado() ){
 					tarefa.setEnderecoBD( enderecoBD );
 					tarefa.setPortal( portal );
 				}
-				
+
 				if( linha.substring( 0, posicaoInicio ).length() >= linha.length() ) {
 					resultadoDaBusca += linha + " (" + enderecoBD + ")\n";
 				}
@@ -1705,16 +1748,16 @@ public class Tela extends JFrame {
 	}
 
 	private String buscarEnderecoBDPortal( String pPortal ) {
-		System.out.println("Buscando portal: " + pPortal);
+		System.out.println( "LOG: Buscando portal: " + pPortal );
 		String pagina = lerPaginaPortal( pPortal );
 
 		for( String linha : pagina.split("\n" ) ) {
 			if( linha.contains( "10.10.0" ) ) {
-				System.out.println("Portal encontrado: " + linha.trim());
+				System.out.println( "LOG: Portal encontrado: " + linha.trim() );
 				return( linha.trim() );
 			}
 		}
-		System.out.println("Portal nao encontrado!");
+		System.out.println( "LOG: Portal não encontrado!" );
 		return( "" );
 	}
 
@@ -1751,7 +1794,7 @@ public class Tela extends JFrame {
 				else{
 					comp.setBackground(new Color(254, 254, 254));
 				}
-				
+
 				if( column == 4 || column == 5 ) {
 					((JLabel) comp).setHorizontalAlignment( JLabel.CENTER );
 				}

@@ -53,3 +53,13 @@ Descrição: Mostrar tooltip de data de finalização na pesquisa das terefas
 Solicitado por: Ricardo Montania
 Data solicitação: 29/12/2014
 Implementada: Sim [29/12/2014 v12.3]
+---
+Descrição: Possibilitar usar funcionalidade dos botões SQL e ERP sem ter cadastrada a tarefa
+Solicitado por: Ricardo Montania
+Data solicitação: 30/12/2014
+Implementada: Sim [30/12/2014 v12.4]
+---
+Descrição: Tentar iniciar o IE versão x86 caso a versão x64 não exista
+Solicitado por: Ricardo Montania
+Data solicitação: 30/12/2014
+Implementada: Sim [30/12/2014 v12.4]

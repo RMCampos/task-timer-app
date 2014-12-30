@@ -12,7 +12,7 @@ public class ConnectionHolder {
 
 	public static Connection getConnection() throws SQLException, ClassNotFoundException {
 		if( instance == null ) {
-			System.out.println( "Requesting the first connection.." );
+			System.out.println( "LOG: Requesting first connection.." );
 			instance = new BD();
 		}
 		return( instance.getConnection() );
@@ -20,7 +20,7 @@ public class ConnectionHolder {
 
 	public static void criarTabelas() throws SQLException, ClassNotFoundException {
 		if( instance == null ) {
-			System.out.println( "Requesting conenction.." );
+			System.out.println( "LOG: Requesting conenction.." );
 			instance = new BD();
 		}
 
