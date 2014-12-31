@@ -1070,7 +1070,8 @@ public class Tela extends JFrame {
 						}
 
 						try {
-							String fileName = "temp.sql";
+							String tempFolder = System.getenv( "TEMP" );
+							String fileName = tempFolder + "\\temp.sql";
 							FileWriter sqlFile = new FileWriter( fileName );
 							sqlFile.write( "USE portal_" + tarefa.getPortal() );
 							sqlFile.close();

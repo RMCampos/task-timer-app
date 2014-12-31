@@ -78,3 +78,8 @@ Descrição: Ao clicar com botao do meio do mouse em ERP, abrir o ambiente de pr
 Solicitado por: Ricardo Montania
 Data solicitação: 31/12/2014
 Implementada: Sim [31/12/2014 v12.5]
+---
+Descrição: Criar arquivo temp.sql na pasta temporária do usuário
+Solicitado por: Ricardo Montania
+Data solicitação: 31/12/2014
+Implementada: Sim [31/12/2014 v12.5]
