@@ -68,7 +68,7 @@ public class Programa {
 		}
 
 
-		this.frame.setTitle( "Contador de Tarefas - v12.4 (30/12/2014)" );
+		this.frame.setTitle( "Contador de Tarefas - v12.5 (31/12/2014)" );
 		this.frame.setVisible( true );
 		this.tempoTotal = "00:00:00";
 		this.transacao = 'I';
@@ -202,26 +202,39 @@ public class Programa {
 			querySQL += " AND codigo = " + this.frame.getCodigoTarefaBuscar();
 		}
 
-		if( this.frame.getDataInicialBuscar() != null ) {
-			DateFormat df = new SimpleDateFormat( "dd/MM/yyyy" );
-			String dataInicio = df.format( this.frame.getDataInicialBuscar() ) + " 00:00:00";
-			querySQL += " AND dataHoraInclusao >= '" + dataInicio + "'";
-		}
-
-		if( this.frame.getDataFinalBuscar() != null ) {
-			DateFormat df = new SimpleDateFormat( "dd/MM/yyyy" );
-			String dataFinal = df.format( this.frame.getDataFinalBuscar() ) + " 00:00:00";
-			querySQL += " AND dataHoraInclusao <= '" + dataFinal + "'";
-		}
-
 		if( this.frame.getStatusTarefaBuscar() == StatusTarefa.FINALIZADAS ) {
 			querySQL += " AND finalizada = 'S'";
+
+			if( this.frame.getDataInicialBuscar() != null ) {
+				DateFormat df = new SimpleDateFormat( "dd/MM/yyyy" );
+				String dataInicio = df.format( this.frame.getDataInicialBuscar() ) + " 00:00:00";
+				querySQL += " AND dataHoraTermino >= '" + dataInicio + "'";
+			}
+
+			if( this.frame.getDataFinalBuscar() != null ) {
+				DateFormat df = new SimpleDateFormat( "dd/MM/yyyy" );
+				String dataFinal = df.format( this.frame.getDataFinalBuscar() ) + " 00:00:00";
+				querySQL += " AND dataHoraTermino <= '" + dataFinal + "'";
+			}
 		}
 		else if( this.frame.getStatusTarefaBuscar() == StatusTarefa.NAO_FINALIZADAS ) {
 			querySQL += " AND finalizada = 'N'";
 		}
 		else if( this.frame.getStatusTarefaBuscar() == StatusTarefa.EM_ANDAMENTO ) {
 			querySQL += " AND emAndamento = 'S'";
+		}
+		else {
+				if( this.frame.getDataInicialBuscar() != null ) {
+				DateFormat df = new SimpleDateFormat( "dd/MM/yyyy" );
+				String dataInicio = df.format( this.frame.getDataInicialBuscar() ) + " 00:00:00";
+				querySQL += " AND dataHoraInclusao >= '" + dataInicio + "'";
+			}
+
+			if( this.frame.getDataFinalBuscar() != null ) {
+				DateFormat df = new SimpleDateFormat( "dd/MM/yyyy" );
+				String dataFinal = df.format( this.frame.getDataFinalBuscar() ) + " 00:00:00";
+				querySQL += " AND dataHoraInclusao <= '" + dataFinal + "'";
+			}
 		}
 
 		this.frame.setTarefasResultado( this.tarefaResultadaoDAO.executarQuery( querySQL ) );

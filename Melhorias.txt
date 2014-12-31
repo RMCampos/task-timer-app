@@ -63,3 +63,13 @@ Descrição: Tentar iniciar o IE versão x86 caso a versão x64 não exista
 Solicitado por: Ricardo Montania
 Data solicitação: 30/12/2014
 Implementada: Sim [30/12/2014 v12.4]
+---
+Descrição: Ao buscar tarefas, filtrar a data pelo radio selecionado
+Solicitado por: Ricardo Montania
+Data solicitação: 31/12/2014
+Implementada: Sim [31/12/2014 v12.5]
+---
+Descrição: Mostrar tempo total gasto e tempo médio por tarefa
+Solicitado por: Ricardo Montania
+Data solicitação: 31/12/2014
+Implementada: Sim [31/12/2014 v12.5]

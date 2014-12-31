@@ -50,6 +50,8 @@ public class TarefaResultadoDAO {
 							tarefa.setDataHoraFinalizacao( "" );
 						}
 
+						tarefa.setTempoDecorrido( rs.getString( "tempoDecorrido" ) );
+
 						tarefaList.add( tarefa );
 					}
 				}
@@ -67,21 +69,21 @@ public class TarefaResultadoDAO {
 			return( tarefaList );
 		}
 	}
-	
+
 	public void apagarLista( String pLista ) {
 		try {
 			Statement st = this.connection.createStatement();
-			
+
 			this.connection.setAutoCommit( false );
-			
+
 			String querySQL =
 				"DELETE FROM tarefa " +
 				"WHERE codigo IN (" + pLista + ")";
 
 			System.out.println( "SQL: " + querySQL );
-			
+
 			int rowsAffecteds = st.executeUpdate( querySQL );
-			
+
 			if( rowsAffecteds == Statement.EXECUTE_FAILED ) {
 				this.connection.rollback();
 				System.out.println( "SQL: 0 Rows affecteds" );
@@ -97,22 +99,22 @@ public class TarefaResultadoDAO {
 			System.out.println( "SQLException: " + ex.getMessage() );
 		}
 	}
-	
+
 	public void reativarLista( String pLista ) {
 		try {
 			Statement st = this.connection.createStatement();
-			
+
 			this.connection.setAutoCommit( false );
-			
+
 			String querySQL =
 				"UPDATE tarefa " +
 				"SET finalizada = 'N' " +
 				"WHERE codigo IN (" + pLista + ")";
 
 			System.out.println( "SQL: " + querySQL );
-			
+
 			int rowsAffecteds = st.executeUpdate( querySQL );
-			
+
 			if( rowsAffecteds == Statement.EXECUTE_FAILED ) {
 				this.connection.rollback();
 				System.out.println( "SQL: 0 Rows affecteds" );

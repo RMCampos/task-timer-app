@@ -140,6 +140,7 @@ public class Tela extends JFrame {
 	private JPanel containerCampos;
 	private JPanel pnlBuscar;
 	private JLabel lblTarefaBuscar;
+	private JLabel lblTemposTotalEMedio;
 	private JTextField txfTarefaBuscar;
 	private JLabel lblPeriodoBuscar;
 	private JDateChooser dtcPeriodoInicial;
@@ -844,6 +845,10 @@ public class Tela extends JFrame {
 		this.lblTarefaBuscar.setBounds( 10, 10, 90, 21 );
 		this.lblTarefaBuscar.setFont( new Font( "Verdana", 0, 12 ) );
 
+		this.lblTemposTotalEMedio = new JLabel();
+		this.lblTemposTotalEMedio.setBounds( 400, 10, 400, 21 );
+		this.lblTemposTotalEMedio.setFont( new Font( "Verdana", 0, 12 ) );
+
 		this.txfTarefaBuscar = new JTextField();
 		this.txfTarefaBuscar.setBounds( 105, 10, 90, 21);
 		this.txfTarefaBuscar.setFont( new Font( "Monospaced", 0, 12 ) );
@@ -1002,6 +1007,7 @@ public class Tela extends JFrame {
 		this.pnlEvolucao.add( this.scrollPane );
 		this.tbpPainelAbas.add( this.pnlBuscar, null );
 		this.pnlBuscar.add( this.lblTarefaBuscar );
+		this.pnlBuscar.add( this.lblTemposTotalEMedio );
 		this.pnlBuscar.add( this.txfTarefaBuscar );
 		this.pnlBuscar.add( this.lblPeriodoBuscar );
 		this.pnlBuscar.add( this.dtcPeriodoInicial );
@@ -1860,6 +1866,8 @@ public class Tela extends JFrame {
 
 	public void setTarefasResultado( List<TarefaResultado> list ) {
 		this.resultadoModel.setLinhas( list );
+
+		calcularTempos( list );
 	}
 
 	public String getCodigoTarefaBuscar() {
@@ -1899,6 +1907,72 @@ public class Tela extends JFrame {
 		}
 
 		return( list );
+	}
+
+	public void calcularTempos( List<TarefaResultado> pListaTarefas ) {
+		if( pListaTarefas == null || pListaTarefas.isEmpty() ) {
+			this.lblTemposTotalEMedio.setText( "" );
+			return;
+		}
+
+		Integer totalSegundos = 0;
+
+		for( TarefaResultado tp : pListaTarefas ) {
+			Integer segundos = 0;
+			Integer minutos = 0;
+			Integer horas = 0;
+
+			try {
+				horas = Integer.parseInt( tp.getTempoDecorrido().substring( 0, 2 ) );
+				minutos = Integer.parseInt( tp.getTempoDecorrido().substring( 3, 5 ) );
+				segundos = Integer.parseInt( tp.getTempoDecorrido().substring( 6, 8 ) );
+
+				totalSegundos += segundos + (minutos*TimeHelper.secondsInMinuts) + (horas*TimeHelper.secondsInHour);
+			}
+			catch( NumberFormatException excep ) {
+				System.out.println( "NumberFormatException: " + excep.getMessage() );
+			}
+			catch( IndexOutOfBoundsException excep ) {
+				System.out.println( "IndexOutOfBoundsException: " + excep.getMessage() );
+			}
+		}
+
+		if( totalSegundos == 0 ) {
+			return;
+		}
+
+		Integer segundosMedia = totalSegundos / pListaTarefas.size();
+
+		this.lblTemposTotalEMedio.setText(
+			"Tempo médio: " + TimeHelper.secondsToTime(segundosMedia) +
+			"    Tempo total: " + TimeHelper.secondsToTime(totalSegundos)
+		);
+	}
+}
+
+class TimeHelper {
+	public static final Integer secondsInHour = 3600;
+	public static final Integer secondsInMinuts = 60;
+
+	public static String secondsToTime( Integer pSeconds ) {
+		String hour = String.valueOf( pSeconds / secondsInHour );
+		pSeconds -= (Integer.parseInt(hour) * secondsInHour);
+		if( Integer.parseInt(hour) < 10 ) {
+			hour = "0" + hour;
+		}
+
+		String minuts = String.valueOf( pSeconds / secondsInMinuts );
+		pSeconds -= (Integer.parseInt(minuts) * secondsInMinuts);
+		if( Integer.parseInt(minuts) < 10 ) {
+			minuts = "0" + minuts;
+		}
+
+		String seconds = pSeconds.toString();
+		if( Integer.parseInt(seconds) < 10 ) {
+			seconds = "0" + seconds;
+		}
+
+		return( hour + ":" + minuts + ":" + seconds );
 	}
 }
 
