@@ -73,3 +73,8 @@ Descrição: Mostrar tempo total gasto e tempo médio por tarefa
 Solicitado por: Ricardo Montania
 Data solicitação: 31/12/2014
 Implementada: Sim [31/12/2014 v12.5]
+---
+Descrição: Ao clicar com botao do meio do mouse em ERP, abrir o ambiente de producao
+Solicitado por: Ricardo Montania
+Data solicitação: 31/12/2014
+Implementada: Sim [31/12/2014 v12.5]

@@ -612,12 +612,15 @@ public class Tela extends JFrame {
 
 		this.btnERP = new JButton( new ImageIcon( getClass().getResource( "erp.png" ) ) );
 		this.btnERP.setBounds( 700, 45, 45, 30 );
-		this.btnERP.setToolTipText( "Abrir ERP." );
+		this.btnERP.setToolTipText( "<HTML>Click NORMAL para CORRECAO<BR>Click DO MEIO para PRODUCAO</HTML>" );
 		this.btnERP.setFocusable( false );
-		this.btnERP.addActionListener( new java.awt.event.ActionListener() {
+		this.btnERP.addMouseListener( new MouseAdapter() {
 			@Override
-			public void actionPerformed( java.awt.event.ActionEvent evt ) {
-				iniciarERP();
+			public void mouseClicked( MouseEvent e ) {
+				switch( e.getButton() ) {
+					case 1: { iniciarERP( "CORRECAO" ); break; }
+					case 2: { iniciarERP( "PRODUCAO" ); }
+				}
 			}
 		});
 
@@ -781,10 +784,13 @@ public class Tela extends JFrame {
 		this.btnMiniERP = new JButton( new ImageIcon( getClass().getResource( "erp16.png" ) ) );
 		this.btnMiniERP.setBounds( 35, 15, 21, 21 );
 		this.btnMiniERP.setFocusable( false );
-		this.btnMiniERP.addActionListener( new ActionListener() {
+		this.btnMiniERP.addMouseListener( new MouseAdapter() {
 			@Override
-			public void actionPerformed( java.awt.event.ActionEvent evt ) {
-				iniciarERP();
+			public void mouseClicked( MouseEvent e ) {
+				switch( e.getButton() ) {
+					case 1: { iniciarERP( "CORRECAO" ); break; }
+					case 2: { iniciarERP( "PRODUCAO" ); }
+				}
 			}
 		});
 
@@ -1083,7 +1089,7 @@ public class Tela extends JFrame {
 		});
 	}
 
-	private void iniciarERP() {
+	private void iniciarERP( final String pProducaoCorrecao ) {
 		SwingUtilities.invokeLater( new Runnable() {
 			@Override
 			public void run() {
@@ -1110,7 +1116,15 @@ public class Tela extends JFrame {
 						}
 
 						try {
-							String comando = "C:\\Program Files\\Internet Explorer\\iexplore.exe http://192.168.18.12/config/bighost/admin/controle_acesso.asp?operacao=1&d=d&equipe=2&portal=" + tarefa.getPortal().trim() + "&homologacao=S&" + destinoUsuario + "=S";
+							String comando = "";
+
+							if( pProducaoCorrecao.equals( "CORRECAO" ) ) {
+								comando = "C:\\Program Files\\Internet Explorer\\iexplore.exe http://192.168.18.12/config/bighost/admin/controle_acesso.asp?operacao=1&d=d&equipe=2&portal=" + tarefa.getPortal().trim() + "&homologacao=S&" + destinoUsuario + "=S";
+							}
+							else if( pProducaoCorrecao.equals( "PRODUCAO" ) ) {
+								comando = "C:\\Program Files\\Internet Explorer\\iexplore.exe http://192.168.18.12/config/bighost/admin/controle_acesso.asp?operacao=1&d=d&equipe=2&portal=" + tarefa.getPortal().trim() + "&homologacao=N";
+							}
+
 							System.out.println( "LOG: Iniciando ERP: " + comando);
 							Runtime.getRuntime().exec( comando );
 						}
