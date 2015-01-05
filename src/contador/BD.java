@@ -73,6 +73,7 @@ public class BD {
 				" tempoDecorrido TIME NOT NULL," +
 				" emAndamento CHAR NOT NULL," +
 				" finalizada CHAR NOT NULL," +
+				" anotacoes VARCHAR(5000) NULL," +
 				" PRIMARY KEY(codigo) " +
 				")";
 

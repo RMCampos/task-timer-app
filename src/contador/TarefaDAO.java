@@ -36,7 +36,8 @@ public class TarefaDAO {
 				" dataHoraTermino," +
 				" tempoDecorrido," +
 				" emAndamento," +
-				" finalizada " +
+				" finalizada," +
+				" anotacoes " +
 				"FROM" +
 				" tarefa " +
 				"WHERE" +
@@ -87,6 +88,10 @@ public class TarefaDAO {
 						tarefa.setEmAndamento( rs.getString( "emAndamento" ).charAt(0) == 'S' );
 						tarefa.setFinalizada( rs.getString( "finalizada" ).charAt(0) == 'S' );
 
+						if( rs.getString( "anotacoes" ) != null ) {
+							tarefa.setAnotacoes( rs.getString( "anotacoes" ) );
+						}
+
 						TarefaList.add( tarefa );
 					}
 				}
@@ -121,6 +126,7 @@ public class TarefaDAO {
 			"	,tempoDecorrido" +
 			"	,emAndamento" +
 			"	,finalizada" +
+			"	,anotacoes" +
 			")" +
 			" VALUES" +
 			" (" +
@@ -133,8 +139,16 @@ public class TarefaDAO {
 			"  ,'" + pTarefa.getDataHoraTermino() + "' " +
 			"  ,'" + pTarefa.getDuracao() + "' " +
 			"  ,'" + (pTarefa.emAndamento()? "S" : "N") + "' " +
-			"  ,'" + (pTarefa.finalizada()? "S" : "N") + "' " +
-			" )";
+			"  ,'" + (pTarefa.finalizada()? "S" : "N") + "' ";
+
+		if( !pTarefa.getAnotacoes().isEmpty() ) {
+			sQuery += "  ,'" + pTarefa.getAnotacoes() + "'";
+		}
+		else {
+			sQuery += "  ,null";
+		}
+
+		sQuery += " )";
 
 		System.out.println( "SQL: " + sQuery );
 
@@ -164,7 +178,16 @@ public class TarefaDAO {
 			"	,dataHoraTermino = '" + pTarefa.getDataHoraTermino() + "' " +
 			"	,tempoDecorrido = '" + pTarefa.getDuracao() + "' " +
 			"	,emAndamento = '" + (pTarefa.emAndamento()? "S" : "N") + "' " +
-			"	,finalizada = '" + (pTarefa.finalizada()? "S" : "N") + "' " +
+			"	,finalizada = '" + (pTarefa.finalizada()? "S" : "N") + "' ";
+
+		if( !pTarefa.getAnotacoes().isEmpty() ) {
+			sQuery += "  ,anotacoes = '" + pTarefa.getAnotacoes() + "' ";
+		}
+		else {
+			sQuery += "  ,anotacoes = null ";
+		}
+
+		sQuery +=
 			"WHERE" +
 			" codigo = " + pTarefa.getCodigo();
 

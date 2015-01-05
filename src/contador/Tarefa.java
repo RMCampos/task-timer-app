@@ -22,6 +22,7 @@ public class Tarefa {
 	private String dataHoraTermino;
 	private String enderecoBD;
 	private String portal;
+	private String anotacoes;
 
 	public Tarefa() {
 		this.codigo = "";
@@ -39,6 +40,7 @@ public class Tarefa {
 		this.cronometro = "00:00:00";
 		this.enderecoBD = "";
 		this.portal = "";
+		this.anotacoes = "";
 
 		ActionListener updateClockAction = new ActionListener() {
 			@Override
@@ -125,6 +127,10 @@ public class Tarefa {
 
 	public String getPortal() {
 		return( this.portal );
+	}
+
+	public String getAnotacoes() {
+		return( this.anotacoes );
 	}
 
 	public void setCronometro( String pCron ) {
@@ -215,5 +221,9 @@ public class Tarefa {
 
 	public void setPortal( String pPortal ) {
 		this.portal = pPortal;
+	}
+
+	public void setAnotacoes( String pAnotacoes ) {
+		this.anotacoes = pAnotacoes;
 	}
 }

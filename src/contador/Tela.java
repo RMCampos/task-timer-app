@@ -158,6 +158,11 @@ public class Tela extends JFrame {
 	private JButton btnReativarBusca;
 	private JButton btnExcluirBusca;
 
+	private JPanel pnlAnotacoes;
+	private JButton btnSalvarAnotacao;
+	private JTextArea txaAnotacoes;
+	private JScrollPane scrollPaneAnotacoes;
+
 	public JTable contadorTable;
 	public TarefaModel contadorModel;
 	private TrayIcon trayIcon;
@@ -333,6 +338,10 @@ public class Tela extends JFrame {
 		// ajusta a posicao dos botoes do painel de busca
 		this.btnReativarBusca.setBounds( 20, pnlResultado.getHeight()+105, 150, 30 );
 		this.btnExcluirBusca.setBounds( 190, pnlResultado.getHeight()+105, 150, 30 );
+
+		// ajusta a largura e altura do painel de anotações
+		this.txaAnotacoes.setBounds( this.txaAnotacoes.getX(), this.txaAnotacoes.getY(), largura-20, altura-200 );
+		this.scrollPaneAnotacoes.setBounds( this.scrollPaneAnotacoes.getX(), this.scrollPaneAnotacoes.getY(), largura-70, altura-180 );
 	}
 
 	private void setarIcones() {
@@ -973,6 +982,41 @@ public class Tela extends JFrame {
 			}
 		});
 
+		this.pnlAnotacoes = new JPanel();
+		this.pnlAnotacoes.setBounds( 0, 0, 800, 520 );
+		this.pnlAnotacoes.setLayout( null );
+		this.pnlAnotacoes.setName( "Anotações" );
+		this.pnlAnotacoes.setBorder( BorderFactory.createEtchedBorder() );
+
+		this.btnSalvarAnotacao = new JButton( "Salvar" );
+		this.btnSalvarAnotacao.setFont( new Font( "Verdana", 0, 12 ) );
+		this.btnSalvarAnotacao.setBounds( 10, 15, 100, 21 );
+		this.btnSalvarAnotacao.setEnabled( false );
+		this.btnSalvarAnotacao.setFocusable( false );
+		this.btnSalvarAnotacao.addActionListener( new ActionListener(){
+			@Override
+			public void actionPerformed( ActionEvent ae ){
+				comandoTela = "SALVAR_ANOTACAO";
+			}
+		});
+
+		this.txaAnotacoes = new JTextArea();
+		this.txaAnotacoes.setLayout( null );
+		this.txaAnotacoes.setBounds( 10, 40, 740, 460 );
+		this.txaAnotacoes.setFont( new Font( "Verdana", 0, 12 ) );
+		this.txaAnotacoes.setEditable( false );
+		this.txaAnotacoes.setBackground( Color.white );
+		this.txaAnotacoes.setBorder( BorderFactory.createEtchedBorder() );
+		this.txaAnotacoes.setLineWrap( true );
+
+		this.scrollPaneAnotacoes = new JScrollPane();
+
+		this.scrollPaneAnotacoes = new JScrollPane( txaAnotacoes );
+		this.scrollPaneAnotacoes.setBounds( 10, 40, 740, 460 );
+
+		JScrollBar bar2 = scrollPaneAnotacoes.getVerticalScrollBar();
+		bar2.setUnitIncrement( 40 );
+
 	    this.containerCampos.add( this.lblCodigo );
         this.containerCampos.add( this.txfCodigo );
         this.containerCampos.add( this.lblNome );
@@ -1028,6 +1072,9 @@ public class Tela extends JFrame {
 		this.pnlBuscar.add( this.pnlResultado );
 		this.pnlBuscar.add( this.btnReativarBusca );
 		this.pnlBuscar.add( this.btnExcluirBusca );
+		this.tbpPainelAbas.add( this.pnlAnotacoes, null );
+		this.pnlAnotacoes.add( this.btnSalvarAnotacao );
+		this.pnlAnotacoes.add( this.scrollPaneAnotacoes );
 
 
 		JLabel lblTab1 = new JLabel( "  Tarefas  " );
@@ -1041,6 +1088,10 @@ public class Tela extends JFrame {
 		JLabel lblTab3 = new JLabel( "  Buscar  " );
 		lblTab3.setUI(new VerticalLabelUI(false));
 		this.tbpPainelAbas.setTabComponentAt(2, lblTab3);
+
+		JLabel lblTab4 = new JLabel( "  Anotações  " );
+		lblTab4.setUI(new VerticalLabelUI(false));
+		this.tbpPainelAbas.setTabComponentAt(3, lblTab4);
 	}
 
 	private void iniciarPrograma( String pNomeCidade ) {
@@ -1349,6 +1400,9 @@ public class Tela extends JFrame {
 		setTxfObs( "" );
 		this.txfCodTarefa.setText( "" );
 		this.pnlParse.setText( "" );
+		this.txaAnotacoes.setText( "" );
+		this.btnSalvarAnotacao.setEnabled( false );
+		this.txaAnotacoes.setEditable( false );
 	}
 
 	public String getTxfCodigo() {
@@ -1436,6 +1490,11 @@ public class Tela extends JFrame {
 
 	public void setTarefa( Tarefa dParam ) {
 		this.tarefaAtual = dParam;
+
+		if( dParam != null ) {
+			this.btnSalvarAnotacao.setEnabled( true );
+			this.txaAnotacoes.setEditable( true );
+		}
 	}
 
 	public Tarefa getTarefa() {
@@ -1962,6 +2021,14 @@ public class Tela extends JFrame {
 			"Tempo médio: " + TimeHelper.secondsToTime(segundosMedia) +
 			"    Tempo total: " + TimeHelper.secondsToTime(totalSegundos)
 		);
+	}
+
+	public String getAnotacoes() {
+		return( this.txaAnotacoes.getText().replaceAll( "\n", "##" ) );
+	}
+
+	public void setAnotacoes( String pAnotacoes ) {
+		this.txaAnotacoes.setText( pAnotacoes.replaceAll( "##", "\n" ) );
 	}
 }
 

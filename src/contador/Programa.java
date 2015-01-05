@@ -68,7 +68,7 @@ public class Programa {
 		}
 
 
-		this.frame.setTitle( "Contador de Tarefas - v12.5 (31/12/2014)" );
+		this.frame.setTitle( "Contador de Tarefas - v12.6 (05/01/2015)" );
 		this.frame.setVisible( true );
 		this.tempoTotal = "00:00:00";
 		this.transacao = 'I';
@@ -182,6 +182,10 @@ public class Programa {
 				if( this.frame.getComandoTela().equals( "REATIVAR" ) ) {
 					reativarSelecao();
 				}
+				if( this.frame.getComandoTela().equals( "SALVAR_ANOTACAO" ) ) {
+					alterar();
+				}
+
 			}
 			while( true );
 		}
@@ -303,13 +307,16 @@ public class Programa {
 			tarefa.setNome( this.frame.getTxfNome() );
 			tarefa.setSoliciante( this.frame.getTxfSolicitante() );
 			tarefa.setObs( this.frame.getTxfObs() );
+			tarefa.setAnotacoes( this.frame.getAnotacoes() );
 
 
 			try {
 				this.tarefaDAO.alterar( tarefa );
 				cancelar();
 			}
-			catch( SQLException e ){}
+			catch( SQLException e ){
+				System.out.println( "SQLException: " + e.getMessage() );
+			}
 		}
 	}
 
@@ -371,6 +378,7 @@ public class Programa {
 		this.frame.setTxfNome( d.getNome() );
 		this.frame.setTxfSolicitante( d.getSolicitante() );
 		this.frame.setTxfObs( d.getObs() );
+		this.frame.setAnotacoes( d.getAnotacoes() );
 		this.frame.habilitarContinuar( d.emAndamento() );
 		this.frame.habilitarBotaoInserir( false );
 		this.frame.habilitarExcluir( true );
