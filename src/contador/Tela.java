@@ -151,6 +151,8 @@ public class Tela extends JFrame {
 	private JRadioButton rbtFinalizados;
 	private JRadioButton rbtNaoFinalizados;
 	private JRadioButton rbtEmAndamento;
+	private JLabel lblTextoLivre;
+	private JTextField txfTextoLivre;
 	private JButton btnBuscar;
 	private JPanel pnlResultado;
 	private JTable resultadoTable;
@@ -332,12 +334,12 @@ public class Tela extends JFrame {
 		this.scrollPane.setBounds( this.scrollPane.getX(), this.scrollPane.getY(), largura-70, altura-180 );
 
 		// ajusta a largura e altura do painel de resultado
-		this.pnlResultado.setBounds( 10, 100, pnlBuscar.getWidth()-60, pnlBuscar.getHeight()-170 );
-		this.scpBusca.setBounds( 10, 100, pnlBuscar.getWidth()-60, pnlBuscar.getHeight()-170 );
+		this.pnlResultado.setBounds( 10, 125, pnlBuscar.getWidth()-60, pnlBuscar.getHeight()-195 );
+		this.scpBusca.setBounds( 10, 125, pnlBuscar.getWidth()-60, pnlBuscar.getHeight()-195 );
 
 		// ajusta a posicao dos botoes do painel de busca
-		this.btnReativarBusca.setBounds( 20, pnlResultado.getHeight()+105, 150, 30 );
-		this.btnExcluirBusca.setBounds( 190, pnlResultado.getHeight()+105, 150, 30 );
+		this.btnReativarBusca.setBounds( 20, pnlResultado.getHeight()+130, 150, 30 );
+		this.btnExcluirBusca.setBounds( 190, pnlResultado.getHeight()+130, 150, 30 );
 
 		// ajusta a largura e altura do painel de anotações
 		this.txaAnotacoes.setBounds( this.txaAnotacoes.getX(), this.txaAnotacoes.getY(), largura-20, altura-200 );
@@ -944,6 +946,15 @@ public class Tela extends JFrame {
 		bg.add( this.rbtNaoFinalizados );
 		bg.add( this.rbtEmAndamento );
 
+		this.lblTextoLivre = new JLabel( "Texto livre:" );
+		this.lblTextoLivre.setHorizontalAlignment( JLabel.RIGHT );
+		this.lblTextoLivre.setBounds( 10, 85, 90, 21 );
+		this.lblTextoLivre.setFont( new Font( "Verdana", 0, 12 ) );
+
+		this.txfTextoLivre = new JTextField();
+		this.txfTextoLivre.setBounds( 105, 85, 450, 21 );
+		this.txfTextoLivre.setFont( new Font( "Verdana", 0, 12 ) );
+
 		this.btnBuscar = new JButton( "Buscar" );
 		this.btnBuscar.setBounds( 610, 55, 100, 30 );
 		this.btnBuscar.setToolTipText( "Buscar Tarefas" );
@@ -956,7 +967,7 @@ public class Tela extends JFrame {
 		});
 
 		this.pnlResultado = new JPanel();
-		this.pnlResultado.setBounds( 10, 100, pnlBuscar.getWidth()-60, pnlBuscar.getHeight()-170 );
+		this.pnlResultado.setBounds( 10, 125, pnlBuscar.getWidth()-60, pnlBuscar.getHeight()-195 );
 		this.pnlResultado.setLayout( null );
 		this.pnlResultado.setBorder( BorderFactory.createEtchedBorder() );
 
@@ -1068,6 +1079,8 @@ public class Tela extends JFrame {
 		this.pnlBuscar.add( this.rbtFinalizados );
 		this.pnlBuscar.add( this.rbtNaoFinalizados );
 		this.pnlBuscar.add( this.rbtEmAndamento );
+		this.pnlBuscar.add( this.lblTextoLivre );
+		this.pnlBuscar.add( this.txfTextoLivre );
 		this.pnlBuscar.add( this.btnBuscar );
 		this.pnlBuscar.add( this.pnlResultado );
 		this.pnlBuscar.add( this.btnReativarBusca );
@@ -2029,6 +2042,10 @@ public class Tela extends JFrame {
 
 	public void setAnotacoes( String pAnotacoes ) {
 		this.txaAnotacoes.setText( pAnotacoes.replaceAll( "##", "\n" ) );
+	}
+
+	public String getTxfTextoLivre() {
+		return( this.txfTextoLivre.getText() );
 	}
 }
 

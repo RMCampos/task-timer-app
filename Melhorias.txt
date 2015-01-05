@@ -88,3 +88,8 @@ Descrição: Incluir aba para descrição de tags, páginas e anotações para u
 Solicitado por: Ricardo Montania
 Data solicitação: 05/01/2015
 Implementada: Sim [05/01/2015 v12.6]
+---
+Descrição: Incluir campo para pesquisa por anotações
+Solicitado por: Ricardo Montania
+Data solicitação: 05/01/2015
+Implementada: Sim [05/01/2015 v12.7]

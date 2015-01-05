@@ -68,7 +68,7 @@ public class Programa {
 		}
 
 
-		this.frame.setTitle( "Contador de Tarefas - v12.6 (05/01/2015)" );
+		this.frame.setTitle( "Contador de Tarefas - v12.7 (05/01/2015)" );
 		this.frame.setVisible( true );
 		this.tempoTotal = "00:00:00";
 		this.transacao = 'I';
@@ -239,6 +239,19 @@ public class Programa {
 				String dataFinal = df.format( this.frame.getDataFinalBuscar() ) + " 00:00:00";
 				querySQL += " AND dataHoraInclusao <= '" + dataFinal + "'";
 			}
+		}
+
+		if( !this.frame.getTxfTextoLivre().isEmpty() ) {
+			String anotacoes = "anotacoes LIKE ";
+			String textoLivre = this.frame.getTxfTextoLivre();
+			String termos[] = textoLivre.split( "," );
+
+			for( int index=0; index<termos.length; index++) {
+				String textoBusca = termos[index].trim();
+				anotacoes += "'%" + textoBusca + ((index == termos.length-1)? "%')" : "%' OR anotacoes LIKE ");
+			}
+
+			querySQL += " AND (" + anotacoes ;
 		}
 
 		this.frame.setTarefasResultado( this.tarefaResultadaoDAO.executarQuery( querySQL ) );
