@@ -161,7 +161,7 @@ public class Tela extends JFrame {
 	private JButton btnExcluirBusca;
 
 	private JPanel pnlAnotacoes;
-	private JButton btnSalvarAnotacao;
+	private JLabel lblCaracteres;
 	private JTextArea txaAnotacoes;
 	private JScrollPane scrollPaneAnotacoes;
 
@@ -303,6 +303,13 @@ public class Tela extends JFrame {
 			@Override
 			public void componentResized( ComponentEvent e ){
 				ajustarPosicao();
+			}
+		});
+		
+		this.txaAnotacoes.addKeyListener( new KeyAdapter() {
+			@Override
+			public void keyPressed( KeyEvent ke ) {
+				lblCaracteres.setText( String.valueOf( 5000 - getAnotacoes().length() ) + " Caracteres Restantes" );
 			}
 		});
 	}
@@ -924,6 +931,7 @@ public class Tela extends JFrame {
 		this.lblStatusBuscar.setFont( new Font( "Verdana", 0, 12 ) );
 
 		this.rbtTodos = new JRadioButton( "Todos" );
+		this.rbtTodos.setSelected( true );
 		this.rbtTodos.setBounds( 110, 60, 70, 21 );
 		this.rbtTodos.setFont( new Font( "Verdana", 0, 12 ) );
 
@@ -932,7 +940,6 @@ public class Tela extends JFrame {
 		this.rbtFinalizados.setFont( new Font( "Verdana", 0, 12 ) );
 
 		this.rbtNaoFinalizados = new JRadioButton( "Não Finalizadas" );
-		this.rbtNaoFinalizados.setSelected( true );
 		this.rbtNaoFinalizados.setBounds( 300, 60, 130, 21 );
 		this.rbtNaoFinalizados.setFont( new Font( "Verdana", 0, 12 ) );
 
@@ -998,18 +1005,10 @@ public class Tela extends JFrame {
 		this.pnlAnotacoes.setLayout( null );
 		this.pnlAnotacoes.setName( "Anotações" );
 		this.pnlAnotacoes.setBorder( BorderFactory.createEtchedBorder() );
-
-		this.btnSalvarAnotacao = new JButton( "Salvar" );
-		this.btnSalvarAnotacao.setFont( new Font( "Verdana", 0, 12 ) );
-		this.btnSalvarAnotacao.setBounds( 10, 15, 100, 21 );
-		this.btnSalvarAnotacao.setEnabled( false );
-		this.btnSalvarAnotacao.setFocusable( false );
-		this.btnSalvarAnotacao.addActionListener( new ActionListener(){
-			@Override
-			public void actionPerformed( ActionEvent ae ){
-				comandoTela = "SALVAR_ANOTACAO";
-			}
-		});
+		
+		this.lblCaracteres = new JLabel( "0 Caracteres Restantes" );
+		this.lblCaracteres.setBounds( 10, 10, 350, 21 );
+		this.lblCaracteres.setFont( new Font( "Verdana", 0, 12 ) );
 
 		this.txaAnotacoes = new JTextArea();
 		this.txaAnotacoes.setLayout( null );
@@ -1086,7 +1085,7 @@ public class Tela extends JFrame {
 		this.pnlBuscar.add( this.btnReativarBusca );
 		this.pnlBuscar.add( this.btnExcluirBusca );
 		this.tbpPainelAbas.add( this.pnlAnotacoes, null );
-		this.pnlAnotacoes.add( this.btnSalvarAnotacao );
+		this.pnlAnotacoes.add( this.lblCaracteres );
 		this.pnlAnotacoes.add( this.scrollPaneAnotacoes );
 
 
@@ -1413,8 +1412,8 @@ public class Tela extends JFrame {
 		setTxfObs( "" );
 		this.txfCodTarefa.setText( "" );
 		this.pnlParse.setText( "" );
+		this.lblCaracteres.setText( "0 Caracteres Restantes" );
 		this.txaAnotacoes.setText( "" );
-		this.btnSalvarAnotacao.setEnabled( false );
 		this.txaAnotacoes.setEditable( false );
 	}
 
@@ -1505,8 +1504,8 @@ public class Tela extends JFrame {
 		this.tarefaAtual = dParam;
 
 		if( dParam != null ) {
-			this.btnSalvarAnotacao.setEnabled( true );
 			this.txaAnotacoes.setEditable( true );
+			this.lblCaracteres.setText( String.valueOf( 5000 - dParam.getAnotacoes().length() ) + " Caracteres Restantes" );
 		}
 	}
 

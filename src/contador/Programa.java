@@ -182,10 +182,6 @@ public class Programa {
 				if( this.frame.getComandoTela().equals( "REATIVAR" ) ) {
 					reativarSelecao();
 				}
-				if( this.frame.getComandoTela().equals( "SALVAR_ANOTACAO" ) ) {
-					alterar();
-				}
-
 			}
 			while( true );
 		}
