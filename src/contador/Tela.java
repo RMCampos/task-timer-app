@@ -660,7 +660,7 @@ public class Tela extends JFrame {
 			this.btnContinuar.setIcon( new ImageIcon( getClass().getResource( "play.png" ) ) );
 			this.btnParar.setIcon( new ImageIcon( getClass().getResource( "pause.png" ) ) );
 			this.btnMiniSQL.setIcon( new ImageIcon( getClass().getResource( "sql16.png" ) ) );
-			this.btnMiniERP = new JButton( new ImageIcon( getClass().getResource( "erp16.png" ) ) );
+			this.btnMiniERP.setIcon( new ImageIcon( getClass().getResource( "erp16.png" ) ) );
 		}
 		catch( Exception ex ) {
 			System.out.println( "Exception: " + ex.getMessage() );
