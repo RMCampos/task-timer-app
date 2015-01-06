@@ -93,3 +93,8 @@ Descrição: Incluir campo para pesquisa por anotações
 Solicitado por: Ricardo Montania
 Data solicitação: 05/01/2015
 Implementada: Sim [05/01/2015 v12.7]
+---
+Descrição: Corrigir bug de data final na busca
+Solicitado por: Ricardo Montania
+Data solicitação: 06/01/2015
+Implementada: Sim [06/01/2015 v12.8]

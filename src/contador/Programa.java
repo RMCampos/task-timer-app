@@ -68,7 +68,7 @@ public class Programa {
 		}
 
 
-		this.frame.setTitle( "Contador de Tarefas - v12.7 (05/01/2015)" );
+		this.frame.setTitle( "Contador de Tarefas - v12.8 (06/01/2015)" );
 		this.frame.setVisible( true );
 		this.tempoTotal = "00:00:00";
 		this.transacao = 'I';
@@ -213,7 +213,7 @@ public class Programa {
 
 			if( this.frame.getDataFinalBuscar() != null ) {
 				DateFormat df = new SimpleDateFormat( "dd/MM/yyyy" );
-				String dataFinal = df.format( this.frame.getDataFinalBuscar() ) + " 00:00:00";
+				String dataFinal = df.format( this.frame.getDataFinalBuscar() ) + " 23:59:59";
 				querySQL += " AND dataHoraTermino <= '" + dataFinal + "'";
 			}
 		}
@@ -232,7 +232,7 @@ public class Programa {
 
 			if( this.frame.getDataFinalBuscar() != null ) {
 				DateFormat df = new SimpleDateFormat( "dd/MM/yyyy" );
-				String dataFinal = df.format( this.frame.getDataFinalBuscar() ) + " 00:00:00";
+				String dataFinal = df.format( this.frame.getDataFinalBuscar() ) + " 23:59:59";
 				querySQL += " AND dataHoraInclusao <= '" + dataFinal + "'";
 			}
 		}
