@@ -16,7 +16,6 @@ public class TarefaResultadoDAO {
 
 	public TarefaResultadoDAO() throws SQLException, ClassNotFoundException {
 		this.connection = ConnectionHolder.getConnection();
-		ConnectionHolder.criarTabelas();
 	}
 
 	public List<TarefaResultado> executarQuery( String pQuery ) {

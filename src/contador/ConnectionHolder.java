@@ -14,19 +14,20 @@ public class ConnectionHolder {
 		if( instance == null ) {
 			System.out.println( "LOG: Requesting first connection.." );
 			instance = new BD();
+			instance.setConnection( instance.getConnection() );
+			criarTabelas();
 		}
 		return( instance.getConnection() );
 	}
 
 	public static void criarTabelas() throws SQLException, ClassNotFoundException {
-		if( instance == null ) {
-			System.out.println( "LOG: Requesting conenction.." );
-			instance = new BD();
-		}
-
 		try {
-			instance.criarBancoDeDados( "" );
+			if( !instance.existsDataBase() ) {
+				instance.criarBancoDeDados( "" );
+			}
 		}
-		catch( ClassNotFoundException cl ){}
+		catch( ClassNotFoundException cl ){
+			System.out.println( "ClassNotFoundException: " + cl.getMessage() );
+		}
 	}
 }

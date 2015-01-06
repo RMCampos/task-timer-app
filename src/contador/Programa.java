@@ -67,7 +67,6 @@ public class Programa {
 			System.exit( 1 );
 		}
 
-
 		this.frame.setTitle( "Contador de Tarefas - v12.8 (06/01/2015)" );
 		this.frame.setVisible( true );
 		this.tempoTotal = "00:00:00";
@@ -198,22 +197,22 @@ public class Programa {
 			"FROM tarefa " +
 			"WHERE 1 = 1";
 
-		if( !this.frame.getCodigoTarefaBuscar().isEmpty() ) {
-			querySQL += " AND codigo = " + this.frame.getCodigoTarefaBuscar();
+		if( !this.frame.getTxfTarefaBuscar().isEmpty() ) {
+			querySQL += " AND codigo = " + this.frame.getTxfTarefaBuscar();
 		}
 
 		if( this.frame.getStatusTarefaBuscar() == StatusTarefa.FINALIZADAS ) {
 			querySQL += " AND finalizada = 'S'";
 
-			if( this.frame.getDataInicialBuscar() != null ) {
+			if( this.frame.getDtcPeriodoInicial() != null ) {
 				DateFormat df = new SimpleDateFormat( "dd/MM/yyyy" );
-				String dataInicio = df.format( this.frame.getDataInicialBuscar() ) + " 00:00:00";
+				String dataInicio = df.format( this.frame.getDtcPeriodoInicial() ) + " 00:00:00";
 				querySQL += " AND dataHoraTermino >= '" + dataInicio + "'";
 			}
 
-			if( this.frame.getDataFinalBuscar() != null ) {
+			if( this.frame.getDtcPeriodoFinal() != null ) {
 				DateFormat df = new SimpleDateFormat( "dd/MM/yyyy" );
-				String dataFinal = df.format( this.frame.getDataFinalBuscar() ) + " 23:59:59";
+				String dataFinal = df.format( this.frame.getDtcPeriodoFinal() ) + " 23:59:59";
 				querySQL += " AND dataHoraTermino <= '" + dataFinal + "'";
 			}
 		}
@@ -224,15 +223,15 @@ public class Programa {
 			querySQL += " AND emAndamento = 'S'";
 		}
 		else {
-				if( this.frame.getDataInicialBuscar() != null ) {
+				if( this.frame.getDtcPeriodoInicial() != null ) {
 				DateFormat df = new SimpleDateFormat( "dd/MM/yyyy" );
-				String dataInicio = df.format( this.frame.getDataInicialBuscar() ) + " 00:00:00";
+				String dataInicio = df.format( this.frame.getDtcPeriodoInicial() ) + " 00:00:00";
 				querySQL += " AND dataHoraInclusao >= '" + dataInicio + "'";
 			}
 
-			if( this.frame.getDataFinalBuscar() != null ) {
+			if( this.frame.getDtcPeriodoFinal() != null ) {
 				DateFormat df = new SimpleDateFormat( "dd/MM/yyyy" );
-				String dataFinal = df.format( this.frame.getDataFinalBuscar() ) + " 23:59:59";
+				String dataFinal = df.format( this.frame.getDtcPeriodoFinal() ) + " 23:59:59";
 				querySQL += " AND dataHoraInclusao <= '" + dataFinal + "'";
 			}
 		}
@@ -291,20 +290,20 @@ public class Programa {
 		}
 	}
 
-	private void carregarLinha( String pParam ) {
-		Tarefa dia = this.frame.getTarefa();
+	private void carregarLinha( String pProximoAnterior ) {
+		Tarefa tarefa = this.frame.getTarefa();
 
-		if( pParam.equals( "ANTERIOR" ) ) {
-			this.frame.carregarTarefaPosicaoA( dia, '-' );
+		if( pProximoAnterior.equals( "ANTERIOR" ) ) {
+			this.frame.carregarTarefaPosicao( tarefa, '-' );
 		}
-		else if( pParam.equals( "PROXIMA" ) ) {
-			this.frame.carregarTarefaPosicaoA( dia, '+' );
+		else if( pProximoAnterior.equals( "PROXIMA" ) ) {
+			this.frame.carregarTarefaPosicao( tarefa, '+' );
 		}
 
-		this.frame.habilitarContinuar( dia.emAndamento() );
+		this.frame.habilitarContinuar( tarefa.emAndamento() );
 		this.frame.habilitarBotaoInserir( false );
 		this.frame.habilitarExcluir( true );
-		this.frame.setLblTotalPr( dia.getCronometro() );
+		this.frame.setLblTotalTarefa( tarefa.getCronometro() );
 		this.frame.setLblTotalTempo( obterTempoTotalDecorrido() );
 		this.frame.habilitarBtnAlterar();
 	}
@@ -316,7 +315,7 @@ public class Programa {
 			tarefa.setNome( this.frame.getTxfNome() );
 			tarefa.setSoliciante( this.frame.getTxfSolicitante() );
 			tarefa.setObs( this.frame.getTxfObs() );
-			tarefa.setAnotacoes( this.frame.getAnotacoes() );
+			tarefa.setAnotacoes( this.frame.getTxaAnotacoes() );
 
 
 			try {
@@ -333,6 +332,11 @@ public class Programa {
 		boolean flValidar = true;
 		String strMsg = "";
 
+		if( this.frame.getTxfCodigo().isEmpty() ) {
+			flValidar = false;
+			strMsg += "->Código da tarefa não informado.\n";
+		}
+
 		if( this.frame.getTxfNome().isEmpty() ) {
 			flValidar = false;
 			strMsg += "->Nome da tarefa não informado.\n";
@@ -346,14 +350,14 @@ public class Programa {
 	}
 
 	private Tarefa criarTarefa() {
-		Tarefa d = new Tarefa();
+		Tarefa tarefa = new Tarefa();
 
-		d.setCodigo( this.frame.getTxfCodigo() );
-		d.setNome( this.frame.getTxfNome() );
-		d.setSoliciante( this.frame.getTxfSolicitante() );
-		d.setObs( this.frame.getTxfObs() );
+		tarefa.setCodigo( this.frame.getTxfCodigo() );
+		tarefa.setNome( this.frame.getTxfNome() );
+		tarefa.setSoliciante( this.frame.getTxfSolicitante() );
+		tarefa.setObs( this.frame.getTxfObs() );
 
-		return( d );
+		return( tarefa );
 	}
 
 	private void adicionarTarefa() {
@@ -378,20 +382,20 @@ public class Programa {
 	}
 
 	private void carregarTarefaSelecionado() {
-		Tarefa d = this.frame.getLinhaSelecionada();
+		Tarefa tarefa = this.frame.getLinhaSelecionada();
 
-		this.frame.setTarefa( d );
+		this.frame.setTarefa( tarefa );
 		this.transacao = 'A';
 		this.frame.mudarEstado( "EDICAO" );
-		this.frame.setTxfCodigo( d.getCodigo() );
-		this.frame.setTxfNome( d.getNome() );
-		this.frame.setTxfSolicitante( d.getSolicitante() );
-		this.frame.setTxfObs( d.getObs() );
-		this.frame.setAnotacoes( d.getAnotacoes() );
-		this.frame.habilitarContinuar( d.emAndamento() );
+		this.frame.setTxfCodigo( tarefa.getCodigo() );
+		this.frame.setTxfNome( tarefa.getNome() );
+		this.frame.setTxfSolicitante( tarefa.getSolicitante() );
+		this.frame.setTxfObs( tarefa.getObs() );
+		this.frame.setTxaAnotacoes( tarefa.getAnotacoes() );
+		this.frame.habilitarContinuar( tarefa.emAndamento() );
 		this.frame.habilitarBotaoInserir( false );
 		this.frame.habilitarExcluir( true );
-		this.frame.setLblTotalPr( d.getDuracao() );
+		this.frame.setLblTotalTarefa( tarefa.getDuracao() );
 		this.frame.setLblTotalTempo( obterTempoTotalDecorrido() );
 		this.frame.habilitarBtnAlterar();
 		this.frame.carregarPaginaEvolucao();
@@ -401,26 +405,26 @@ public class Programa {
 		Collection<Tarefa> TarefaList = this.frame.contadorModel.getLinhas();
 
 		this.tempoTotal = "00:00:00";
-		for( Tarefa d : TarefaList ) {
-			this.tempoTotal = somarTempoTotal( this.tempoTotal, d.getCronometro() );
+		for( Tarefa tarefa : TarefaList ) {
+			this.tempoTotal = somarTempoTotal( this.tempoTotal, tarefa.getCronometro() );
 		}
 		return( tempoTotal );
 	}
 
 	private void continuar() {
-		Tarefa d = this.frame.getLinhaSelecionada();
+		Tarefa tarefa = this.frame.getLinhaSelecionada();
 
-		if( d == null ) {
+		if( tarefa == null ) {
 			Mensagem.informacao( "Nenhuma linha selecionada.", frame);
 			return;
 		}
 
 		DateFormat df = new SimpleDateFormat( "HH:mm:ss" );
-		d.setHoraInicio( df.format( new java.util.Date() ) );
+		tarefa.setHoraInicio( df.format( new java.util.Date() ) );
 
-		d.setHoraIntervalo( new Date() );
-		d.setEmAndamento( true );
-		d.iniciarTempo();
+		tarefa.setHoraIntervalo( new Date() );
+		tarefa.setEmAndamento( true );
+		tarefa.iniciarTempo();
 
 		this.frame.limpar();
 		this.frame.contadorTable.repaint();
@@ -433,43 +437,46 @@ public class Programa {
 		this.transacao = 'I';
 
 		try {
-			this.tarefaDAO.alterar( d );
+			this.tarefaDAO.alterar( tarefa );
 		}
-		catch( SQLException e ){}
+		catch( SQLException e ){
+			System.out.println( "SQLException: " + e.getMessage() );
+		}
 	}
 
-	private void parar( Tarefa pDia ) {
+	private void parar( Tarefa pTarefa ) {
 		this.frame.setTarefa( null );
 
-		Tarefa d = pDia;
+		Tarefa tarefa = pTarefa;
 
-		if( pDia == null ) {
-			d = this.frame.getLinhaSelecionada();
+		if( tarefa == null ) {
+			tarefa = this.frame.getLinhaSelecionada();
 		}
 
 		DateFormat data = new SimpleDateFormat( "HH:mm:ss" );
-		d.setHoraTermino( data.format( new Date() ) );
+		tarefa.setHoraTermino( data.format( new Date() ) );
 
 		DateFormat df = new SimpleDateFormat( "dd/MM/yyyy HH:mm:ss" );
-		d.setDataHoraTermino( df.format( new java.util.Date() ) );
+		tarefa.setDataHoraTermino( df.format( new java.util.Date() ) );
 
-		if( d.getDuracao().isEmpty() ) {
-			String duracao = obterDuracao( d.getHoraTermino(), data.format( d.getHoraIntervalo() ) );
-			d.setDuracao( duracao );
+		if( tarefa.getDuracao().isEmpty() ) {
+			String duracao = obterDuracao( tarefa.getHoraTermino(), data.format( tarefa.getHoraIntervalo() ) );
+			tarefa.setDuracao( duracao );
 		}
 		else {
-			String duracaoAtual = d.getDuracao();
-			String novaDuracao = obterDuracao( d.getHoraTermino(), data.format( d.getHoraIntervalo() ) );
-			d.setDuracao( somarDuracao( duracaoAtual, novaDuracao ) );
+			String duracaoAtual = tarefa.getDuracao();
+			String novaDuracao = obterDuracao( tarefa.getHoraTermino(), data.format( tarefa.getHoraIntervalo() ) );
+			tarefa.setDuracao( somarDuracao( duracaoAtual, novaDuracao ) );
 		}
 
-		d.setEmAndamento( false );
-		d.setHoraIntervalo( new Date() );
-		d.pararTempo();
+		tarefa.setEmAndamento( false );
+		tarefa.setHoraIntervalo( new Date() );
+		tarefa.pararTempo();
 
-		if( pDia == null ) {
+		if( pTarefa == null ) {
 			this.frame.limpar();
 		}
+
 		this.frame.contadorTable.repaint();
 		this.frame.contadorTable.getSelectionModel().clearSelection();
 		this.frame.habilitarBotaoInserir( true );
@@ -479,9 +486,11 @@ public class Programa {
 		this.transacao = 'I';
 
 		try {
-			this.tarefaDAO.alterar( d );
+			this.tarefaDAO.alterar( tarefa );
 		}
-		catch( SQLException e ){}
+		catch( SQLException e ){
+			System.out.println( "SQLException: " + e.getMessage() );
+		}
 	}
 
 	private void cancelar() {
@@ -496,10 +505,10 @@ public class Programa {
 	}
 
 	private void exportar() {
-		Collection<Tarefa> dList = this.frame.contadorModel.getLinhas();
+		Collection<Tarefa> tarefaList = this.frame.contadorModel.getLinhas();
 		String tempoTotalTarefas = obterTempoTotalDecorrido();
 
-		if( dList == null || dList.isEmpty() ) {
+		if( tarefaList == null || tarefaList.isEmpty() ) {
 			Mensagem.informacao( "Não existe nada para ser exportado.", this.frame );
 			return;
 		}
@@ -545,16 +554,16 @@ public class Programa {
 
 		gravarArq.printf( cabecalho + "\r\n" );
 
-		for( Tarefa dia : dList ) {
+		for( Tarefa tarefa : tarefaList ) {
 			String linha =
-				((dia.getCodigo().isEmpty())? " N " : dia.getCodigo()) + ";" +
-				dia.getNome() + ";" +
-				((dia.getSolicitante().isEmpty())? " N " : dia.getSolicitante()) + ";" +
-				dia.getDuracao() + ";" +
+				((tarefa.getCodigo().isEmpty())? " N " : tarefa.getCodigo()) + ";" +
+				tarefa.getNome() + ";" +
+				((tarefa.getSolicitante().isEmpty())? " N " : tarefa.getSolicitante()) + ";" +
+				tarefa.getDuracao() + ";" +
 				dataAtual + ";" +
-				dia.getHoraInicio() + ";" +
-				dia.getHoraTermino() + ";" +
-				((dia.getObs().isEmpty())? "Nenhuma." : dia.getObs()) + "\r\n";
+				tarefa.getHoraInicio() + ";" +
+				tarefa.getHoraTermino() + ";" +
+				((tarefa.getObs().isEmpty())? "Nenhuma." : tarefa.getObs()) + "\r\n";
 
 			System.out.println( "gravando a linha: " + linha );
 
@@ -568,23 +577,24 @@ public class Programa {
 			arquivo.close();
 		}
 		catch( IOException e ){
+			System.out.println( "IOException: " + e.getMessage() );
 		}
 
 		Mensagem.informacao( "Contador exportado com sucesso!\nLocal: " + camArquivo + "\nNome: " + nomeArquivo, this.frame );
 	}
 
 	private void excluir() {
-		Tarefa d = this.frame.getLinhaSelecionada();
+		Tarefa tarefa = this.frame.getLinhaSelecionada();
 
-		if( d == null ) {
+		if( tarefa == null ) {
 			Mensagem.informacao( "Nenhuma tarefa selecionada.", this.frame );
 		}
 
 		if( Mensagem.confirmar( "Confirma a exclusão da tarefa?", this.frame ) ) {
 			try {
-				parar( d );
-				this.tarefaDAO.excluir( d );
-				this.frame.contadorModel.removeLinha( d );
+				parar( tarefa );
+				this.tarefaDAO.excluir( tarefa );
+				this.frame.contadorModel.removeLinha( tarefa );
 				this.frame.contadorTable.getSelectionModel().clearSelection();
 				this.frame.habilitarBotaoInserir( true );
 				this.frame.habilitarBotoes( false );
@@ -592,6 +602,7 @@ public class Programa {
 				this.frame.limparTempoDecorrido();
 			}
 			catch( SQLException e ){
+				System.out.println( "SQLException: " + e.getMessage() );
 			}
 		}
 	}

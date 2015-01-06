@@ -17,7 +17,6 @@ public class TarefaDAO {
 
 	public TarefaDAO() throws SQLException, ClassNotFoundException {
 		this.connection = ConnectionHolder.getConnection();
-		ConnectionHolder.criarTabelas();
 	}
 
 	public List<Tarefa> selectTarefasEmAberto() {

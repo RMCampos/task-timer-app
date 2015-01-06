@@ -120,7 +120,7 @@ public class Tela extends JFrame {
     private JPanel pnlContador;
     private JPanel pnlTempoDecorrido;
     private JLabel lblTempoDecorrido;
-    private JLabel lblTotalPr;
+    private JLabel lblTotalTarefa;
     private JLabel lblTempoTodos;
     private JLabel lblTotalTempo;
     private JPanel pnlExportar;
@@ -174,7 +174,7 @@ public class Tela extends JFrame {
 
 	private String usuarioLogado;
 
-	public Tela( String pNomeCidade ) {
+	public Tela( final String pNomeCidade ) {
 		try {
 			SwingUtilities.invokeAndWait(new Runnable() {
 				@Override
@@ -193,7 +193,6 @@ public class Tela extends JFrame {
 		iniciarPrograma( pNomeCidade );
 		criarModel();
 		criarModelResultado();
-		criarListener();
 		iniciarConsole();
 		setLocationRelativeTo( null );
 		setarIcones();
@@ -221,7 +220,7 @@ public class Tela extends JFrame {
 		this.tray = SystemTray.getSystemTray();
 		Image img = new ImageIcon( getClass().getResource( "clock.png" ) ).getImage();
 		PopupMenu pop = new PopupMenu();
-		MenuItem defaultItem = new MenuItem( "Restaurar" );
+		final MenuItem defaultItem = new MenuItem( "Restaurar" );
 		defaultItem.addActionListener( new ActionListener() {
 			@Override
 			public void actionPerformed( ActionEvent e ) {
@@ -305,18 +304,316 @@ public class Tela extends JFrame {
 				ajustarPosicao();
 			}
 		});
-		
+
 		this.txaAnotacoes.addKeyListener( new KeyAdapter() {
 			@Override
 			public void keyPressed( KeyEvent ke ) {
-				lblCaracteres.setText( String.valueOf( 5000 - getAnotacoes().length() ) + " Caracteres Restantes" );
+				lblCaracteres.setText( String.valueOf( 5000 - getTxaAnotacoes().length() ) + " Caracteres Restantes" );
+			}
+		});
+
+		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher( new KeyEventDispatcher() {
+			@Override
+			public boolean dispatchKeyEvent( KeyEvent e ) {
+				try {
+					if( e.isControlDown() && e.getKeyCode() == KeyEvent.VK_I && e.getID() == KeyEvent.KEY_PRESSED ) {
+						if( console.isVisible() ) {
+							console.setVisible( false );
+						}
+						else {
+							console.setVisible( true );
+						}
+					}
+				}
+				catch( Exception exc ) {
+					System.out.println( "Erro ao disparar evento de tecla: " + exc.getMessage() );
+				}
+				return false;
+			}
+		});
+		this.contadorTable.addMouseListener( new MouseAdapter() {
+			@Override
+			public void mouseClicked( MouseEvent e ) {
+				if( e.getClickCount() == 1 ) {
+					comandoTela = "CARREGAR_TAREFA";
+				}
+			}
+		});
+		this.contadorTable.addKeyListener( new KeyAdapter() {
+			@Override
+			public void keyPressed( KeyEvent ke ) {
+				if( ke.getKeyCode() == KeyEvent.VK_DOWN ) {
+					comandoTela = "CARREGAR_PROXIMA_LINHA";
+				}
+				else if( ke.getKeyCode() == KeyEvent.VK_UP ) {
+					comandoTela = "CARREGAR_LINHA_ANTERIOR";
+				}
+			}
+		});
+		this.addWindowListener( new WindowListener(){
+			public void windowClosing( WindowEvent we ){
+				if( todasTarefasParadas() ){
+					System.exit(0);
+				}
+				else {
+					Mensagem.informacao( "Não é possível sair com tarefas em andamento.", null );
+				}
+			}
+			public void windowClosed( WindowEvent we ){}
+			public void windowDeactivated( WindowEvent we ){}
+			public void windowDeiconified( WindowEvent we ){}
+			public void windowIconified( WindowEvent we ){}
+			public void windowActivated( WindowEvent we ){}
+			public void windowOpened( WindowEvent we ){}
+		});
+		this.txfCodigo.addKeyListener( new KeyAdapter() {
+			@Override
+			public void keyPressed( KeyEvent kev ) {
+				if( kev.getKeyCode() == KeyEvent.VK_ENTER ) {
+					txfNome.requestFocus();
+				}
+			}
+		});
+		this.txfCodigo.addFocusListener( new FocusAdapter() {
+			@Override
+			public void focusGained( FocusEvent fe ) {
+				txfCodigo.selectAll();
+			}
+		});
+		this.txfNome.addKeyListener( new KeyAdapter() {
+			@Override
+			public void keyPressed( KeyEvent kev ) {
+				if( kev.getKeyCode() == KeyEvent.VK_ENTER ) {
+					txfSolicitante.requestFocus();
+				}
+			}
+		});
+		this.txfNome.addFocusListener( new FocusAdapter() {
+		@Override
+			public void focusGained( FocusEvent fe ) {
+				txfNome.selectAll();
+			}
+		});
+		this.txfSolicitante.addKeyListener( new KeyAdapter() {
+			@Override
+			public void keyPressed( KeyEvent kev ) {
+				if( kev.getKeyCode() == KeyEvent.VK_ENTER ) {
+					txfObs.requestFocus();
+				}
+			}
+		});
+		this.txfSolicitante.addFocusListener( new FocusAdapter() {
+			@Override
+			public void focusGained( FocusEvent fe ) {
+				txfSolicitante.selectAll();
+			}
+		});
+		this.txfObs.addKeyListener( new KeyAdapter() {
+			@Override
+			public void keyPressed( KeyEvent kev ) {
+				if( kev.getKeyCode() == KeyEvent.VK_ENTER ) {
+					comandoTela = "ADICIONAR_TAREFA";
+				}
+			}
+		});
+		this.txfObs.addFocusListener( new FocusAdapter() {
+			@Override
+			public void focusGained( FocusEvent fe ) {
+				txfObs.selectAll();
+			}
+		});
+		this.btnTray.addActionListener( new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed( java.awt.event.ActionEvent evt ) {
+				try {
+					tray.add( trayIcon );
+					setVisible( false );
+					setExtendedState( JFrame.MAXIMIZED_BOTH );
+				}
+				catch( AWTException ex ){
+					System.out.println( "ERRO: AWTException: " + ex.getLocalizedMessage() );
+				}
+			}
+		});
+		this.btnMSSQL.addActionListener( new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed( java.awt.event.ActionEvent evt ) {
+				iniciarSQLServer();
+			}
+		});
+		this.btnERP.addMouseListener( new MouseAdapter() {
+			@Override
+			public void mouseClicked( MouseEvent e ) {
+				switch( e.getButton() ) {
+					case 1: { iniciarERP( "CORRECAO" ); break; }
+					case 2: { iniciarERP( "PRODUCAO" ); }
+				}
+			}
+		});
+		this.btnAdd.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed( ActionEvent e ) {
+				comandoTela = "ADICIONAR_TAREFA";
+			}
+		});
+		this.btnContinuar.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed( ActionEvent e ) {
+				comandoTela = "CONTINUAR";
+			}
+		});
+		this.btnParar.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed( ActionEvent e ) {
+				comandoTela = "PARAR";
+			}
+		});
+		this.btnExcluir.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed( ActionEvent e ) {
+				comandoTela = "EXCLUIR";
+			}
+		});
+		this.btnAlterar.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed( ActionEvent e ) {
+				comandoTela = "ALTERAR";
+			}
+		});
+		this.btnExportar.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed( ActionEvent e ) {
+				comandoTela = "EXPORTAR";
+			}
+		});
+		this.btnCancelar.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				comandoTela = "CANCELAR";
+			}
+		});
+		this.btnProcurarDiretorio.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed( ActionEvent e ) {
+				comandoTela = "PROCURAR_DIRETORIO";
+			}
+		});
+		this.btnMiniSQL.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed( ActionEvent evt ) {
+				iniciarSQLServer();
+			}
+		});
+		this.btnMiniERP.addMouseListener( new MouseAdapter() {
+			@Override
+			public void mouseClicked( MouseEvent e ) {
+				switch( e.getButton() ) {
+					case 1: { iniciarERP( "CORRECAO" ); break; }
+					case 2: { iniciarERP( "PRODUCAO" ); }
+				}
+			}
+		});
+		this.txfCodTarefa.addKeyListener( new KeyAdapter(){
+			@Override
+			public void keyPressed( KeyEvent ke ){
+				if( ke.getKeyCode() == KeyEvent.VK_ENTER ){
+					lblDescrTarefa.setText( "" );
+					carregarPaginaEvolucao();
+				}
+			}
+		});
+		this.txfTarefaBuscar.addKeyListener( new KeyAdapter() {
+			@Override
+			public void keyPressed( KeyEvent kev ) {
+				if( kev.getKeyCode() == KeyEvent.VK_ENTER ) {
+					dtcPeriodoInicial.requestFocus();
+				}
+			}
+		});
+		this.txfTarefaBuscar.addFocusListener( new FocusAdapter() {
+			@Override
+			public void focusGained( FocusEvent fe ) {
+				txfTarefaBuscar.selectAll();
+			}
+		});
+		this.dtcPeriodoInicial.addKeyListener( new KeyAdapter() {
+			@Override
+			public void keyPressed( KeyEvent kev ) {
+				if( kev.getKeyCode() == KeyEvent.VK_ENTER ) {
+					dtcPeriodoFinal.requestFocus();
+				}
+			}
+		});
+		this.dtcPeriodoFinal.addKeyListener( new KeyAdapter() {
+			@Override
+			public void keyPressed( KeyEvent kev ) {
+				if( kev.getKeyCode() == KeyEvent.VK_ENTER ) {
+					//txfNome.requestFocus();
+				}
+			}
+		});
+		this.btnBuscar.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed( ActionEvent evt ) {
+				comandoTela = "BUSCAR";
+			}
+		});
+		this.btnReativarBusca.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed( ActionEvent evt ) {
+				comandoTela = "REATIVAR";
+			}
+		});
+		this.btnExcluirBusca.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed( ActionEvent evt ) {
+				comandoTela = "EXCLUIR_SELECAO";
+			}
+		});
+		this.contadorTable.addMouseListener( new MouseAdapter() {
+			@Override
+			public void mouseClicked( MouseEvent e ) {
+				int linha = contadorTable.rowAtPoint( new Point( e.getX(), e.getY() ) );
+				int coluna = contadorTable.columnAtPoint( new Point( e.getX(), e.getY() ) );
+				String conteudoCelula = (String) contadorTable.getValueAt( linha, coluna );
+
+				if( conteudoCelula == null || conteudoCelula.isEmpty() || coluna > 0 ) {
+					return;
+				}
+
+				try {
+					final URI uri = new URI( "http://a-srv63/suporte/followup_find.asp?OBJETO_ID=" + conteudoCelula );
+					if( Desktop.isDesktopSupported() ) {
+						try {
+							Desktop.getDesktop().browse( uri );
+						}
+						catch( IOException ie ) {}
+					}
+				}
+				catch( URISyntaxException ex ) {}
+			}
+
+			@Override
+			public void mouseEntered( MouseEvent e ) {
+				int coluna = contadorTable.columnAtPoint( new Point( e.getX(), e.getY() ) );
+				if( coluna == 0 ) {
+					contadorTable.setCursor( new Cursor( Cursor.HAND_CURSOR ) );
+				}
+			}
+
+			@Override
+			public void mouseExited( MouseEvent e ) {
+				int coluna = contadorTable.columnAtPoint( new Point( e.getX(), e.getY() ) );
+				if( coluna > 0 ) {
+					contadorTable.setCursor( new Cursor( Cursor.DEFAULT_CURSOR ) );
+				}
 			}
 		});
 	}
 
 	private void ajustarPosicao() {
-		int largura = this.getWidth();
-		int altura = this.getHeight();
+		final int largura = this.getWidth();
+		final int altura = this.getHeight();
 
 		// ajusta a largura do painel superior
 		this.pnlSuperior.setBounds( this.pnlSuperior.getX(), this.pnlSuperior.getY(), largura, this.pnlSuperior.getHeight() );
@@ -356,56 +653,18 @@ public class Tela extends JFrame {
 	private void setarIcones() {
 		try {
 			this.setIconImage( new ImageIcon( getClass().getResource( "clock.png" ) ).getImage() );
+
 			this.btnProcurarDiretorio.setIcon( new ImageIcon( getClass().getResource( "folder.png" ) ) );
+			this.btnMSSQL.setIcon( new ImageIcon( getClass().getResource( "sql.png" ) ) );
+			this.btnERP.setIcon( new ImageIcon( getClass().getResource( "erp.png" ) ) );
+			this.btnContinuar.setIcon( new ImageIcon( getClass().getResource( "play.png" ) ) );
+			this.btnParar.setIcon( new ImageIcon( getClass().getResource( "pause.png" ) ) );
+			this.btnMiniSQL.setIcon( new ImageIcon( getClass().getResource( "sql16.png" ) ) );
+			this.btnMiniERP = new JButton( new ImageIcon( getClass().getResource( "erp16.png" ) ) );
 		}
 		catch( Exception ex ) {
-			System.out.println( "Exception: Erro ao setar imagem: " + ex.getMessage() );
+			System.out.println( "Exception: " + ex.getMessage() );
 		}
-	}
-
-	private void criarListener() {
-		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new KeyEventDispatcher() {
-			@Override
-			public boolean dispatchKeyEvent( KeyEvent e ) {
-				try {
-					AOPRESSIONARTecla(e);
-				}
-				catch( Exception exc ) {
-					System.out.println( "Erro ao disparar evento de tecla: " + exc.getMessage() );
-				}
-				return false;
-			}
-		});
-		this.contadorTable.addMouseListener( new MouseAdapter() {
-			@Override
-			public void mouseClicked( MouseEvent e ) {
-				if( e.getClickCount() == 1 ) {
-					comandoTela = "CARREGAR_TAREFA";
-				}
-			}
-		});
-		this.contadorTable.addKeyListener( new KeyAdapter() {
-			@Override
-			public void keyPressed( KeyEvent ke ) {
-				AOPRESSIONARSetas( ke );
-			}
-		});
-		this.addWindowListener( new WindowListener(){
-			public void windowClosing( WindowEvent we ){
-				if( todasTarefasParadas() ){
-					System.exit(0);
-				}
-				else {
-					Mensagem.informacao( "Não é possível sair com tarefas em andamento.", null );
-				}
-			}
-			public void windowClosed( WindowEvent we ){}
-			public void windowDeactivated( WindowEvent we ){}
-			public void windowDeiconified( WindowEvent we ){}
-			public void windowIconified( WindowEvent we ){}
-			public void windowActivated( WindowEvent we ){}
-			public void windowOpened( WindowEvent we ){}
-		});
 	}
 
 	public boolean todasTarefasParadas(){
@@ -419,24 +678,13 @@ public class Tela extends JFrame {
 		return( true );
 	}
 
-	public void AOPRESSIONARTecla( KeyEvent e ) {
-		if( e.isControlDown() && e.getKeyCode() == KeyEvent.VK_I && e.getID() == KeyEvent.KEY_PRESSED ) {
-			if( this.console.isVisible() ) {
-				this.console.setVisible( false );
-			}
-			else {
-				this.console.setVisible( true );
-			}
-		}
-	}
-
 	private void iniciarConsole() {
 		this.console = new FrameConsole();
 		this.console.setVisible( false );
 		this.console.setTitle( "Console" );
 	}
 
-	public void mudarEstado( String pEstado ) {
+	public void mudarEstado( final String pEstado ) {
 		boolean estado = true;
 
 		if( pEstado.equals( "EDICAO" ) ) {
@@ -457,7 +705,7 @@ public class Tela extends JFrame {
 				lblHora.setText( hora.format( new Date() ) );
 				setDataPainel( obterData( "" ) );
 				if( tarefaAtual != null ) {
-					setLblTotalPr( tarefaAtual.getCronometro() );
+					setLblTotalTarefa( tarefaAtual.getCronometro() );
 				}
 			}
 		};
@@ -522,20 +770,6 @@ public class Tela extends JFrame {
 		this.txfCodigo = new JTextField();
 		this.txfCodigo.setBounds( 105, 10, 90, 21);
 		this.txfCodigo.setFont( new Font( "Monospaced", 0, 12 ) );
-		this.txfCodigo.addKeyListener( new KeyAdapter() {
-			@Override
-			public void keyPressed( KeyEvent kev ) {
-				if( kev.getKeyCode() == KeyEvent.VK_ENTER ) {
-					txfNome.requestFocus();
-				}
-			}
-		});
-		this.txfCodigo.addFocusListener( new FocusAdapter() {
-			@Override
-			public void focusGained( FocusEvent fe ) {
-				txfCodigo.selectAll();
-			}
-		});
 
 		this.lblNome = new JLabel( "Descrição:" );
 		this.lblNome.setHorizontalAlignment( JLabel.RIGHT );
@@ -545,20 +779,6 @@ public class Tela extends JFrame {
 		this.txfNome = new JTextField();
 		this.txfNome.setBounds( 105, 36, 300, 21);
 		this.txfNome.setFont( new Font( "Monospaced", 0, 12 ) );
-		this.txfNome.addKeyListener( new KeyAdapter() {
-			@Override
-			public void keyPressed( KeyEvent kev ) {
-				if( kev.getKeyCode() == KeyEvent.VK_ENTER ) {
-					txfSolicitante.requestFocus();
-				}
-			}
-		});
-		this.txfNome.addFocusListener( new FocusAdapter() {
-		@Override
-			public void focusGained( FocusEvent fe ) {
-				txfNome.selectAll();
-			}
-		});
 
 		this.lblSolicitante = new JLabel( "Solicitante:" );
 		this.lblSolicitante.setHorizontalAlignment( JLabel.RIGHT );
@@ -568,20 +788,6 @@ public class Tela extends JFrame {
 		this.txfSolicitante = new JTextField();
 		this.txfSolicitante.setBounds( 105, 62, 120, 21);
 		this.txfSolicitante.setFont( new Font( "Monospaced", 0, 12 ) );
-		this.txfSolicitante.addKeyListener( new KeyAdapter() {
-			@Override
-			public void keyPressed( KeyEvent kev ) {
-				if( kev.getKeyCode() == KeyEvent.VK_ENTER ) {
-					txfObs.requestFocus();
-				}
-			}
-		});
-		this.txfSolicitante.addFocusListener( new FocusAdapter() {
-			@Override
-			public void focusGained( FocusEvent fe ) {
-				txfSolicitante.selectAll();
-			}
-		});
 
 		this.lblObs = new JLabel( "Obs:" );
 		this.lblObs.setHorizontalAlignment( JLabel.RIGHT );
@@ -591,133 +797,56 @@ public class Tela extends JFrame {
 		this.txfObs = new JTextField();
 		this.txfObs.setBounds( 105, 88, 500, 21);
 		this.txfObs.setFont( new Font( "Monospaced", 0, 12 ) );
-		this.txfObs.addKeyListener( new KeyAdapter() {
-			@Override
-			public void keyPressed( KeyEvent kev ) {
-				if( kev.getKeyCode() == KeyEvent.VK_ENTER ) {
-					comandoTela = "ADICIONAR_TAREFA";
-				}
-			}
-		});
-		this.txfObs.addFocusListener( new FocusAdapter() {
-			@Override
-			public void focusGained( FocusEvent fe ) {
-				txfObs.selectAll();
-			}
-		});
 
 		this.btnTray = new JButton( "Tray" );
 		this.btnTray.setBounds( 650, 10, 100, 30 );
 		this.btnTray.setToolTipText( "Enviar para o system tray" );
 		this.btnTray.setFocusable( false );
-		this.btnTray.addActionListener( new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed( java.awt.event.ActionEvent evt ) {
-				btnTrayActionPerformed(evt);
-			}
-		});
 
-		this.btnMSSQL = new JButton( new ImageIcon( getClass().getResource( "sql.png" ) ) );
+		this.btnMSSQL = new JButton();
 		this.btnMSSQL.setBounds( 650, 45, 45, 30 );
 		this.btnMSSQL.setToolTipText( "Abrir SQL Server conectando no portal selecionado" );
 		this.btnMSSQL.setFocusable( false );
-		this.btnMSSQL.addActionListener( new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed( java.awt.event.ActionEvent evt ) {
-				iniciarSQLServer();
-			}
-		});
 
-		this.btnERP = new JButton( new ImageIcon( getClass().getResource( "erp.png" ) ) );
+		this.btnERP = new JButton();
 		this.btnERP.setBounds( 700, 45, 45, 30 );
 		this.btnERP.setToolTipText( "<HTML>Click NORMAL para CORRECAO<BR>Click DO MEIO para PRODUCAO</HTML>" );
 		this.btnERP.setFocusable( false );
-		this.btnERP.addMouseListener( new MouseAdapter() {
-			@Override
-			public void mouseClicked( MouseEvent e ) {
-				switch( e.getButton() ) {
-					case 1: { iniciarERP( "CORRECAO" ); break; }
-					case 2: { iniciarERP( "PRODUCAO" ); }
-				}
-			}
-		});
 
 		this.btnAdd = new JButton( "Adicionar" );
 		this.btnAdd.setBounds( 650, 83, 100, 30 );
 		this.btnAdd.setFont( new Font( "Verdana", 0, 12 ) );
 		this.btnAdd.setToolTipText( "Adiciona o Tarefa ao GRID." );
-		this.btnAdd.addActionListener( new ActionListener() {
-			@Override
-			public void actionPerformed( ActionEvent e ) {
-				comandoTela = "ADICIONAR_TAREFA";
-			}
-		});
 
-		this.btnContinuar = new JButton( new ImageIcon( getClass().getResource( "play.png" ) ) );
+		this.btnContinuar = new JButton();
 		this.btnContinuar.setText( "Iniciar" );
 		this.btnContinuar.setBounds( 169, 140, 144, 30); // y = 135 + 5
 		this.btnContinuar.setFont( new Font( "Verdana", 0, 12 ) );
 		this.btnContinuar.setToolTipText( "Continua a contagem da tarefa selecionada." );
-		this.btnContinuar.addActionListener( new ActionListener() {
-			@Override
-			public void actionPerformed( ActionEvent e ) {
-				comandoTela = "CONTINUAR";
-			}
-		});
 
-		this.btnParar = new JButton( new ImageIcon( getClass().getResource( "pause.png" ) ) );
+		this.btnParar = new JButton();
 		this.btnParar.setText( "Parar" );
 		this.btnParar.setBounds( 20, 140, 144, 30 ); // y = 135 + 5
 		this.btnParar.setFont( new Font( "Verdana", 0, 12 ) );
 		this.btnParar.setToolTipText( "Para a contagem da tarefa selecionada." );
-		this.btnParar.addActionListener( new ActionListener() {
-			@Override
-			public void actionPerformed( ActionEvent e ) {
-				comandoTela = "PARAR";
-			}
-		});
 
 		this.btnExcluir = new JButton( "Excluir ");
 		this.btnExcluir.setBounds( 318, 140, 144, 30 ); // y = 135 + 5
 		this.btnExcluir.setFont( new Font( "Verdana", 0, 12 ) );
 		this.btnExcluir.setToolTipText( "Exclui a tarefa selecionada." );
-		this.btnExcluir.addActionListener( new ActionListener() {
-			@Override
-			public void actionPerformed( ActionEvent e ) {
-				comandoTela = "EXCLUIR";
-			}
-		});
 
 		this.btnAlterar = new JButton( "Alterar" );
 		this.btnAlterar.setBounds( 616, 140, 144, 30 );
 		this.btnAlterar.setFont( new Font( "Verdana", 0, 12 ) );
-		this.btnAlterar.addActionListener( new ActionListener() {
-			@Override
-			public void actionPerformed( ActionEvent e ) {
-				comandoTela = "ALTERAR";
-			}
-		});
 
 		this.btnExportar = new JButton( "Exportar" );
 		this.btnExportar.setBounds( 576, 10, 144, 30 );
 		this.btnExportar.setFont( new Font( "Verdana", 0, 12 ) );
 		this.btnExportar.setToolTipText( "Exporta para um arquivo CSV." );
-		this.btnExportar.addActionListener( new ActionListener() {
-			@Override
-			public void actionPerformed( ActionEvent e ) {
-				comandoTela = "EXPORTAR";
-			}
-		});
 
 		this.btnCancelar = new JButton( "Cancelar" );
 		this.btnCancelar.setBounds( 467, 140, 144, 30 );
 		this.btnCancelar.setFont( new Font( "Verdana", 0, 12 ) );
-		this.btnCancelar.addActionListener( new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				comandoTela = "CANCELAR";
-			}
-		});
 
 		this.pnlContador = new JPanel();
 		this.pnlContador.setBounds( 20, 170, 740, 120 );
@@ -735,9 +864,9 @@ public class Tela extends JFrame {
 		this.lblTempoDecorrido.setFont( new Font( "Verdana", 0, 12 ) );
 		this.lblTempoDecorrido.setHorizontalAlignment( JLabel.RIGHT );
 
-		this.lblTotalPr = new JLabel();
-		this.lblTotalPr.setBounds( 130, 15, 115, 21 );
-		this.lblTotalPr.setFont( new Font( "Verdana", 0, 12 ) );
+		this.lblTotalTarefa = new JLabel();
+		this.lblTotalTarefa.setBounds( 130, 15, 115, 21 );
+		this.lblTotalTarefa.setFont( new Font( "Verdana", 0, 12 ) );
 
 		this.lblTempoTodos = new JLabel( "Tempo Total:" );
 		this.lblTempoTodos.setBounds( 10, 45, 115, 21 );
@@ -758,18 +887,12 @@ public class Tela extends JFrame {
 		this.lblExportarPara.setHorizontalAlignment( JLabel.RIGHT );
 		this.lblExportarPara.setFont( new Font( "Verdana", 0, 12 ) );
 
-		this.txfDiretorio = new JTextField();
+		this.txfDiretorio = new JTextField( (OS.isWindows())? System.getProperty( "user.home" ) + "\\Desktop\\" : System.getProperty( "user.home" ) + "/" );
 		this.txfDiretorio.setBounds( 130, 15, 400, 21 );
 		this.txfDiretorio.setFont( new Font( "Monospaced", 0, 12 ) );
 
 		this.btnProcurarDiretorio = new JButton();
 		this.btnProcurarDiretorio.setBounds( 535, 15, 21, 21 );
-		this.btnProcurarDiretorio.addActionListener( new ActionListener() {
-			@Override
-			public void actionPerformed( ActionEvent e ) {
-				comandoTela = "PROCURAR_DIRETORIO";
-			}
-		});
 
 		this.lblNomeArquivo = new JLabel( "Nome do arquivo:" );
 		this.lblNomeArquivo.setBounds( 10, 45, 115, 21 );
@@ -777,7 +900,7 @@ public class Tela extends JFrame {
 		this.lblNomeArquivo.setFont( new Font( "Verdana", 0, 12 ) );
 
 		this.txfNomeArquivo = new JTextField();
-		DateFormat df = new SimpleDateFormat( "yyyy_MM_dd" );
+		final DateFormat df = new SimpleDateFormat( "yyyy_MM_dd" );
 		this.txfNomeArquivo.setText( "Tarefas_" + df.format( new Date() ) + ".csv" );
 		this.txfNomeArquivo.setText( txfNomeArquivo.getText() );
 		this.txfNomeArquivo.setBounds( 130, 45, 200, 21 );
@@ -789,28 +912,13 @@ public class Tela extends JFrame {
 		this.pnlEvolucao.setName( "Evolução" );
 		this.pnlEvolucao.setBorder( BorderFactory.createEtchedBorder() );
 
-		this.btnMiniSQL = new JButton( new ImageIcon( getClass().getResource( "sql16.png" ) ) );
+		this.btnMiniSQL = new JButton();
 		this.btnMiniSQL.setBounds( 10, 15, 21, 21 );
 		this.btnMiniSQL.setFocusable( false );
-		this.btnMiniSQL.addActionListener( new ActionListener() {
-			@Override
-			public void actionPerformed( java.awt.event.ActionEvent evt ) {
-				iniciarSQLServer();
-			}
-		});
 
-		this.btnMiniERP = new JButton( new ImageIcon( getClass().getResource( "erp16.png" ) ) );
+		this.btnMiniERP = new JButton();
 		this.btnMiniERP.setBounds( 35, 15, 21, 21 );
 		this.btnMiniERP.setFocusable( false );
-		this.btnMiniERP.addMouseListener( new MouseAdapter() {
-			@Override
-			public void mouseClicked( MouseEvent e ) {
-				switch( e.getButton() ) {
-					case 1: { iniciarERP( "CORRECAO" ); break; }
-					case 2: { iniciarERP( "PRODUCAO" ); }
-				}
-			}
-		});
 
 		this.lblTarefa = new JLabel( "Tarefa: " );
 		this.lblTarefa.setHorizontalAlignment( JLabel.RIGHT );
@@ -820,15 +928,6 @@ public class Tela extends JFrame {
 		this.txfCodTarefa = new JTextField( "" );
 		this.txfCodTarefa.setFont( new Font( "Verdana", 0, 12 ) );
 		this.txfCodTarefa.setBounds( 120, 15, 100, 21 );
-		this.txfCodTarefa.addKeyListener( new KeyAdapter(){
-			@Override
-			public void keyPressed( KeyEvent ke ){
-				if( ke.getKeyCode() == KeyEvent.VK_ENTER ){
-					lblDescrTarefa.setText( "" );
-					carregarPaginaEvolucao();
-				}
-			}
-		});
 
 		this.lblDescrTarefa = new JLabel( "" );
 		this.lblDescrTarefa.setFont( new Font( "Verdana", 0, 12 ) );
@@ -846,7 +945,7 @@ public class Tela extends JFrame {
 		this.scrollPane = new JScrollPane( pnlParse );
 		this.scrollPane.setBounds( 10, 40, 740, 460 );
 
-		JScrollBar bar = scrollPane.getVerticalScrollBar();
+		final JScrollBar bar = scrollPane.getVerticalScrollBar();
 		bar.setUnitIncrement( 40 );
 
 		this.getContentPane().add( this.pnlSuperior, null );
@@ -876,20 +975,6 @@ public class Tela extends JFrame {
 		this.txfTarefaBuscar = new JTextField();
 		this.txfTarefaBuscar.setBounds( 105, 10, 90, 21);
 		this.txfTarefaBuscar.setFont( new Font( "Monospaced", 0, 12 ) );
-		this.txfTarefaBuscar.addKeyListener( new KeyAdapter() {
-			@Override
-			public void keyPressed( KeyEvent kev ) {
-				if( kev.getKeyCode() == KeyEvent.VK_ENTER ) {
-					dtcPeriodoInicial.requestFocus();
-				}
-			}
-		});
-		this.txfTarefaBuscar.addFocusListener( new FocusAdapter() {
-			@Override
-			public void focusGained( FocusEvent fe ) {
-				txfTarefaBuscar.selectAll();
-			}
-		});
 
 		this.lblPeriodoBuscar = new JLabel( "Período" );
 		this.lblPeriodoBuscar.setHorizontalAlignment( JLabel.RIGHT );
@@ -899,14 +984,6 @@ public class Tela extends JFrame {
 		this.dtcPeriodoInicial = new JDateChooser();
 		this.dtcPeriodoInicial.setBounds( 105, 35, 90, 21);
 		this.dtcPeriodoInicial.setFont( new Font( "Monospaced", 0, 12 ) );
-		this.dtcPeriodoInicial.addKeyListener( new KeyAdapter() {
-			@Override
-			public void keyPressed( KeyEvent kev ) {
-				if( kev.getKeyCode() == KeyEvent.VK_ENTER ) {
-					dtcPeriodoFinal.requestFocus();
-				}
-			}
-		});
 
 		this.lblA = new JLabel( "à" );
 		this.lblA.setHorizontalAlignment( JLabel.CENTER );
@@ -916,14 +993,6 @@ public class Tela extends JFrame {
 		this.dtcPeriodoFinal = new JDateChooser();
 		this.dtcPeriodoFinal.setBounds( 235, 35, 90, 21);
 		this.dtcPeriodoFinal.setFont( new Font( "Monospaced", 0, 12 ) );
-		this.dtcPeriodoFinal.addKeyListener( new KeyAdapter() {
-			@Override
-			public void keyPressed( KeyEvent kev ) {
-				if( kev.getKeyCode() == KeyEvent.VK_ENTER ) {
-					//txfNome.requestFocus();
-				}
-			}
-		});
 
 		this.lblStatusBuscar = new JLabel( "Status:" );
 		this.lblStatusBuscar.setHorizontalAlignment( JLabel.RIGHT );
@@ -947,7 +1016,7 @@ public class Tela extends JFrame {
 		this.rbtEmAndamento.setBounds( 440, 60, 160, 21 );
 		this.rbtEmAndamento.setFont( new Font( "Verdana", 0, 12 ) );
 
-		ButtonGroup bg = new ButtonGroup();
+		final ButtonGroup bg = new ButtonGroup();
 		bg.add( this.rbtTodos );
 		bg.add( this.rbtFinalizados );
 		bg.add( this.rbtNaoFinalizados );
@@ -966,12 +1035,6 @@ public class Tela extends JFrame {
 		this.btnBuscar.setBounds( 610, 55, 100, 30 );
 		this.btnBuscar.setToolTipText( "Buscar Tarefas" );
 		this.btnBuscar.setFocusable( false );
-		this.btnBuscar.addActionListener( new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed( java.awt.event.ActionEvent evt ) {
-				comandoTela = "BUSCAR";
-			}
-		});
 
 		this.pnlResultado = new JPanel();
 		this.pnlResultado.setBounds( 10, 125, pnlBuscar.getWidth()-60, pnlBuscar.getHeight()-195 );
@@ -982,30 +1045,18 @@ public class Tela extends JFrame {
 		this.btnReativarBusca.setBounds( 20, pnlResultado.getHeight()+135, 150, 30 );
 		this.btnReativarBusca.setToolTipText( "Reativa as Tarefas selecionadas" );
 		this.btnReativarBusca.setFocusable( false );
-		this.btnReativarBusca.addActionListener( new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed( java.awt.event.ActionEvent evt ) {
-				comandoTela = "REATIVAR";
-			}
-		});
 
 		this.btnExcluirBusca = new JButton( "Excluir Selecionadas" );
 		this.btnExcluirBusca.setBounds( 190, pnlResultado.getHeight()+135, 150, 30 );
 		this.btnExcluirBusca.setToolTipText( "Excluir do sistema as Tarefas selecionadas" );
 		this.btnExcluirBusca.setFocusable( false );
-		this.btnExcluirBusca.addActionListener( new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed( java.awt.event.ActionEvent evt ) {
-				comandoTela = "EXCLUIR_SELECAO";
-			}
-		});
 
 		this.pnlAnotacoes = new JPanel();
 		this.pnlAnotacoes.setBounds( 0, 0, 800, 520 );
 		this.pnlAnotacoes.setLayout( null );
 		this.pnlAnotacoes.setName( "Anotações" );
 		this.pnlAnotacoes.setBorder( BorderFactory.createEtchedBorder() );
-		
+
 		this.lblCaracteres = new JLabel( "0 Caracteres Restantes" );
 		this.lblCaracteres.setBounds( 10, 10, 350, 21 );
 		this.lblCaracteres.setFont( new Font( "Verdana", 0, 12 ) );
@@ -1024,7 +1075,7 @@ public class Tela extends JFrame {
 		this.scrollPaneAnotacoes = new JScrollPane( txaAnotacoes );
 		this.scrollPaneAnotacoes.setBounds( 10, 40, 740, 460 );
 
-		JScrollBar bar2 = scrollPaneAnotacoes.getVerticalScrollBar();
+		final JScrollBar bar2 = scrollPaneAnotacoes.getVerticalScrollBar();
 		bar2.setUnitIncrement( 40 );
 
 	    this.containerCampos.add( this.lblCodigo );
@@ -1048,7 +1099,7 @@ public class Tela extends JFrame {
 		this.pnlInferior.add( this.pnlContador );
 		this.pnlInferior.add( this.pnlTempoDecorrido );
         this.pnlTempoDecorrido.add( this.lblTempoDecorrido );
-        this.pnlTempoDecorrido.add( this.lblTotalPr );
+        this.pnlTempoDecorrido.add( this.lblTotalTarefa );
         this.pnlTempoDecorrido.add( this.lblTempoTodos );
         this.pnlTempoDecorrido.add( this.lblTotalTempo );
 		this.pnlInferior.add( this.pnlExportar );
@@ -1106,14 +1157,10 @@ public class Tela extends JFrame {
 		this.tbpPainelAbas.setTabComponentAt(3, lblTab4);
 	}
 
-	private void iniciarPrograma( String pNomeCidade ) {
+	private void iniciarPrograma( final String pNomeCidade ) {
 		setDataPainel( obterData( pNomeCidade ) );
 		this.relogio.start();
 		habilitarBotoes( false );
-
-		// coloca o diretorio do desktop no caminho para exportar
-		String home = System.getProperty( "user.home" );
-		setTxfDiretorio( (OS.isWindows())? home + "\\Desktop\\" : home + "/" );
 	}
 
 	private void iniciarSQLServer() {
@@ -1203,21 +1250,10 @@ public class Tela extends JFrame {
 		});
 	}
 
-	private void btnTrayActionPerformed(java.awt.event.ActionEvent evt) {
-		try {
-			tray.add( trayIcon );
-			setVisible( false );
-			setExtendedState( JFrame.MAXIMIZED_BOTH );
-		}
-		catch( AWTException ex ){
-			System.out.println( "ERRO: AWTException: " + ex.getLocalizedMessage() );
-		}
-	}
-
 	private void criarModel() {
 		this.contadorTable = new JTable();
 		this.contadorModel = new TarefaModel();
-		this.contadorTable.setModel(contadorModel);
+		this.contadorTable.setModel( contadorModel );
 
 		this.contadorTable.setShowGrid(false);
 		this.contadorTable.getTableHeader().setReorderingAllowed( false );
@@ -1282,47 +1318,6 @@ public class Tela extends JFrame {
 		this.contadorTable.setDefaultRenderer( String.class, new RRenderer() );
 		this.contadorTable.setDefaultRenderer( Character.class, new RRenderer() );
 
-		// Adiciona evento para clique do link da tarefa
-		this.contadorTable.addMouseListener( new MouseAdapter() {
-			@Override
-			public void mouseClicked( MouseEvent e ) {
-				int linha = contadorTable.rowAtPoint( new Point( e.getX(), e.getY() ) );
-				int coluna = contadorTable.columnAtPoint( new Point( e.getX(), e.getY() ) );
-				String conteudoCelula = (String) contadorTable.getValueAt( linha, coluna );
-
-				if( conteudoCelula == null || conteudoCelula.isEmpty() || coluna > 0 ) {
-					return;
-				}
-
-				try {
-					final URI uri = new URI( "http://a-srv63/suporte/followup_find.asp?OBJETO_ID=" + conteudoCelula );
-					if( Desktop.isDesktopSupported() ) {
-						try {
-							Desktop.getDesktop().browse( uri );
-						}
-						catch( IOException ie ) {}
-					}
-				}
-				catch( URISyntaxException ex ) {}
-			}
-
-			@Override
-			public void mouseEntered( MouseEvent e ) {
-				int coluna = contadorTable.columnAtPoint( new Point( e.getX(), e.getY() ) );
-				if( coluna == 0 ) {
-					contadorTable.setCursor( new Cursor( Cursor.HAND_CURSOR ) );
-				}
-			}
-
-			@Override
-			public void mouseExited( MouseEvent e ) {
-				int coluna = contadorTable.columnAtPoint( new Point( e.getX(), e.getY() ) );
-				if( coluna > 0 ) {
-					contadorTable.setCursor( new Cursor( Cursor.DEFAULT_CURSOR ) );
-				}
-			}
-		});
-
 		this.popm = new JPopupMenu();
 
 		JMenuItem menuItem = new JMenuItem( "Finalizar Atendimento" );
@@ -1340,48 +1335,39 @@ public class Tela extends JFrame {
 		((DefaultTableCellRenderer)contadorTable.getTableHeader().getDefaultRenderer()).setHorizontalAlignment( JLabel.CENTER );
 	}
 
-	public void AOPRESSIONARSetas(KeyEvent ke) {
-		if( ke.getKeyCode() == KeyEvent.VK_DOWN ) {
-			this.comandoTela = "CARREGAR_PROXIMA_LINHA";
-		}
-		else if( ke.getKeyCode() == KeyEvent.VK_UP ) {
-			this.comandoTela = "CARREGAR_LINHA_ANTERIOR";
-		}
+	public void habilitarBotoes( final boolean simOuNao ) {
+		this.btnContinuar.setEnabled( simOuNao );
+		this.btnParar.setEnabled( simOuNao );
+		habilitarExcluir( simOuNao );
+		this.btnAlterar.setEnabled( simOuNao );
 	}
 
-	public void habilitarBotoes( boolean sim ) {
-		this.btnContinuar.setEnabled( sim );
-		this.btnParar.setEnabled( sim );
-		this.btnExcluir.setEnabled( sim );
-		this.btnAlterar.setEnabled( sim );
+	public void habilitarContinuar( final boolean simOuNao ) {
+		this.btnContinuar.setEnabled( !simOuNao );
+		this.btnParar.setEnabled( simOuNao );
 	}
 
-	public void habilitarContinuar( boolean pHab ) {
-		this.btnContinuar.setEnabled( !pHab );
-		this.btnParar.setEnabled( pHab );
+	public void habilitarBotaoInserir( final boolean simOuNao ) {
+		this.btnAdd.setEnabled( simOuNao );
 	}
 
-	public void habilitarBotaoInserir( boolean sim ) {
-		this.btnAdd.setEnabled( sim );
+	public void habilitarExcluir( final boolean simOuNao ) {
+		this.btnExcluir.setEnabled( simOuNao );
 	}
 
-	public void habilitarExcluir( boolean sim ) {
-		this.btnExcluir.setEnabled( sim );
-	}
-
-	private String obterData( String pNomeCidade ) {
+	private String obterData( final String pNomeCidade ) {
 		String cidade = "";
 
 		if( !pNomeCidade.isEmpty() ) {
 			cidade = pNomeCidade + ", ";
 		}
 
-		DateFormat dia = new SimpleDateFormat( "dd" );
-		DateFormat mes = new SimpleDateFormat( "MMMM" );
-		DateFormat ano = new SimpleDateFormat( "yyyy" );
-		DateFormat hora = new SimpleDateFormat( "HH" );
+		final DateFormat dia = new SimpleDateFormat( "dd" );
+		final DateFormat mes = new SimpleDateFormat( "MMMM" );
+		final DateFormat ano = new SimpleDateFormat( "yyyy" );
+		final DateFormat hora = new SimpleDateFormat( "HH" );
 
-		Date dataAtual = new Date();
+		final Date dataAtual = new Date();
 
 		String saudacao = (Integer.parseInt(String.valueOf( hora.format( dataAtual ))) <= 12)? "Bom dia!" : "Boa tarde!";
 
@@ -1410,11 +1396,20 @@ public class Tela extends JFrame {
 		setTxfNome( "" );
 		setTxfSolicitante( "" );
 		setTxfObs( "" );
-		this.txfCodTarefa.setText( "" );
-		this.pnlParse.setText( "" );
-		this.lblCaracteres.setText( "0 Caracteres Restantes" );
-		this.txaAnotacoes.setText( "" );
+		setTxfCodTarefa( "" );
+		setPnlParse( "" );
+		setLblCaracteres( "0 Caracteres Restantes" );
+		setTxaAnotacoes( "" );
+
 		this.txaAnotacoes.setEditable( false );
+	}
+
+	public String getPnlParse() {
+		return( this.pnlParse.getText() );
+	}
+
+	public String getTxfCodTarefa() {
+		return( this.txfCodTarefa.getText() );
 	}
 
 	public String getTxfCodigo() {
@@ -1433,25 +1428,37 @@ public class Tela extends JFrame {
 		return( this.txfObs.getText() );
 	}
 
-	public void setTxfCodigo( String codParam ) {
+	public void setLblCaracteres( final String pLabel ) {
+		this.lblCaracteres.setText( pLabel );
+	}
+
+	public void setPnlParse( final String pTexto ) {
+		this.pnlParse.setText( pTexto );
+	}
+
+	public void setTxfCodTarefa( final String pCodTarefa ) {
+		this.txfCodTarefa.setText( pCodTarefa );
+	}
+
+	public void setTxfCodigo( final String codParam ) {
 		this.txfCodigo.setText( codParam );
 		this.txfCodTarefa.setText( codParam );
 	}
 
-	public void setTxfNome( String nomeParam ) {
+	public void setTxfNome( final String nomeParam ) {
 		this.txfNome.setText( nomeParam );
 		this.lblDescrTarefa.setText( nomeParam );
 	}
 
-	public void setTxfSolicitante( String pSolicitante ) {
+	public void setTxfSolicitante( final String pSolicitante ) {
 		this.txfSolicitante.setText( pSolicitante );
 	}
 
-	public void setTxfObs( String obsParam ) {
+	public void setTxfObs( final String obsParam ) {
 		this.txfObs.setText( obsParam );
 	}
 
-	public void setTxfDiretorio( String dirParam ) {
+	public void setTxfDiretorio( final String dirParam ) {
 		txfDiretorio.setText( dirParam );
 	}
 
@@ -1459,7 +1466,7 @@ public class Tela extends JFrame {
 		return( txfDiretorio.getText() );
 	}
 
-	public void setTxfNomeArquivo( String nomeParam ) {
+	public void setTxfNomeArquivo( final String nomeParam ) {
 		txfNomeArquivo.setText( nomeParam );
 	}
 
@@ -1475,37 +1482,37 @@ public class Tela extends JFrame {
 		return( this.lblData.getText() );
 	}
 
-	public void setDataPainel( String lblParam ) {
+	public void setDataPainel( final String lblParam ) {
 		this.lblData.setText( lblParam );
 	}
 
-	public void addTarefa( Tarefa TarefaParam ) {
-		this.contadorModel.addLinha( TarefaParam );
+	public void addTarefa( final Tarefa pTarefa ) {
+		this.contadorModel.addLinha( pTarefa );
 	}
 
 	public void limparTarefas() {
 		this.contadorModel.limpar();
 	}
 
-	public void setLblTotalPr( String param ) {
-		this.lblTotalPr.setText( param );
+	public void setLblTotalTarefa( final String param ) {
+		this.lblTotalTarefa.setText( param );
 	}
 
-	public void setLblTotalTempo( String param ) {
+	public void setLblTotalTempo( final String param ) {
 		this.lblTotalTempo.setText( param );
 	}
 
 	public void limparTempoDecorrido() {
-		this.lblTotalPr.setText( "" );
-		this.lblTotalTempo.setText( "" );
+		setLblTotalTarefa( "" );
+		setLblTotalTempo( "" );
 	}
 
-	public void setTarefa( Tarefa dParam ) {
-		this.tarefaAtual = dParam;
+	public void setTarefa( final Tarefa pTarefa ) {
+		this.tarefaAtual = pTarefa;
 
-		if( dParam != null ) {
+		if( pTarefa != null ) {
 			this.txaAnotacoes.setEditable( true );
-			this.lblCaracteres.setText( String.valueOf( 5000 - dParam.getAnotacoes().length() ) + " Caracteres Restantes" );
+			setLblCaracteres( String.valueOf( 5000 - pTarefa.getAnotacoes().length() ) + " Caracteres Restantes" );
 		}
 	}
 
@@ -1513,13 +1520,13 @@ public class Tela extends JFrame {
 		return( this.tarefaAtual );
 	}
 
-	public void carregarTarefaPosicaoA( Tarefa pDia, char pPosicao ) {
-		Collection<Tarefa> dList = this.contadorModel.getLinhas();
+	public void carregarTarefaPosicao( final Tarefa pTarefa, final char pPosicao ) {
+		Collection<Tarefa> tarefaList = this.contadorModel.getLinhas();
 		int contador = 0;
 
-		if( dList != null && !dList.isEmpty() ) {
-			for( Tarefa d : dList ) {
-				if( pDia.equals( d ) ) {
+		if( tarefaList != null && !tarefaList.isEmpty() ) {
+			for( Tarefa d : tarefaList ) {
+				if( pTarefa.equals( d ) ) {
 					break;
 				}
 				contador++;
@@ -1566,7 +1573,7 @@ public class Tela extends JFrame {
 		this.btnAlterar.setEnabled( true );
 	}
 
-	private String replaceAcentosHTML( String pLinha ) {
+	private String replaceAcentosHTML( final String pLinha ) {
 		if( !pLinha.contains( "&" ) ) {
 			return( pLinha );
 		}
@@ -1599,7 +1606,7 @@ public class Tela extends JFrame {
 		return( replaceAcentosHTML( retorno ) );
 	}
 
-	private String parseHTML( ArrayList<String> pHTMLList, boolean pTarefa ) {
+	private String parseHTML( final ArrayList<String> pHTMLList, final boolean pTarefa ) {
 		boolean tableEncontrado = false;
 		StringBuilder result = new StringBuilder();
 		for( String linha : pHTMLList ) {
@@ -1663,7 +1670,7 @@ public class Tela extends JFrame {
 		return( result.toString() );
 	}
 
-	public String removerEspacos( String pLinha ) {
+	public String removerEspacos( final String pLinha ) {
 		String retorno = "";
 
 		for( int i=2; i<=pLinha.length()-1; i++ ) {
@@ -1676,12 +1683,20 @@ public class Tela extends JFrame {
 		return( retorno );
 	}
 
+	private void setCursorOcupado() {
+		getComponent( 0 ).setCursor( Cursor.getPredefinedCursor( Cursor.WAIT_CURSOR ) );
+	}
+
+	private void setCursorLivre() {
+		getComponent( 0 ).setCursor( Cursor.getDefaultCursor() );
+	}
+
 	public void carregarPaginaEvolucao() {
 		URL url = null;
 		BufferedReader in = null;
 
 		if( this.txfCodTarefa.getText().isEmpty() ) {
-			this.pnlParse.setText( "" );
+			setPnlParse( "" );
 			return;
 		}
 
@@ -1702,10 +1717,10 @@ public class Tela extends JFrame {
 		}
 
 		String linha;
-		ArrayList<String> linhas = new ArrayList<String>();
+		final ArrayList<String> linhas = new ArrayList<String>();
 
 		try {
-			getComponent(0).setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+			setCursorOcupado();
 
 			while( (linha = in.readLine()) != null ) {
 				linhas.add( linha );
@@ -1715,14 +1730,15 @@ public class Tela extends JFrame {
 		}
 		catch( IOException e ) {
 			System.out.println( "IOException: " + e.getMessage() );
+			return;
 		}
 
 		linha = parseHTML( linhas, true );
 		linha = removerEspacos( linha );
 		linha = buscarPortal( linha );
-		this.pnlParse.setText( linha );
+		setPnlParse( linha );
 
-		getComponent(0).setCursor(Cursor.getDefaultCursor());
+		setCursorLivre();
 	}
 
 	private String buscarPortal( String pConteudo ) {
@@ -1787,7 +1803,7 @@ public class Tela extends JFrame {
 		return( resultadoDaBusca );
 	}
 
-	private String lerPaginaPortal( String pPortal ) {
+	private String lerPaginaPortal( final String pPortal ) {
 		URL url = null;
 		BufferedReader in = null;
 
@@ -1796,10 +1812,6 @@ public class Tela extends JFrame {
 		}
 		catch( Exception e ) {
 			System.out.println( "Exception: " + e.getMessage() );
-		}
-
-		if( url == null ) {
-			System.out.println( "URL is empty." );
 			return( "" );
 		}
 
@@ -1808,10 +1820,6 @@ public class Tela extends JFrame {
 		}
 		catch( IOException ex ) {
 			System.out.println( "IOException: " + ex.getMessage() );
-		}
-
-		if( in == null ) {
-			System.out.println( "Page reader is empty." );
 			return( "" );
 		}
 
@@ -1819,7 +1827,7 @@ public class Tela extends JFrame {
 		ArrayList<String> linhas = new ArrayList<String>();
 
 		try {
-			getComponent(0).setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+			setCursorOcupado();
 
 			while( (linha = in.readLine()) != null ) {
 				linhas.add( linha );
@@ -1834,22 +1842,19 @@ public class Tela extends JFrame {
 		linha = parseHTML( linhas, false );
 		linha = removerEspacos( linha );
 
-		getComponent(0).setCursor(Cursor.getDefaultCursor());
+		setCursorLivre();
 
 		return( linha );
 	}
 
-	private String buscarEnderecoBDPortal( String pPortal ) {
-		System.out.println( "LOG: Buscando portal: " + pPortal );
+	private String buscarEnderecoBDPortal( final String pPortal ) {
 		String pagina = lerPaginaPortal( pPortal );
 
 		for( String linha : pagina.split("\n" ) ) {
 			if( linha.contains( "10.10.0" ) ) {
-				System.out.println( "LOG: Portal encontrado: " + linha.trim() );
 				return( linha.trim() );
 			}
 		}
-		System.out.println( "LOG: Portal não encontrado!" );
 		return( "" );
 	}
 
@@ -1903,7 +1908,7 @@ public class Tela extends JFrame {
 						}
 					}
 					catch( Exception ex ){
-						System.out.println( "erro: " + ex.getMessage() );
+						System.out.println( "Exception: " + ex.getMessage() );
 					}
 				}
 				return( comp );
@@ -1942,7 +1947,7 @@ public class Tela extends JFrame {
 		((DefaultTableCellRenderer)resultadoTable.getTableHeader().getDefaultRenderer()).setHorizontalAlignment( JLabel.CENTER );
 	}
 
-	public void addTarefaResultado( TarefaResultado t ) {
+	public void addTarefaResultado( final TarefaResultado t ) {
 		this.resultadoModel.addLinha( t );
 	}
 
@@ -1950,22 +1955,26 @@ public class Tela extends JFrame {
 		this.resultadoModel.limpar();
 	}
 
-	public void setTarefasResultado( List<TarefaResultado> list ) {
+	public void setTarefasResultado( final List<TarefaResultado> list ) {
 		this.resultadoModel.setLinhas( list );
 
 		calcularTempos( list );
 	}
 
-	public String getCodigoTarefaBuscar() {
+	public String getTxfTarefaBuscar() {
 		return( this.txfTarefaBuscar.getText() );
 	}
 
-	public Date getDataInicialBuscar() {
+	public Date getDtcPeriodoInicial() {
 		return( this.dtcPeriodoInicial.getDate() );
 	}
 
-	public Date getDataFinalBuscar() {
+	public Date getDtcPeriodoFinal() {
 		return( this.dtcPeriodoFinal.getDate() );
+	}
+
+	public void setLblTemposTotalEMedio( final String pTempo ) {
+		this.lblTemposTotalEMedio.setText( pTempo );
 	}
 
 	public Integer getStatusTarefaBuscar() {
@@ -1995,9 +2004,9 @@ public class Tela extends JFrame {
 		return( list );
 	}
 
-	public void calcularTempos( List<TarefaResultado> pListaTarefas ) {
+	public void calcularTempos( final List<TarefaResultado> pListaTarefas ) {
 		if( pListaTarefas == null || pListaTarefas.isEmpty() ) {
-			this.lblTemposTotalEMedio.setText( "" );
+			setLblTemposTotalEMedio( "" );
 			return;
 		}
 
@@ -2029,17 +2038,17 @@ public class Tela extends JFrame {
 
 		Integer segundosMedia = totalSegundos / pListaTarefas.size();
 
-		this.lblTemposTotalEMedio.setText(
+		setLblTemposTotalEMedio(
 			"Tempo médio: " + TimeHelper.secondsToTime(segundosMedia) +
 			"    Tempo total: " + TimeHelper.secondsToTime(totalSegundos)
 		);
 	}
 
-	public String getAnotacoes() {
+	public String getTxaAnotacoes() {
 		return( this.txaAnotacoes.getText().replaceAll( "\n", "##" ) );
 	}
 
-	public void setAnotacoes( String pAnotacoes ) {
+	public void setTxaAnotacoes( final String pAnotacoes ) {
 		this.txaAnotacoes.setText( pAnotacoes.replaceAll( "##", "\n" ) );
 	}
 

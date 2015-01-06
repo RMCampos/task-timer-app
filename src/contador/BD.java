@@ -36,7 +36,11 @@ public class BD {
 		Class.forName( "org.sqlite.JDBC" );
 		System.out.println( "LOG: Driver: " + getDatabaseURL() );
 		this.connection = DriverManager.getConnection( getDatabaseURL(), "", "" );
-		System.out.println( "LOG: Connection Established!" );
+		System.out.println( "LOG: Database connection established!" );
+	}
+
+	public void setConnection( Connection pConn ) {
+		this.connection = pConn;
 	}
 
 	public Connection getConnection(){
@@ -78,7 +82,7 @@ public class BD {
 				")";
 
 			Statement st = this.connection.createStatement();
-			System.out.println( "SQL: Creating tables.." );
+			System.out.println( "SQL: Creating table ..." );
 
 			System.out.println( "SQL: " + comandoSQL );
 
@@ -90,6 +94,37 @@ public class BD {
 		}
 		catch( SQLException e ) {
 			System.out.println( "SQLException: " + e.getLocalizedMessage() );
+		}
+	}
+
+	public boolean existsDataBase() throws ClassNotFoundException {
+		try {
+			if( this.connection == null ) {
+				conectar();
+			}
+
+			Statement st = this.connection.createStatement();
+
+			String comandoSQL =
+				"SELECT name " +
+				"FROM sqlite_master " +
+				"WHERE type='table' " +
+				"	AND name = 'tarefa'";
+
+			System.out.println( "SQL: Checking table.." );
+
+			ResultSet rs = st.executeQuery( comandoSQL );
+
+			if( rs.next() ) {
+				System.out.println( "SQL: Table exist." );
+				return( true );
+			}
+			System.out.println( "SQL: Table does not exist." );
+			return( false );
+		}
+		catch( SQLException e ) {
+			System.out.println( "SQLException: " + e.getLocalizedMessage() );
+			return( false );
 		}
 	}
 }
