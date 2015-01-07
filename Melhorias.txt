@@ -98,3 +98,8 @@ Descrição: Corrigir bug de data final na busca
 Solicitado por: Ricardo Montania
 Data solicitação: 06/01/2015
 Implementada: Sim [06/01/2015 v12.8]
+---
+Descrição: Informar tempo gasto na TP no grid de busca
+Solicitado por: Ricardo Montania
+Data solicitação: 07/01/2015
+Implementada: Sim [07/01/2015 v12.9]

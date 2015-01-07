@@ -1910,6 +1910,15 @@ public class Tela extends JFrame {
 							String toolTip = t.getDataHoraFinalizacao();
 							((JLabel) comp).setToolTipText( toolTip );
 						}
+						
+						String toolTip = "Tempo decorrido: " + t.getTempoDecorrido();
+						
+						if( ((JLabel) comp).getToolTipText().isEmpty() ) {
+							((JLabel) comp).setToolTipText( toolTip );
+						}
+						else {
+							((JLabel) comp).setToolTipText( "<html>" + ((JLabel) comp).getToolTipText() + "<br>" + toolTip + "</html>" );
+						}
 					}
 					catch( Exception ex ){
 						System.out.println( "Exception: " + ex.getMessage() );
