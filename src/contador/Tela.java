@@ -1581,6 +1581,10 @@ public class Tela extends JFrame {
 		int ini = pLinha.indexOf( "&" );
 		int fim = pLinha.indexOf( ";" );
 
+		if( fim < 0 ) {
+			return( "" );
+		}
+
 		String parte = pLinha.substring( ini, fim+1 );
 		String retorno = pLinha.substring( 0, ini );
 
