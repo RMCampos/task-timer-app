@@ -370,6 +370,8 @@ public class Tela extends JFrame {
 			@Override
 			public void keyPressed( KeyEvent kev ) {
 				if( kev.getKeyCode() == KeyEvent.VK_ENTER ) {
+					setTxfCodTarefa( getTxfCodigo() );
+					carregarPaginaEvolucao( 'S' );
 					txfNome.requestFocus();
 				}
 			}
@@ -518,7 +520,7 @@ public class Tela extends JFrame {
 			public void keyPressed( KeyEvent ke ){
 				if( ke.getKeyCode() == KeyEvent.VK_ENTER ){
 					lblDescrTarefa.setText( "" );
-					carregarPaginaEvolucao();
+					carregarPaginaEvolucao( 'N' );
 				}
 			}
 		});
@@ -609,6 +611,32 @@ public class Tela extends JFrame {
 				}
 			}
 		});
+	}
+
+	private void carregarDadosLidos( String pTexto ) {
+		String tituloTp = "";
+		String solicitanteTp = "";
+		String obsTp = "";
+
+		for( String linha : pTexto.split( "\n" ) ) {
+			if( tituloTp.isEmpty() && linha.contains( "Chamado:" ) ) {
+				tituloTp = linha;
+			}
+			if( solicitanteTp.isEmpty() && linha.contains( "Cadastrado por:" ) ) {
+				solicitanteTp = linha.replaceAll( "Cadastrado por:", "" );
+			}
+			if( obsTp.isEmpty() && linha.contains( "Fim Previsto" ) ) {
+				obsTp = linha;
+			}
+
+			if( !solicitanteTp.isEmpty() ) {
+				break;
+			}
+		}
+
+		setTxfNome( tituloTp );
+		setTxfSolicitante( solicitanteTp );
+		setTxfObs( obsTp );
 	}
 
 	private void ajustarPosicao() {
@@ -1695,11 +1723,11 @@ public class Tela extends JFrame {
 		getComponent( 0 ).setCursor( Cursor.getDefaultCursor() );
 	}
 
-	public void carregarPaginaEvolucao() {
+	public void carregarPaginaEvolucao( final char pCarregarDadosInsercao ) {
 		URL url = null;
 		BufferedReader in = null;
 
-		if( this.txfCodTarefa.getText().isEmpty() ) {
+		if( getTxfCodTarefa().isEmpty() ) {
 			setPnlParse( "" );
 			return;
 		}
@@ -1740,6 +1768,11 @@ public class Tela extends JFrame {
 		linha = parseHTML( linhas, true );
 		linha = removerEspacos( linha );
 		linha = buscarPortal( linha );
+
+		if( pCarregarDadosInsercao == 'S' ) {
+			carregarDadosLidos( linha );
+		}
+
 		setPnlParse( linha );
 
 		setCursorLivre();
@@ -1910,9 +1943,9 @@ public class Tela extends JFrame {
 							String toolTip = t.getDataHoraFinalizacao();
 							((JLabel) comp).setToolTipText( toolTip );
 						}
-						
+
 						String toolTip = "Tempo decorrido: " + t.getTempoDecorrido();
-						
+
 						if( ((JLabel) comp).getToolTipText().isEmpty() ) {
 							((JLabel) comp).setToolTipText( toolTip );
 						}

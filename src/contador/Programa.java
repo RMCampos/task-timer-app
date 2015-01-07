@@ -67,7 +67,7 @@ public class Programa {
 			System.exit( 1 );
 		}
 
-		this.frame.setTitle( "Contador de Tarefas - v12.9 (07/01/2015)" );
+		this.frame.setTitle( "Contador de Tarefas - v12.10 (07/01/2015)" );
 		this.frame.setVisible( true );
 		this.tempoTotal = "00:00:00";
 		this.transacao = 'I';
@@ -398,7 +398,7 @@ public class Programa {
 		this.frame.setLblTotalTarefa( tarefa.getDuracao() );
 		this.frame.setLblTotalTempo( obterTempoTotalDecorrido() );
 		this.frame.habilitarBtnAlterar();
-		this.frame.carregarPaginaEvolucao();
+		this.frame.carregarPaginaEvolucao( 'N' );
 	}
 
 	private String obterTempoTotalDecorrido() {

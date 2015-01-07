@@ -103,3 +103,8 @@ Descrição: Informar tempo gasto na TP no grid de busca
 Solicitado por: Ricardo Montania
 Data solicitação: 07/01/2015
 Implementada: Sim [07/01/2015 v12.9]
+---
+Descrição: Informar apenas o número da TP e o programa buscar o resto
+Solicitado por: Paulo Pinheiro
+Data solicitação: 07/01/2015
+Implementada: Sim [07/01/2015 v12.10]
