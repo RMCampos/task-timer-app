@@ -437,10 +437,13 @@ public class Tela extends JFrame {
 				}
 			}
 		});
-		this.btnMSSQL.addActionListener( new java.awt.event.ActionListener() {
+		this.btnMSSQL.addMouseListener( new MouseAdapter() {
 			@Override
-			public void actionPerformed( java.awt.event.ActionEvent evt ) {
-				iniciarSQLServer();
+			public void mouseClicked( MouseEvent e ) {
+				switch( e.getButton() ) {
+					case 1: { iniciarSQLServer( "SUPORTE" ); break; }
+					case 2: { iniciarSQLServer( "MIC" ); }
+				}
 			}
 		});
 		this.btnERP.addMouseListener( new MouseAdapter() {
@@ -500,10 +503,13 @@ public class Tela extends JFrame {
 				comandoTela = "PROCURAR_DIRETORIO";
 			}
 		});
-		this.btnMiniSQL.addActionListener( new ActionListener() {
+		this.btnMiniSQL.addMouseListener( new MouseAdapter() {
 			@Override
-			public void actionPerformed( ActionEvent evt ) {
-				iniciarSQLServer();
+			public void mouseClicked( MouseEvent e ) {
+				switch( e.getButton() ) {
+					case 1: { iniciarSQLServer( "SUPORTE" ); break; }
+					case 2: { iniciarSQLServer( "MIC" ); }
+				}
 			}
 		});
 		this.btnMiniERP.addMouseListener( new MouseAdapter() {
@@ -1191,7 +1197,7 @@ public class Tela extends JFrame {
 		habilitarBotoes( false );
 	}
 
-	private void iniciarSQLServer() {
+	private void iniciarSQLServer( final String pUsuarioSql ) {
 		SwingUtilities.invokeLater( new Runnable() {
 			@Override
 			public void run() {
@@ -1210,10 +1216,12 @@ public class Tela extends JFrame {
 						try {
 							String tempFolder = System.getenv( "TEMP" );
 							String fileName = tempFolder + "\\temp.sql";
+							String usuario = (pUsuarioSql.equals( "SUPORTE" ))? "usr_suporte" : "mic" + tarefa.getPortal();
+							String senha = (pUsuarioSql.equals( "SUPORTE" ))? "@@#vx3Wt$6v" : "Y87LQ!/m";
 							FileWriter sqlFile = new FileWriter( fileName );
 							sqlFile.write( "USE portal_" + tarefa.getPortal() );
 							sqlFile.close();
-							String comando = "Ssms.exe -S " + tarefa.getEnderecoBD() + " -U usr_suporte -P @@#vx3Wt$6v -nosplash " + fileName;
+							String comando = "Ssms.exe -S " + tarefa.getEnderecoBD() + " -U " + usuario + " -P " + senha + " -nosplash " + fileName;
 							System.out.println( "LOG: Iniciando SQL Server: " + comando);
 							Runtime.getRuntime().exec( comando );
 						}

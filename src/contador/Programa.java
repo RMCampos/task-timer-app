@@ -67,7 +67,7 @@ public class Programa {
 			System.exit( 1 );
 		}
 
-		this.frame.setTitle( "Contador de Tarefas - v12.10 (07/01/2015)" );
+		this.frame.setTitle( "Contador de Tarefas - v12.11 (07/01/2015)" );
 		this.frame.setVisible( true );
 		this.tempoTotal = "00:00:00";
 		this.transacao = 'I';
