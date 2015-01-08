@@ -67,7 +67,7 @@ public class Programa {
 			System.exit( 1 );
 		}
 
-		this.frame.setTitle( "Contador de Tarefas - v12.11 (07/01/2015)" );
+		this.frame.setTitle( "Contador de Tarefas - v13.0 (08/01/2015)" );
 		this.frame.setVisible( true );
 		this.tempoTotal = "00:00:00";
 		this.transacao = 'I';
@@ -249,7 +249,15 @@ public class Programa {
 			querySQL += " AND (" + anotacoes ;
 		}
 
-		this.frame.setTarefasResultado( this.tarefaResultadaoDAO.executarQuery( querySQL ) );
+		ArrayList<TarefaResultado> tList = new ArrayList<>();
+
+		tList.addAll( this.tarefaResultadaoDAO.executarQuery( querySQL ) );
+
+		if( tList.isEmpty() ) {
+			tList.add( new TarefaResultado( "Nenhuma Tarefa Encontrada" ) );
+		}
+
+		this.frame.setTarefasResultado( tList );
 	}
 
 	private void finalizar(){

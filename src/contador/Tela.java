@@ -2059,7 +2059,7 @@ public class Tela extends JFrame {
 	}
 
 	public void calcularTempos( final List<TarefaResultado> pListaTarefas ) {
-		if( pListaTarefas == null || pListaTarefas.isEmpty() ) {
+		if( pListaTarefas == null || pListaTarefas.isEmpty() || pListaTarefas.get(0).getCodigo().isEmpty() ) {
 			setLblTemposTotalEMedio( "" );
 			return;
 		}

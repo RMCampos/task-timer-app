@@ -113,3 +113,8 @@ Descrição: Abrir SQL Server conectado com usuário mic portal
 Solicitado por: Paulo Pinheiro
 Data solicitação: 07/01/2015
 Implementada: Sim [07/01/2015 v12.11]
+---
+Descrição: Mostrar linha "Nenhuma tarefa encontrada" na busca
+Solicitado por: Ricardo Montania
+Data solicitação: 08/01/2015
+Implementada: Sim [08/01/2015 v13.0]

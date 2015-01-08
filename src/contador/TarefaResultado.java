@@ -21,6 +21,16 @@ public class TarefaResultado {
 		this.tempoDecorrido = "";
 	}
 
+	public TarefaResultado( final String pNome ) {
+		this.codigo = "";
+		this.nome = pNome;
+		this.solicitante = "";
+		this.emAndamento = new Character( ' ' );
+		this.finalizada = new Character( ' ' );
+		this.dataHoraFinalizacao = "";
+		this.tempoDecorrido = "";
+	}
+
 	public String getCodigo() {
 		return( this.codigo );
 	}
