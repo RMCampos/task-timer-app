@@ -67,7 +67,7 @@ public class Programa {
 			System.exit( 1 );
 		}
 
-		this.frame.setTitle( "Contador de Tarefas - v13.0 (08/01/2015)" );
+		this.frame.setTitle( "Contador de Tarefas - v13.1 (09/01/2015)" );
 		this.frame.setVisible( true );
 		this.tempoTotal = "00:00:00";
 		this.transacao = 'I';
@@ -279,6 +279,7 @@ public class Programa {
 		catch( SQLException e ){
 			System.out.println( "SQLException: " + e.getMessage() );
 		}
+		cancelar();
 	}
 
 	private void procurarDiretorio() {
@@ -343,6 +344,18 @@ public class Programa {
 		if( this.frame.getTxfCodigo().isEmpty() ) {
 			flValidar = false;
 			strMsg += "->Código da tarefa não informado.\n";
+		}
+		else {
+			try {
+				if( this.tarefaDAO.existeTarefa( this.frame.getTxfCodigo() ) ) {
+					flValidar = false;
+					strMsg += "->Tarefa já cadastrada.\n";
+				}
+			}
+			catch( SQLException se ) {
+				se.printStackTrace();
+				return( false );
+			}
 		}
 
 		if( this.frame.getTxfNome().isEmpty() ) {
@@ -534,11 +547,7 @@ public class Programa {
 				camArquivo = System.getProperty( "user.home" ) + "/";
 			}
 		}
-		String nomeArquivo = (this.frame.getTxfNomeArquivo().isEmpty())? "Contador.csv" : this.frame.getTxfNomeArquivo();
-
-		if( !nomeArquivo.endsWith( ".csv" ) ) {
-			nomeArquivo += ".csv";
-		}
+		String nomeArquivo = "Tarefas.csv";
 
 		File desktop = new File( camArquivo );
 

@@ -20,6 +20,7 @@ import java.awt.PopupMenu;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.SystemTray;
+import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -118,7 +119,9 @@ public class Tela extends JFrame {
     private JButton btnExportar;
 	private JButton btnAlterar;
     private JPanel pnlContador;
-    private JPanel pnlTempoDecorrido;
+	private JTextArea txaDetalhesFollowUp;
+	private JScrollPane scrollPaneHome;
+	private JPanel pnlTempoDecorrido;
     private JLabel lblTempoDecorrido;
     private JLabel lblTotalTarefa;
     private JLabel lblTempoTodos;
@@ -127,8 +130,6 @@ public class Tela extends JFrame {
     private JLabel lblExportarPara;
     private JTextField txfDiretorio;
     private JButton btnProcurarDiretorio;
-    private JLabel lblNomeArquivo;
-    private JTextField txfNomeArquivo;
 	private JPanel pnlEvolucao;
 	private JButton btnMiniSQL;
 	private JButton btnMiniERP;
@@ -648,6 +649,7 @@ public class Tela extends JFrame {
 	private void ajustarPosicao() {
 		final int largura = this.getWidth();
 		final int altura = this.getHeight();
+		final int alturaTela = Toolkit.getDefaultToolkit().getScreenSize().height;
 
 		// ajusta a largura do painel superior
 		this.pnlSuperior.setBounds( this.pnlSuperior.getX(), this.pnlSuperior.getY(), largura, this.pnlSuperior.getHeight() );
@@ -661,11 +663,22 @@ public class Tela extends JFrame {
 		// centraliza o painel grid
 		this.pnlContador.setBounds( ((largura-this.pnlContador.getWidth())/2)-20, this.pnlContador.getY(), this.pnlContador.getWidth(), this.pnlContador.getHeight() );
 
+		// centraliza o painel followup_home
+		int alturaPainel = altura - (
+			this.pnlSuperior.getHeight() +
+			this.containerCampos.getHeight() +
+			this.pnlContador.getHeight() +
+			this.pnlTempoDecorrido.getHeight() +
+			this.pnlExportar.getHeight() + 80
+		);
+		System.out.println(alturaPainel);
+		this.scrollPaneHome.setBounds( ((largura-this.pnlTempoDecorrido.getWidth())/2)-20, this.pnlContador.getY() + this.pnlContador.getHeight()+10, this.scrollPaneHome.getWidth(), alturaPainel );
+
 		// centraliza o painel de tempo
-		this.pnlTempoDecorrido.setBounds( ((largura-this.pnlTempoDecorrido.getWidth())/2)-20, this.pnlTempoDecorrido.getY(), this.pnlTempoDecorrido.getWidth(), this.pnlTempoDecorrido.getHeight() );
+		this.pnlTempoDecorrido.setBounds( ((largura-this.pnlTempoDecorrido.getWidth())/2)-20, this.scrollPaneHome.getY() + this.scrollPaneHome.getHeight() + 10, this.pnlTempoDecorrido.getWidth(), this.pnlTempoDecorrido.getHeight() );
 
 		// centraliza o painel de exportar
-		this.pnlExportar.setBounds( ((largura-this.pnlExportar.getWidth())/2)-20, this.pnlExportar.getY(), this.pnlExportar.getWidth(), this.pnlExportar.getHeight() );
+		this.pnlExportar.setBounds( ((largura-this.pnlExportar.getWidth())/2)-20, this.pnlTempoDecorrido.getY() + this.pnlTempoDecorrido.getHeight() + 10, this.pnlExportar.getWidth(), this.pnlExportar.getHeight() );
 
 		// ajusta a largura e altura do painel de parse
 		this.pnlParse.setBounds( this.pnlParse.getX(), this.pnlParse.getY(), largura-20, altura-200 );
@@ -874,7 +887,7 @@ public class Tela extends JFrame {
 		this.btnAlterar.setFont( new Font( "Verdana", 0, 12 ) );
 
 		this.btnExportar = new JButton( "Exportar" );
-		this.btnExportar.setBounds( 576, 10, 144, 30 );
+		this.btnExportar.setBounds( 576, 5, 144, 30 );
 		this.btnExportar.setFont( new Font( "Verdana", 0, 12 ) );
 		this.btnExportar.setToolTipText( "Exporta para um arquivo CSV." );
 
@@ -883,62 +896,67 @@ public class Tela extends JFrame {
 		this.btnCancelar.setFont( new Font( "Verdana", 0, 12 ) );
 
 		this.pnlContador = new JPanel();
-		this.pnlContador.setBounds( 20, 170, 740, 120 );
+		this.pnlContador.setBounds( 20, 170, 740, 100 );
 		this.pnlContador.setEnabled( true );
 		this.pnlContador.setLayout( null );
 		this.pnlContador.setBorder( BorderFactory.createEtchedBorder() );
 
+		this.txaDetalhesFollowUp = new JTextArea();
+		this.txaDetalhesFollowUp.setLayout( null );
+		this.txaDetalhesFollowUp.setBounds( 20, this.pnlContador.getY() + this.pnlContador.getHeight()+10, 740, 110 );
+		this.txaDetalhesFollowUp.setFont( new Font( "Verdana", 0, 12 ) );
+		this.txaDetalhesFollowUp.setEditable( false );
+		this.txaDetalhesFollowUp.setBackground( pnlSuperior.getBackground() );
+		this.txaDetalhesFollowUp.setBorder( BorderFactory.createEtchedBorder() );
+		this.txaDetalhesFollowUp.setLineWrap( true );
+		this.txaDetalhesFollowUp.setWrapStyleWord( true );
+
+		this.scrollPaneHome = new JScrollPane( txaDetalhesFollowUp );
+		this.scrollPaneHome.setBounds( 20, this.pnlContador.getY() + this.pnlContador.getHeight()+10, 740, 100 );
+
+		final JScrollBar bar3 = scrollPaneHome.getVerticalScrollBar();
+		bar3.setUnitIncrement( 10 );
+
 		this.pnlTempoDecorrido = new JPanel();
-		this.pnlTempoDecorrido.setBounds( 20, 300, 740, 80 );
+		this.pnlTempoDecorrido.setBounds( 20, txaDetalhesFollowUp.getY() + txaDetalhesFollowUp.getHeight() + 10, 740, 40 );
 		this.pnlTempoDecorrido.setLayout( null );
 		this.pnlTempoDecorrido.setBorder( BorderFactory.createEtchedBorder() );
 
 		this.lblTempoDecorrido = new JLabel( "Tempo Tarefa:" );
-		this.lblTempoDecorrido.setBounds( 10, 15, 115, 21 );
+		this.lblTempoDecorrido.setBounds( 10, 10, 115, 21 );
 		this.lblTempoDecorrido.setFont( new Font( "Verdana", 0, 12 ) );
 		this.lblTempoDecorrido.setHorizontalAlignment( JLabel.RIGHT );
 
-		this.lblTotalTarefa = new JLabel();
-		this.lblTotalTarefa.setBounds( 130, 15, 115, 21 );
+		this.lblTotalTarefa = new JLabel( "00:00:00" );
+		this.lblTotalTarefa.setBounds( 130, 10, 115, 21 );
 		this.lblTotalTarefa.setFont( new Font( "Verdana", 0, 12 ) );
 
 		this.lblTempoTodos = new JLabel( "Tempo Total:" );
-		this.lblTempoTodos.setBounds( 10, 45, 115, 21 );
+		this.lblTempoTodos.setBounds( 510, 10, 115, 21 );
 		this.lblTempoTodos.setFont( new Font( "Verdana", 0, 12 ) );
 		this.lblTempoTodos.setHorizontalAlignment( JLabel.RIGHT );
 
-		this.lblTotalTempo = new JLabel();
-		this.lblTotalTempo.setBounds( 130, 45, 115, 21 );
+		this.lblTotalTempo = new JLabel( "00:00:00" );
+		this.lblTotalTempo.setBounds( 630, 10, 115, 21 );
 		this.lblTotalTempo.setFont( new Font( "Verdana", 0, 12 ) );
 
 		this.pnlExportar = new JPanel();
 		this.pnlExportar.setLayout( null );
-		this.pnlExportar.setBounds( 20, 390, 740, 80 );
+		this.pnlExportar.setBounds( 20, pnlTempoDecorrido.getY() + pnlTempoDecorrido.getHeight() + 10, 740, 40 );
 		this.pnlExportar.setBorder( BorderFactory.createEtchedBorder() );
 
 		this.lblExportarPara = new JLabel( "Exportar para:" );
-		this.lblExportarPara.setBounds( 25, 15, 100, 21 );
+		this.lblExportarPara.setBounds( 25, 10, 100, 21 );
 		this.lblExportarPara.setHorizontalAlignment( JLabel.RIGHT );
 		this.lblExportarPara.setFont( new Font( "Verdana", 0, 12 ) );
 
-		this.txfDiretorio = new JTextField( (OS.isWindows())? System.getProperty( "user.home" ) + "\\Desktop\\" : System.getProperty( "user.home" ) + "/" );
-		this.txfDiretorio.setBounds( 130, 15, 400, 21 );
+		this.txfDiretorio = new JTextField( System.getProperty( "user.home" ) );
+		this.txfDiretorio.setText( this.txfDiretorio.getText() + ((OS.isWindows())? "\\Desktop\\Tarefas.csv" : "/Tarefas.csv") );
+		this.txfDiretorio.setBounds( 130, 10, 400, 21 );
 		this.txfDiretorio.setFont( new Font( "Monospaced", 0, 12 ) );
 
 		this.btnProcurarDiretorio = new JButton();
-		this.btnProcurarDiretorio.setBounds( 535, 15, 21, 21 );
-
-		this.lblNomeArquivo = new JLabel( "Nome do arquivo:" );
-		this.lblNomeArquivo.setBounds( 10, 45, 115, 21 );
-		this.lblNomeArquivo.setHorizontalAlignment( JLabel.RIGHT );
-		this.lblNomeArquivo.setFont( new Font( "Verdana", 0, 12 ) );
-
-		this.txfNomeArquivo = new JTextField();
-		final DateFormat df = new SimpleDateFormat( "yyyy_MM_dd" );
-		this.txfNomeArquivo.setText( "Tarefas_" + df.format( new Date() ) + ".csv" );
-		this.txfNomeArquivo.setText( txfNomeArquivo.getText() );
-		this.txfNomeArquivo.setBounds( 130, 45, 200, 21 );
-		this.txfNomeArquivo.setFont( new Font( "Monospaced", 0, 12 ) );
+		this.btnProcurarDiretorio.setBounds( 535, 10, 21, 21 );
 
 		this.pnlEvolucao = new JPanel();
 		this.pnlEvolucao.setBounds( 0, 0, 800, 520 );
@@ -975,6 +993,7 @@ public class Tela extends JFrame {
 		this.pnlParse.setBackground( pnlSuperior.getBackground() );
 		this.pnlParse.setBorder( BorderFactory.createEtchedBorder() );
 		this.pnlParse.setLineWrap( true );
+		this.pnlParse.setWrapStyleWord( true );
 
 		this.scrollPane = new JScrollPane( pnlParse );
 		this.scrollPane.setBounds( 10, 40, 740, 460 );
@@ -1104,13 +1123,11 @@ public class Tela extends JFrame {
 		this.txaAnotacoes.setBorder( BorderFactory.createEtchedBorder() );
 		this.txaAnotacoes.setLineWrap( true );
 
-		this.scrollPaneAnotacoes = new JScrollPane();
-
 		this.scrollPaneAnotacoes = new JScrollPane( txaAnotacoes );
 		this.scrollPaneAnotacoes.setBounds( 10, 40, 740, 460 );
 
 		final JScrollBar bar2 = scrollPaneAnotacoes.getVerticalScrollBar();
-		bar2.setUnitIncrement( 40 );
+		bar2.setUnitIncrement( 20 );
 
 	    this.containerCampos.add( this.lblCodigo );
         this.containerCampos.add( this.txfCodigo );
@@ -1136,12 +1153,11 @@ public class Tela extends JFrame {
         this.pnlTempoDecorrido.add( this.lblTotalTarefa );
         this.pnlTempoDecorrido.add( this.lblTempoTodos );
         this.pnlTempoDecorrido.add( this.lblTotalTempo );
+		this.pnlInferior.add( this.scrollPaneHome );
 		this.pnlInferior.add( this.pnlExportar );
 		this.pnlExportar.add( this.lblExportarPara );
 		this.pnlExportar.add( this.txfDiretorio );
 		this.pnlExportar.add( this.btnProcurarDiretorio );
-		this.pnlExportar.add( this.lblNomeArquivo );
-		this.pnlExportar.add( this.txfNomeArquivo );
 		this.pnlExportar.add( this.btnExportar );
 		this.tbpPainelAbas.add( this.pnlEvolucao, null );
 		this.pnlEvolucao.add( this.btnMiniSQL );
@@ -1299,7 +1315,7 @@ public class Tela extends JFrame {
 		this.contadorTable.setFont( new Font( "Monospaced", 0, 12 ) );
 
 		this.contadorTable.getColumnModel().getColumn(0).setPreferredWidth( 80 );
-		this.contadorTable.getColumnModel().getColumn(1).setPreferredWidth( 270 );
+		this.contadorTable.getColumnModel().getColumn(1).setPreferredWidth( 255 );
 		this.contadorTable.getColumnModel().getColumn(2).setPreferredWidth( 110 );
 		this.contadorTable.getColumnModel().getColumn(3).setPreferredWidth( 70 );
 		this.contadorTable.getColumnModel().getColumn(4).setPreferredWidth( 70 );
@@ -1434,6 +1450,7 @@ public class Tela extends JFrame {
 		setTxfObs( "" );
 		setTxfCodTarefa( "" );
 		setPnlParse( "" );
+		setTxaDetalhesFollowUp( "" );
 		setLblCaracteres( "0 Caracteres Restantes" );
 		setTxaAnotacoes( "" );
 
@@ -1472,6 +1489,10 @@ public class Tela extends JFrame {
 		this.pnlParse.setText( pTexto );
 	}
 
+	public void setTxaDetalhesFollowUp( final String pTexto ) {
+		this.txaDetalhesFollowUp.setText( pTexto );
+	}
+
 	public void setTxfCodTarefa( final String pCodTarefa ) {
 		this.txfCodTarefa.setText( pCodTarefa );
 	}
@@ -1500,14 +1521,6 @@ public class Tela extends JFrame {
 
 	public String getTxfDiretorio() {
 		return( txfDiretorio.getText() );
-	}
-
-	public void setTxfNomeArquivo( final String nomeParam ) {
-		txfNomeArquivo.setText( nomeParam );
-	}
-
-	public String getTxfNomeArquivo() {
-		return( txfNomeArquivo.getText() );
 	}
 
 	public String getComandoTela() {
@@ -1539,8 +1552,8 @@ public class Tela extends JFrame {
 	}
 
 	public void limparTempoDecorrido() {
-		setLblTotalTarefa( "" );
-		setLblTotalTempo( "" );
+		setLblTotalTarefa( "00:00:00" );
+		setLblTotalTempo( "00:00:00" );
 	}
 
 	public void setTarefa( final Tarefa pTarefa ) {
@@ -1737,6 +1750,7 @@ public class Tela extends JFrame {
 
 		if( getTxfCodTarefa().isEmpty() ) {
 			setPnlParse( "" );
+			setTxaDetalhesFollowUp( "" );
 			return;
 		}
 
@@ -1782,6 +1796,7 @@ public class Tela extends JFrame {
 		}
 
 		setPnlParse( linha );
+		setTxaDetalhesFollowUp( linha );
 
 		setCursorLivre();
 	}

@@ -225,4 +225,18 @@ public class TarefaDAO {
 
 		this.connection.setAutoCommit( true );
 	}
+	public boolean existeTarefa( String pCodTarefa ) throws SQLException {
+		Statement st = this.connection.createStatement();
+
+		String sQuery =
+			"SELECT codigo " +
+			"FROM tarefa " +
+			"WHERE codigo = " + pCodTarefa;
+
+		System.out.println( "SQL: " + sQuery );
+
+		ResultSet rs = st.executeQuery( sQuery );
+
+		return( rs.next() );
+	}
 }
