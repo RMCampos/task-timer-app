@@ -11,6 +11,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridLayout;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.Image;
@@ -66,11 +67,13 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JPasswordField;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollBar;
@@ -79,6 +82,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.UIManager;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
@@ -110,6 +114,7 @@ public class Tela extends JFrame {
     private JLabel lblObs;
     private JTextField txfObs;
 	private JButton btnTray;
+	private JButton btnLinxERP;
 	private JButton btnMSSQL;
 	private JButton btnERP;
     private JButton btnAdd;
@@ -425,6 +430,12 @@ public class Tela extends JFrame {
 				txfObs.selectAll();
 			}
 		});
+		this.btnLinxERP.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed( ActionEvent e ) {
+				iniciarERPLinx();
+			}
+		});
 		this.btnTray.addActionListener( new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed( java.awt.event.ActionEvent evt ) {
@@ -671,7 +682,6 @@ public class Tela extends JFrame {
 			this.pnlTempoDecorrido.getHeight() +
 			this.pnlExportar.getHeight() + 80
 		);
-		System.out.println(alturaPainel);
 		this.scrollPaneHome.setBounds( ((largura-this.pnlTempoDecorrido.getWidth())/2)-20, this.pnlContador.getY() + this.pnlContador.getHeight()+10, this.scrollPaneHome.getWidth(), alturaPainel );
 
 		// centraliza o painel de tempo
@@ -702,6 +712,7 @@ public class Tela extends JFrame {
 			this.setIconImage( new ImageIcon( getClass().getResource( "clock.png" ) ).getImage() );
 
 			this.btnProcurarDiretorio.setIcon( new ImageIcon( getClass().getResource( "folder.png" ) ) );
+			this.btnLinxERP.setIcon( new ImageIcon( getClass().getResource( "logolinx.png" ) ) );
 			this.btnMSSQL.setIcon( new ImageIcon( getClass().getResource( "sql.png" ) ) );
 			this.btnERP.setIcon( new ImageIcon( getClass().getResource( "erp.png" ) ) );
 			this.btnContinuar.setIcon( new ImageIcon( getClass().getResource( "play.png" ) ) );
@@ -849,6 +860,11 @@ public class Tela extends JFrame {
 		this.btnTray.setBounds( 650, 10, 100, 30 );
 		this.btnTray.setToolTipText( "Enviar para o system tray" );
 		this.btnTray.setFocusable( false );
+
+		this.btnLinxERP = new JButton( "ERP" );
+		this.btnLinxERP.setBounds( 540, 10, 100, 30 );
+		this.btnLinxERP.setToolTipText( "Abrir ERP Linx" );
+		this.btnLinxERP.setFocusable( false );
 
 		this.btnMSSQL = new JButton();
 		this.btnMSSQL.setBounds( 650, 45, 45, 30 );
@@ -1137,6 +1153,7 @@ public class Tela extends JFrame {
         this.containerCampos.add( this.txfSolicitante );
 	    this.containerCampos.add( this.lblObs );
         this.containerCampos.add( this.txfObs );
+		this.containerCampos.add( this.btnLinxERP );
 		this.containerCampos.add( this.btnTray );
 		this.containerCampos.add( this.btnMSSQL );
 		this.containerCampos.add( this.btnERP );
@@ -1293,6 +1310,61 @@ public class Tela extends JFrame {
 						}
 						catch( IOException e ){
 							System.out.println( "IOException: " + e.getMessage() );
+						}
+					}
+				};
+
+				thread.start();
+			}
+		});
+	}
+
+	public void iniciarERPLinx() {
+		JPanel panel = new JPanel( new BorderLayout( 5, 5 ) );
+		JPanel label = new JPanel( new GridLayout(0, 1, 2, 2 ) );
+		label.add(new JLabel( "Usuário", SwingConstants.RIGHT ) );
+		label.add(new JLabel( "Senha", SwingConstants.RIGHT ) );
+		label.add(new JLabel( "Frase", SwingConstants.RIGHT ) );
+		panel.add( label, BorderLayout.WEST );
+
+		JPanel controls = new JPanel( new GridLayout( 0, 1, 2, 2 ) );
+		final JTextField username = new JTextField();
+		controls.add( username );
+		final JPasswordField password = new JPasswordField();
+		controls.add( password );
+		final JPasswordField frase = new JPasswordField();
+		controls.add( frase );
+		panel.add( controls, BorderLayout.CENTER );
+
+		JOptionPane.showMessageDialog( this, panel, "Login", JOptionPane.OK_CANCEL_OPTION );
+		//logininformation.put("user", username.getText());
+		//logininformation.put("pass", new String(password.getPassword()));
+
+		SwingUtilities.invokeLater( new Runnable() {
+			@Override
+			public void run() {
+				Thread thread = new Thread(){
+					public void run(){
+						if( username.getText().isEmpty() ) {
+							return;
+						}
+
+						try {
+							String comando =
+								"http://wwwf.microvix.com.br/Log.asp?login=" + username.getText() +
+								"&senha=" + new String(password.getPassword()) +
+								"&frase=" + new String(frase.getPassword());
+
+							System.out.println( "LOG: Iniciando ERP Linx: " + comando );
+							final URI uri = new URI( comando );
+							if( Desktop.isDesktopSupported() ) {
+								Desktop.getDesktop().browse( uri );
+							}
+						}
+						catch( IOException e ){
+							System.out.println( "IOException: " + e.getMessage() );
+						}
+						catch( URISyntaxException ex ){
 						}
 					}
 				};

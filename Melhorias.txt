@@ -138,3 +138,8 @@ Descrição: Na coluna inicio, iniciar com 00:00:00 e não vazio
 Solicitado por: Ricardo Montania
 Data solicitação: 09/01/2015
 Implementada: Sim [09/01/2015 v13.1]
+---
+Descrição: Criar botão para abrir ERP Linx
+Solicitado por: Ricardo Montania
+Data solicitação: 14/01/2015
+Implementada: Sim [14/01/2015 v13.2]
