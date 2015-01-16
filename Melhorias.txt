@@ -143,3 +143,13 @@ Descrição: Criar botão para abrir ERP Linx
 Solicitado por: Ricardo Montania
 Data solicitação: 14/01/2015
 Implementada: Sim [14/01/2015 v13.2]
+---
+Descrição: Ao pausar, continuar, e alterar não limpar os campos
+Solicitado por: Ricardo Montania
+Data solicitação: 14/01/2015
+Implementada: Sim [14/01/2015 v13.3]
+---
+Descrição: Botão para cancelar ao abrir ERP Linx
+Solicitado por: Ricardo Montania
+Data solicitação: 16/01/2015
+Implementada: Sim [16/01/2015 v13.4]

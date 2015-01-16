@@ -67,7 +67,7 @@ public class Programa {
 			System.exit( 1 );
 		}
 
-		this.frame.setTitle( "Contador de Tarefas - v13.2 (14/01/2015)" );
+		this.frame.setTitle( "Contador de Tarefas - v13.4 (16/01/2015)" );
 		this.frame.setVisible( true );
 		this.tempoTotal = "00:00:00";
 		this.transacao = 'I';
@@ -329,7 +329,6 @@ public class Programa {
 
 			try {
 				this.tarefaDAO.alterar( tarefa );
-				cancelar();
 			}
 			catch( SQLException e ){
 				System.out.println( "SQLException: " + e.getMessage() );
@@ -447,7 +446,6 @@ public class Programa {
 		tarefa.setEmAndamento( true );
 		tarefa.iniciarTempo();
 
-		this.frame.limpar();
 		this.frame.contadorTable.repaint();
 		this.frame.contadorTable.getSelectionModel().clearSelection();
 		this.frame.habilitarBotaoInserir( true );
@@ -493,10 +491,6 @@ public class Programa {
 		tarefa.setEmAndamento( false );
 		tarefa.setHoraIntervalo( new Date() );
 		tarefa.pararTempo();
-
-		if( pTarefa == null ) {
-			this.frame.limpar();
-		}
 
 		this.frame.contadorTable.repaint();
 		this.frame.contadorTable.getSelectionModel().clearSelection();

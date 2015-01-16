@@ -1320,26 +1320,32 @@ public class Tela extends JFrame {
 	}
 
 	public void iniciarERPLinx() {
-		JPanel panel = new JPanel( new BorderLayout( 5, 5 ) );
+		final JTextField username = new JTextField();
+		final JPasswordField password = new JPasswordField();
+		final JPasswordField frase = new JPasswordField();
+		
+		JPanel panel = new JPanel(new BorderLayout( 5, 5));
 		JPanel label = new JPanel( new GridLayout(0, 1, 2, 2 ) );
+		JPanel controls = new JPanel( new GridLayout( 0, 1, 2, 2 ) );
 		label.add(new JLabel( "Usuário", SwingConstants.RIGHT ) );
 		label.add(new JLabel( "Senha", SwingConstants.RIGHT ) );
 		label.add(new JLabel( "Frase", SwingConstants.RIGHT ) );
-		panel.add( label, BorderLayout.WEST );
-
-		JPanel controls = new JPanel( new GridLayout( 0, 1, 2, 2 ) );
-		final JTextField username = new JTextField();
+		
 		controls.add( username );
-		final JPasswordField password = new JPasswordField();
 		controls.add( password );
-		final JPasswordField frase = new JPasswordField();
 		controls.add( frase );
+		
+		panel.add( label, BorderLayout.WEST );
 		panel.add( controls, BorderLayout.CENTER );
-
-		JOptionPane.showMessageDialog( this, panel, "Login", JOptionPane.OK_CANCEL_OPTION );
-		//logininformation.put("user", username.getText());
-		//logininformation.put("pass", new String(password.getPassword()));
-
+		
+		int result = JOptionPane.showConfirmDialog(this, panel,
+			"Dados de Login", JOptionPane.OK_CANCEL_OPTION
+		);
+		
+		if( result != JOptionPane.OK_OPTION ){
+			return;
+		}
+		
 		SwingUtilities.invokeLater( new Runnable() {
 			@Override
 			public void run() {
@@ -1884,11 +1890,15 @@ public class Tela extends JFrame {
 				for( int i=0; i<linha.length(); i++ ){
 					Character charAtual = linha.charAt( i );
 
+					if( charAtual.charValue() == '|' ) {
+						continue;
+					}
+
 					if( numeroEncontrado == 1 ) {
 						portal += charAtual.toString();
 					}
 
-					if( charAtual >= '0' && charAtual <= '9' && numeroEncontrado == 0 ) {
+					if( charAtual.charValue() >= '0' && charAtual.charValue() <= '9' && numeroEncontrado == 0 ) {
 						numeroEncontrado++;
 						portal += charAtual.toString();
 					}
@@ -1918,11 +1928,15 @@ public class Tela extends JFrame {
 					tarefa.setPortal( portal );
 				}
 
+				if( !enderecoBD.isEmpty() ){
+					enderecoBD = " (" + enderecoBD + ")";
+				}
+
 				if( linha.substring( 0, posicaoInicio ).length() >= linha.length() ) {
-					resultadoDaBusca += linha + " (" + enderecoBD + ")\n";
+					resultadoDaBusca += linha + enderecoBD + "\n";
 				}
 				else {
-					resultadoDaBusca += linha.substring( 0, posicaoInicio+1 ) + " (" + enderecoBD + ") " + linha.substring( posicaoInicio+1 ) + "\n";
+					resultadoDaBusca += linha.substring( 0, posicaoInicio+1 ) + enderecoBD + linha.substring( posicaoInicio+1 ) + "\n";
 				}
 				posicaoInicio = -1;
 				portal = "";
