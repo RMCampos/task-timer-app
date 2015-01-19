@@ -92,6 +92,7 @@ import java.awt.geom.AffineTransform;
 import com.sun.security.auth.module.NTSystem;
 
 public class Tela extends JFrame {
+	public static int larguraBotao = 105;
 	private String comandoTela;
 	private Timer  relogio;
 	private Tarefa tarefaAtual;
@@ -717,6 +718,9 @@ public class Tela extends JFrame {
 			this.btnERP.setIcon( new ImageIcon( getClass().getResource( "erp.png" ) ) );
 			this.btnContinuar.setIcon( new ImageIcon( getClass().getResource( "play.png" ) ) );
 			this.btnParar.setIcon( new ImageIcon( getClass().getResource( "pause.png" ) ) );
+			this.btnExcluir.setIcon( new ImageIcon( getClass().getResource( "trash.png" ) ) );
+			this.btnCancelar.setIcon( new ImageIcon( getClass().getResource( "cancel.png" ) ) );
+			this.btnAlterar.setIcon( new ImageIcon( getClass().getResource( "edit.png" ) ) );
 			this.btnMiniSQL.setIcon( new ImageIcon( getClass().getResource( "sql16.png" ) ) );
 			this.btnMiniERP.setIcon( new ImageIcon( getClass().getResource( "erp16.png" ) ) );
 		}
@@ -857,59 +861,68 @@ public class Tela extends JFrame {
 		this.txfObs.setFont( new Font( "Monospaced", 0, 12 ) );
 
 		this.btnTray = new JButton( "Tray" );
-		this.btnTray.setBounds( 650, 10, 100, 30 );
+		this.btnTray.setBounds( 650, 45, 100, 30 );
 		this.btnTray.setToolTipText( "Enviar para o system tray" );
 		this.btnTray.setFocusable( false );
 
 		this.btnLinxERP = new JButton( "ERP" );
-		this.btnLinxERP.setBounds( 540, 10, 100, 30 );
+		this.btnLinxERP.setBounds( 650, 10, 100, 30 );
 		this.btnLinxERP.setToolTipText( "Abrir ERP Linx" );
 		this.btnLinxERP.setFocusable( false );
-
-		this.btnMSSQL = new JButton();
-		this.btnMSSQL.setBounds( 650, 45, 45, 30 );
-		this.btnMSSQL.setToolTipText( "Abrir SQL Server conectando no portal selecionado" );
-		this.btnMSSQL.setFocusable( false );
-
-		this.btnERP = new JButton();
-		this.btnERP.setBounds( 700, 45, 45, 30 );
-		this.btnERP.setToolTipText( "<HTML>Click NORMAL para CORRECAO<BR>Click DO MEIO para PRODUCAO</HTML>" );
-		this.btnERP.setFocusable( false );
 
 		this.btnAdd = new JButton( "Adicionar" );
 		this.btnAdd.setBounds( 650, 83, 100, 30 );
 		this.btnAdd.setFont( new Font( "Verdana", 0, 12 ) );
 		this.btnAdd.setToolTipText( "Adiciona o Tarefa ao GRID." );
+		this.btnAdd.setFocusable( false );
 
-		this.btnContinuar = new JButton();
-		this.btnContinuar.setText( "Iniciar" );
-		this.btnContinuar.setBounds( 169, 140, 144, 30); // y = 135 + 5
-		this.btnContinuar.setFont( new Font( "Verdana", 0, 12 ) );
-		this.btnContinuar.setToolTipText( "Continua a contagem da tarefa selecionada." );
-
-		this.btnParar = new JButton();
-		this.btnParar.setText( "Parar" );
-		this.btnParar.setBounds( 20, 140, 144, 30 ); // y = 135 + 5
+		this.btnParar = new JButton( "Parar" );
+		this.btnParar.setBounds( 20, 140, Tela.larguraBotao, 30 );
 		this.btnParar.setFont( new Font( "Verdana", 0, 12 ) );
 		this.btnParar.setToolTipText( "Para a contagem da tarefa selecionada." );
+		this.btnParar.setFocusable( false );
 
-		this.btnExcluir = new JButton( "Excluir ");
-		this.btnExcluir.setBounds( 318, 140, 144, 30 ); // y = 135 + 5
+		this.btnContinuar = new JButton( "Iniciar" );
+		this.btnContinuar.setBounds( (20+Tela.larguraBotao), 140, Tela.larguraBotao, 30);
+		this.btnContinuar.setFont( new Font( "Verdana", 0, 12 ) );
+		this.btnContinuar.setToolTipText( "Continua a contagem da tarefa selecionada" );
+		this.btnContinuar.setFocusable( false );
+
+		this.btnExcluir = new JButton( "Exclui" );
+		this.btnExcluir.setBounds( (20+Tela.larguraBotao*2), 140, Tela.larguraBotao, 30 );
 		this.btnExcluir.setFont( new Font( "Verdana", 0, 12 ) );
-		this.btnExcluir.setToolTipText( "Exclui a tarefa selecionada." );
+		this.btnExcluir.setToolTipText( "Exclui a tarefa selecionada" );
+		this.btnExcluir.setFocusable( false );
 
-		this.btnAlterar = new JButton( "Alterar" );
-		this.btnAlterar.setBounds( 616, 140, 144, 30 );
+		this.btnCancelar = new JButton( "Cancel" );
+		this.btnCancelar.setBounds( (20+Tela.larguraBotao*3), 140, Tela.larguraBotao, 30 );
+		this.btnCancelar.setFont( new Font( "Verdana", 0, 12 ) );
+		this.btnCancelar.setToolTipText( "Cancelar" );
+		this.btnCancelar.setFocusable( false );
+
+		this.btnAlterar = new JButton( "Altera" );
+		this.btnAlterar.setBounds( (20+Tela.larguraBotao*4), 140, Tela.larguraBotao, 30 );
 		this.btnAlterar.setFont( new Font( "Verdana", 0, 12 ) );
+		this.btnAlterar.setToolTipText( "Alterar" );
+		this.btnAlterar.setFocusable( false );
+
+		this.btnERP = new JButton( "Portal" );
+		this.btnERP.setBounds( (20+Tela.larguraBotao*5), 140, Tela.larguraBotao, 30 );
+		this.btnERP.setFont( new Font( "Verdana", 0, 12 ) );
+		this.btnERP.setToolTipText( "<HTML>Click NORMAL para CORRECAO<BR>Click DO MEIO para PRODUCAO</HTML>" );
+		this.btnERP.setFocusable( false );
+
+		this.btnMSSQL = new JButton( "SQL" );
+		this.btnMSSQL.setBounds( (20+Tela.larguraBotao*6), 140, Tela.larguraBotao, 30 );
+		this.btnMSSQL.setFont( new Font( "Verdana", 0, 12 ) );
+		this.btnMSSQL.setToolTipText( "Abrir SQL Server conectando no portal selecionado" );
+		this.btnMSSQL.setFocusable( false );
 
 		this.btnExportar = new JButton( "Exportar" );
 		this.btnExportar.setBounds( 576, 5, 144, 30 );
 		this.btnExportar.setFont( new Font( "Verdana", 0, 12 ) );
 		this.btnExportar.setToolTipText( "Exporta para um arquivo CSV." );
-
-		this.btnCancelar = new JButton( "Cancelar" );
-		this.btnCancelar.setBounds( 467, 140, 144, 30 );
-		this.btnCancelar.setFont( new Font( "Verdana", 0, 12 ) );
+		this.btnExportar.setFocusable( false );
 
 		this.pnlContador = new JPanel();
 		this.pnlContador.setBounds( 20, 170, 740, 100 );
