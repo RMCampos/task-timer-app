@@ -158,3 +158,8 @@ Descrição: Quando não existir portal, ao clicar nos botões ERP ou SQL, avisa
 Solicitado por: Ricardo Montania
 Data solicitação: 16/01/2015
 Implementada: Sim [16/01/2015 v13.5]
+---
+Descrição: Ao dar PLAY numa tarefa, caso exista windows media player aberto, dar play na música. O mesmo com pause.
+Solicitado por: Ricardo Montania
+Data solicitação: 26/01/2015
+Implementada: Sim [26/01/2015 v13.6]

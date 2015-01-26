@@ -1,5 +1,8 @@
 package contador;
 
+import java.awt.AWTException;
+import java.awt.event.KeyEvent;
+import java.awt.Robot;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -67,7 +70,7 @@ public class Programa {
 			System.exit( 1 );
 		}
 
-		this.frame.setTitle( "Contador de Tarefas - v13.5 (16/01/2015)" );
+		this.frame.setTitle( "Contador de Tarefas - v13.6" );
 		this.frame.setVisible( true );
 		this.tempoTotal = "00:00:00";
 		this.transacao = 'I';
@@ -454,6 +457,8 @@ public class Programa {
 		this.frame.limparTempoDecorrido();
 		this.frame.mudarEstado( "" );
 		this.transacao = 'I';
+		
+		togglePlayPause();
 
 		try {
 			this.tarefaDAO.alterar( tarefa );
@@ -499,6 +504,8 @@ public class Programa {
 		this.frame.limparTempoDecorrido();
 		this.frame.mudarEstado( "" );
 		this.transacao = 'I';
+		
+		togglePlayPause();
 
 		try {
 			this.tarefaDAO.alterar( tarefa );
@@ -656,6 +663,22 @@ public class Programa {
 		this.tarefaResultadaoDAO.reativarLista( lista );
 		buscarTarefas();
 		carregarTarefas();
+	}
+	
+	private void togglePlayPause() {
+		try {
+			Robot robot = new Robot();
+			
+			robot.keyPress( KeyEvent.VK_CONTROL );
+			robot.keyPress( KeyEvent.VK_ALT );
+			robot.keyPress( KeyEvent.VK_P );
+			
+			robot.keyRelease( KeyEvent.VK_CONTROL );
+			robot.keyRelease( KeyEvent.VK_ALT );
+		}
+		catch( AWTException ex ) {
+			ex.printStackTrace();
+		}
 	}
 
 	private String somarDuracao( String duracao1Param, String duracao2Param ) {
