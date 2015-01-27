@@ -162,4 +162,14 @@ Implementada: Sim [16/01/2015 v13.5]
 Descrição: Ao dar PLAY numa tarefa, caso exista windows media player aberto, dar play na música. O mesmo com pause.
 Solicitado por: Ricardo Montania
 Data solicitação: 26/01/2015
-Implementada: Sim [26/01/2015 v13.6]
+Implementada: Sim [v13.6]
+---
+Descrição: Aumentar o traçado que divide cada movimentação
+Solicitado por: Ricardo Montania
+Data solicitação: 27/01/2015
+Implementada: Sim
+---
+Descrição: Corrigir BUG duplicando movimentação (TP 6644241)
+Solicitado por: Ricardo Montania
+Data solicitação: 27/01/2015
+Implementada: Sim

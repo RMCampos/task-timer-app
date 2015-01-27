@@ -70,7 +70,7 @@ public class Programa {
 			System.exit( 1 );
 		}
 
-		this.frame.setTitle( "Contador de Tarefas - v13.6" );
+		this.frame.setTitle( "Contador de Tarefas - v13.7" );
 		this.frame.setVisible( true );
 		this.tempoTotal = "00:00:00";
 		this.transacao = 'I';

@@ -1781,17 +1781,20 @@ public class Tela extends JFrame {
 			int numDeTags = linha.length() - linha.replace("<","").length();
 			for( int i=numDeTags; i>= 0; i-- ) {
 				if( !linha.startsWith( "<" ) ) {
-					tmp += ((linha.indexOf( "<" ) > -1)? linha.substring(0,linha.indexOf( "<" )) : "");
+					if( linha.indexOf( "<" ) >= 0 ) {
+						tmp += linha.substring( 0, linha.indexOf( "<" ) );
+						linha = linha.substring( linha.indexOf( "<" ) );
+					}
 				}
 
-				int pos = linha.indexOf( ">" );
-				if( pos == -1 ) {
+				int posicaoFechamento = linha.indexOf( ">" );
+				if( posicaoFechamento == -1 ) {
 					continue;
 				}
 				else {
-					int quantMaior = linha.length() - linha.replace("<","").length();
+					int quantMaior = linha.length() - linha.replace( "<", "" ).length();
 					if( quantMaior > 0 ){
-						linha = linha.substring( pos+1 ).trim();
+						linha = linha.substring( posicaoFechamento+1 ).trim();
 					}
 				}
 			}
@@ -1908,6 +1911,7 @@ public class Tela extends JFrame {
 		String portal = "";
 
 		for( String linha : pConteudo.split("\n") ) {
+			
 			if( linha.toUpperCase().contains( "PORTAL" ) ) {
 				int numeroEncontrado = 0;
 				for( int i=0; i<linha.length(); i++ ){
@@ -1933,7 +1937,8 @@ public class Tela extends JFrame {
 			}
 
 			if( linha.toUpperCase().contains( "DATA:" ) ){
-				linha = "------------------------------\n" + linha;
+				linha = "_________________________________________________________________________________________\n" + linha;
+				resultadoDaBusca = resultadoDaBusca.substring( 0, resultadoDaBusca.length()-1 );
 			}
 
 			if( posicaoInicio > -1 ) {
