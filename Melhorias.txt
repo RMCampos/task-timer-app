@@ -173,3 +173,8 @@ Descrição: Corrigir BUG duplicando movimentação (TP 6644241)
 Solicitado por: Ricardo Montania
 Data solicitação: 27/01/2015
 Implementada: Sim
+---
+Descrição: Quando iniciar ou parar uma tarefa, não perder a seleção e o estado dos botões
+Solicitado por: Ricardo Montania
+Data solicitação: 29/01/2015
+Implementada: Sim [v13.7]

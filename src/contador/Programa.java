@@ -70,7 +70,7 @@ public class Programa {
 			System.exit( 1 );
 		}
 
-		this.frame.setTitle( "Contador de Tarefas - v13.7" );
+		this.frame.setTitle( "Contador de Tarefas - v13.8" );
 		this.frame.setVisible( true );
 		this.tempoTotal = "00:00:00";
 		this.transacao = 'I';
@@ -415,9 +415,9 @@ public class Programa {
 		this.frame.setTxfSolicitante( tarefa.getSolicitante() );
 		this.frame.setTxfObs( tarefa.getObs() );
 		this.frame.setTxaAnotacoes( tarefa.getAnotacoes() );
+		this.frame.habilitarBotoes( true );
 		this.frame.habilitarContinuar( tarefa.emAndamento() );
 		this.frame.habilitarBotaoInserir( false );
-		this.frame.habilitarExcluir( true );
 		this.frame.setLblTotalTarefa( tarefa.getDuracao() );
 		this.frame.setLblTotalTempo( obterTempoTotalDecorrido() );
 		this.frame.habilitarBtnAlterar();
@@ -449,13 +449,14 @@ public class Programa {
 		tarefa.setEmAndamento( true );
 		tarefa.iniciarTempo();
 
-		this.frame.contadorTable.repaint();
-		this.frame.contadorTable.getSelectionModel().clearSelection();
-		this.frame.habilitarBotaoInserir( true );
-		this.frame.habilitarBotoes( false );
-		this.frame.setTarefa( null );
-		this.frame.limparTempoDecorrido();
-		this.frame.mudarEstado( "" );
+		//this.frame.contadorTable.repaint();
+		//this.frame.contadorTable.getSelectionModel().clearSelection();
+		//this.frame.habilitarBotaoInserir( true );
+		//this.frame.habilitarBotoes( false );
+		//this.frame.setTarefa( null );
+		//this.frame.limparTempoDecorrido();
+		//this.frame.mudarEstado( "" );
+		this.frame.habilitarContinuar( true );
 		this.transacao = 'I';
 		
 		togglePlayPause();
@@ -497,12 +498,13 @@ public class Programa {
 		tarefa.setHoraIntervalo( new Date() );
 		tarefa.pararTempo();
 
-		this.frame.contadorTable.repaint();
-		this.frame.contadorTable.getSelectionModel().clearSelection();
-		this.frame.habilitarBotaoInserir( true );
-		this.frame.habilitarBotoes( false );
-		this.frame.limparTempoDecorrido();
-		this.frame.mudarEstado( "" );
+		//this.frame.contadorTable.repaint();
+		//this.frame.contadorTable.getSelectionModel().clearSelection();
+		//this.frame.habilitarBotaoInserir( true );
+		//this.frame.habilitarBotoes( false );
+		//this.frame.limparTempoDecorrido();
+		//this.frame.mudarEstado( "" );
+		this.frame.habilitarContinuar( false );
 		this.transacao = 'I';
 		
 		togglePlayPause();

@@ -1493,6 +1493,8 @@ public class Tela extends JFrame {
 		this.btnParar.setEnabled( simOuNao );
 		habilitarExcluir( simOuNao );
 		this.btnAlterar.setEnabled( simOuNao );
+		this.btnERP.setEnabled( simOuNao );
+		this.btnMSSQL.setEnabled( simOuNao );
 	}
 
 	public void habilitarContinuar( final boolean simOuNao ) {
