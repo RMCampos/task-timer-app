@@ -117,7 +117,9 @@ public class Tela extends JFrame {
 	private JButton btnTray;
 	private JButton btnLinxERP;
 	private JButton btnMSSQL;
+	private JPopupMenu popupSQL;
 	private JButton btnERP;
+	private JPopupMenu popupERP;
     private JButton btnAdd;
     private JButton btnContinuar;
     private JButton btnParar;
@@ -450,24 +452,6 @@ public class Tela extends JFrame {
 				}
 			}
 		});
-		this.btnMSSQL.addMouseListener( new MouseAdapter() {
-			@Override
-			public void mouseClicked( MouseEvent e ) {
-				switch( e.getButton() ) {
-					case 1: { iniciarSQLServer( "SUPORTE" ); break; }
-					case 2: { iniciarSQLServer( "MIC" ); }
-				}
-			}
-		});
-		this.btnERP.addMouseListener( new MouseAdapter() {
-			@Override
-			public void mouseClicked( MouseEvent e ) {
-				switch( e.getButton() ) {
-					case 1: { iniciarERP( "CORRECAO" ); break; }
-					case 2: { iniciarERP( "PRODUCAO" ); }
-				}
-			}
-		});
 		this.btnAdd.addActionListener( new ActionListener() {
 			@Override
 			public void actionPerformed( ActionEvent e ) {
@@ -562,14 +546,6 @@ public class Tela extends JFrame {
 			public void keyPressed( KeyEvent kev ) {
 				if( kev.getKeyCode() == KeyEvent.VK_ENTER ) {
 					dtcPeriodoFinal.requestFocus();
-				}
-			}
-		});
-		this.dtcPeriodoFinal.addKeyListener( new KeyAdapter() {
-			@Override
-			public void keyPressed( KeyEvent kev ) {
-				if( kev.getKeyCode() == KeyEvent.VK_ENTER ) {
-					//txfNome.requestFocus();
 				}
 			}
 		});
@@ -911,12 +887,46 @@ public class Tela extends JFrame {
 		this.btnERP.setFont( new Font( "Verdana", 0, 12 ) );
 		this.btnERP.setToolTipText( "<HTML>Click NORMAL para CORRECAO<BR>Click DO MEIO para PRODUCAO</HTML>" );
 		this.btnERP.setFocusable( false );
+		
+		this.popupERP = new JPopupMenu();
+		String[] itensMenuERP = { "Correção ERP", "Correção FFC", "Correção M", "Produção" };
+		for( int i=0; i<itensMenuERP.length; i++ ) {
+			final String name = itensMenuERP[i];
+			JMenuItem itemBtn = new JMenuItem(name);
+			itemBtn.setName(name);
+			itemBtn.addActionListener( new ActionListener() {
+				@Override
+				public void actionPerformed( ActionEvent e ) {
+					iniciarERP( name );
+				}
+			});
+			this.popupERP.add(itemBtn);
+		}
+		
+		this.btnERP.setComponentPopupMenu( this.popupERP );
 
 		this.btnMSSQL = new JButton( "SQL" );
 		this.btnMSSQL.setBounds( (20+Tela.larguraBotao*6), 140, Tela.larguraBotao, 30 );
 		this.btnMSSQL.setFont( new Font( "Verdana", 0, 12 ) );
 		this.btnMSSQL.setToolTipText( "Abrir SQL Server conectando no portal selecionado" );
 		this.btnMSSQL.setFocusable( false );
+
+		this.popupSQL = new JPopupMenu();
+		String[] itensMenuSQL = { "mic", "suporte" };
+		for( int i=0; i<itensMenuSQL.length; i++ ) {
+			final String name = itensMenuSQL[i];
+			JMenuItem itemBtn = new JMenuItem(name);
+			itemBtn.setName(name);
+			itemBtn.addActionListener( new ActionListener() {
+				@Override
+				public void actionPerformed( ActionEvent e ) {
+					iniciarSQLServer( name );
+				}
+			});
+			this.popupSQL.add(itemBtn);
+		}
+		
+		this.btnMSSQL.setComponentPopupMenu( this.popupSQL );
 
 		this.btnExportar = new JButton( "Exportar" );
 		this.btnExportar.setBounds( 576, 5, 144, 30 );
@@ -1267,8 +1277,8 @@ public class Tela extends JFrame {
 						try {
 							String tempFolder = System.getenv( "TEMP" );
 							String fileName = tempFolder + "\\temp.sql";
-							String usuario = (pUsuarioSql.equals( "SUPORTE" ))? "usr_suporte" : "mic" + tarefa.getPortal();
-							String senha = (pUsuarioSql.equals( "SUPORTE" ))? "@@#vx3Wt$6v" : "Y87LQ!/m";
+							String usuario = (pUsuarioSql.equals( "suporte" ))? "usr_suporte" : "mic" + tarefa.getPortal();
+							String senha = (pUsuarioSql.equals( "suporte" ))? "@@#vx3Wt$6v" : "Y87LQ!/m";
 							FileWriter sqlFile = new FileWriter( fileName );
 							sqlFile.write( "USE portal_" + tarefa.getPortal() );
 							sqlFile.close();
@@ -1304,13 +1314,23 @@ public class Tela extends JFrame {
 						}
 
 						String destinoUsuario = null;
-						PortalUsuario destinoUsuarioEnum = PortalUsuario.getPortalPorCodigo( usuarioLogado );
+						String producaoCorrecao = "CORRECAO";
 
-						if( destinoUsuarioEnum == null ) {
+						if( pProducaoCorrecao.equals( "Correção ERP" ) ) {
 							destinoUsuario = "correcaoERP";
 						}
+						else if( pProducaoCorrecao.equals( "Correção FFC" ) ) {
+							destinoUsuario = "correcaoFFC";
+						}
+						else if( pProducaoCorrecao.equals( "Correção M" ) ) {
+							destinoUsuario = "correcaoM";
+						}
+						else if( pProducaoCorrecao.equals( "Produção" ) ) {
+							destinoUsuario = "correcaoERP";
+							producaoCorrecao = "PRODUCAO";
+						}
 						else {
-							destinoUsuario = destinoUsuarioEnum.getPortalUsuario();
+							destinoUsuario = "correcaoERP";
 						}
 
 						try {
@@ -1321,10 +1341,10 @@ public class Tela extends JFrame {
 								return;
 							}
 
-							if( pProducaoCorrecao.equals( "CORRECAO" ) ) {
+							if( producaoCorrecao.equals( "CORRECAO" ) ) {
 								comando = "C:\\Program Files\\Internet Explorer\\iexplore.exe http://192.168.18.12/config/bighost/admin/controle_acesso.asp?operacao=1&d=d&equipe=2&portal=" + tarefa.getPortal().trim() + "&homologacao=S&" + destinoUsuario + "=S";
 							}
-							else if( pProducaoCorrecao.equals( "PRODUCAO" ) ) {
+							else if( producaoCorrecao.equals( "PRODUCAO" ) ) {
 								comando = "C:\\Program Files\\Internet Explorer\\iexplore.exe http://192.168.18.12/config/bighost/admin/controle_acesso.asp?operacao=1&d=d&equipe=2&portal=" + tarefa.getPortal().trim() + "&homologacao=N";
 							}
 
@@ -1439,7 +1459,6 @@ public class Tela extends JFrame {
 				}
 
 				if( column == 0 ) {
-					//final JLabel label = new JLabel("<html><a href=\"http://a-srv63/suporte/followup_find.asp?OBJETO_ID=" + value + "\">" + value "</a>");
 					String url = "http://a-srv63/suporte/followup_find.asp?OBJETO_ID=" + value;
 					((JLabel) comp).setText( "<html><a href=\"" + url + "\">" + value + "</a>" );
 					((JLabel) comp).setHorizontalAlignment( JLabel.LEFT );
@@ -1919,7 +1938,7 @@ public class Tela extends JFrame {
 				for( int i=0; i<linha.length(); i++ ){
 					Character charAtual = linha.charAt( i );
 
-					if( charAtual.charValue() == '|' ) {
+					if( charAtual.charValue() == '|' || charAtual.charValue() == ',' ) {
 						continue;
 					}
 
@@ -1950,6 +1969,8 @@ public class Tela extends JFrame {
 					tarefa = new Tarefa();
 					setTarefa( tarefa );
 				}
+				
+				System.out.println("portal: " + portal);
 
 				String enderecoBD = buscarEnderecoBDPortal( portal );
 

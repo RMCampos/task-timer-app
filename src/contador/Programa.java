@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import javax.swing.JFileChooser;
 
 public class Programa {
@@ -70,7 +71,7 @@ public class Programa {
 			System.exit( 1 );
 		}
 
-		this.frame.setTitle( "Contador de Tarefas - v13.8" );
+		this.frame.setTitle( "Contador de Tarefas - v14.0" );
 		this.frame.setVisible( true );
 		this.tempoTotal = "00:00:00";
 		this.transacao = 'I';
@@ -344,8 +345,9 @@ public class Programa {
 		String strMsg = "";
 
 		if( this.frame.getTxfCodigo().isEmpty() ) {
-			flValidar = false;
-			strMsg += "->Código da tarefa não informado.\n";
+			Random rand = new Random();
+			int randomNum = rand.nextInt((1999999) + 1) + 1000000;
+			this.frame.setTxfCodigo( String.valueOf( randomNum ) );
 		}
 		else {
 			try {
@@ -449,13 +451,6 @@ public class Programa {
 		tarefa.setEmAndamento( true );
 		tarefa.iniciarTempo();
 
-		//this.frame.contadorTable.repaint();
-		//this.frame.contadorTable.getSelectionModel().clearSelection();
-		//this.frame.habilitarBotaoInserir( true );
-		//this.frame.habilitarBotoes( false );
-		//this.frame.setTarefa( null );
-		//this.frame.limparTempoDecorrido();
-		//this.frame.mudarEstado( "" );
 		this.frame.habilitarContinuar( true );
 		this.transacao = 'I';
 		
@@ -498,12 +493,6 @@ public class Programa {
 		tarefa.setHoraIntervalo( new Date() );
 		tarefa.pararTempo();
 
-		//this.frame.contadorTable.repaint();
-		//this.frame.contadorTable.getSelectionModel().clearSelection();
-		//this.frame.habilitarBotaoInserir( true );
-		//this.frame.habilitarBotoes( false );
-		//this.frame.limparTempoDecorrido();
-		//this.frame.mudarEstado( "" );
 		this.frame.habilitarContinuar( false );
 		this.transacao = 'I';
 		
