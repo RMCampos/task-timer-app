@@ -1,4 +1,4 @@
-package contador;
+package data;
 
 import java.util.Date;
 import java.awt.event.ActionEvent;
@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.Timer;
 
 public class Tarefa {
+
 	private String codigo;
 	private String nome;
 	private String solicitante;
@@ -74,8 +75,7 @@ public class Tarefa {
 			String segS = (seg < 10)? "0"+seg : seg+"";
 
 			return( horaS+minS+segS );
-		}
-		catch( NumberFormatException e ) {
+	} catch (NumberFormatException e) {
 			System.out.println( "NumberFormatException: " + e.getLocalizedMessage() );
 			return( "00:00:00" );
 		}

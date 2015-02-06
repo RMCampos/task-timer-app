@@ -3,7 +3,7 @@
  * 
  * Licensed under the Academic Free License version 1.2
  */
-package contador;
+package view;
 
 import java.awt.Color;
 import java.awt.GridBagConstraints;
@@ -25,16 +25,25 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-/** Provides some surrounding UI to the JCalendar to allow the month and year to be changed, as well
- * as selecting the date.  It also provides an internal date change tracking to show a feedback background
- * color indicating the date has change, or to be queried by other containers. */
+/**
+ * Provides some surrounding UI to the JCalendar to allow the month and year to
+ * be changed, as well as selecting the date. It also provides an internal date
+ * change tracking to show a feedback background color indicating the date has
+ * change, or to be queried by other containers.
+ */
 public class JDatePicker extends JPanel {
-    /** Number of days in each month.  Used to adjust the day of the month near the boundary dates when
-     * switching the selected month. */ 
+
+    /**
+     * Number of days in each month. Used to adjust the day of the month near
+     * the boundary dates when switching the selected month.
+     */
     private static final int[] DAYS_IN_MONTH_LIST = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
     
-    /** Month labels used in selecting the month */
+    /**
+     * Month labels used in selecting the month
+     */
     private static final String[] MONTH_LIST;
+
     static {
         List<String> monthList = new ArrayList<>();
         SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM");
@@ -47,33 +56,47 @@ public class JDatePicker extends JPanel {
         MONTH_LIST = monthList.toArray(new String[12]);
     }
 
-    /** Internal state variable - used to store the original date stored in the component */
+    /**
+     * Internal state variable - used to store the original date stored in the
+     * component
+     */
     private Date originalDate = null;
 
-    /** Internal state varialble - the actual current date stored in the component */
+    /**
+     * Internal state varialble - the actual current date stored in the
+     * component
+     */
     private Date date = null;
     
-    /** Combo box to select the month */
+    /**
+     * Combo box to select the month
+     */
     private final JComboBox monthComboBox;
     
-    /** Spinner to select the year */
+    /**
+     * Spinner to select the year
+     */
     private final JSpinner yearSpinner;
     
-    /** Calendar component for displaying and selecting the date */
+    /**
+     * Calendar component for displaying and selecting the date
+     */
     private JCalendar calendarComponent;
 
     private final Color colorBackground = Color.WHITE;
     private final Color colorBackgroundChanged = new Color(0xFFFFAA);
     private final Color colorSelectedRange = Color.GREEN;
     
-    /** Construct a JDatePicker with no current selected date.  The month and
-     * year defeault to the current month and year. */
+    /**
+     * Construct a JDatePicker with no current selected date. The month and year
+     * defeault to the current month and year.
+     */
     public JDatePicker() {
         monthComboBox = new JComboBox();
         yearSpinner = new JSpinner();
         calendarComponent = new JCalendar();
 
-        monthComboBox.setModel(new DefaultComboBoxModel<String>(MONTH_LIST));
+	monthComboBox.setModel(new DefaultComboBoxModel<>(MONTH_LIST));
         this.setLayout(new GridBagLayout());
 
         JPanel calendarRegion = new JPanel();
@@ -113,9 +136,11 @@ public class JDatePicker extends JPanel {
     private final ActionListener calendarActions = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (e.getActionCommand() == JCalendar.ACTION_CURSOR_MOVED) {
+	    switch (e.getActionCommand()) {
+	    	case JCalendar.ACTION_CURSOR_MOVED:
                 updateCalendarHighlights();
-            } else if (e.getActionCommand() == JCalendar.ACTION_CLICKED) {
+		    break;
+	    	case JCalendar.ACTION_CLICKED:
                 date = calendarComponent.getCursorDate();
                 updateStatus();
                 updateCalendarHighlights();
@@ -125,8 +150,12 @@ public class JDatePicker extends JPanel {
         }
     };
 
-    /** See if any of the internal components has focus (and this the date picker itself).
-     * @return true if any internal components have focus */
+    /**
+     * See if any of the internal components has focus (and this the date picker
+     * itself).
+     *
+     * @return true if any internal components have focus
+     */
     @Override
     public boolean hasFocus() {
         boolean focused = false;
@@ -139,16 +168,18 @@ public class JDatePicker extends JPanel {
         return focused;
     }
 
-    /** Update the calendar view.  Get the selected month in the combo box, 
-     * get the selected year in the spinner, and show the appropriate month
-     * in the JCalendar view. */
+    /**
+     * Update the calendar view. Get the selected month in the combo box, get
+     * the selected year in the spinner, and show the appropriate month in the
+     * JCalendar view.
+     */
     private void updateCalendar() {
         Calendar calendarDate = Calendar.getInstance();
         if (getDate() != null) {
             calendarDate.setTime(getDate());
         }
         
-        int year = ((Integer) yearSpinner.getValue()).intValue();
+	int year = ((Integer) yearSpinner.getValue());
         int month = monthComboBox.getSelectedIndex();
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, year);
@@ -157,7 +188,9 @@ public class JDatePicker extends JPanel {
         calendarComponent.setCalendarView(calendar.getTime());
 
         int dayInMonth = calendarDate.get(Calendar.DAY_OF_MONTH);
-        if (dayInMonth > DAYS_IN_MONTH_LIST[month]) dayInMonth = DAYS_IN_MONTH_LIST[month];
+	if (dayInMonth > DAYS_IN_MONTH_LIST[month]) {
+	    dayInMonth = DAYS_IN_MONTH_LIST[month];
+	}
         
         calendarDate.set(Calendar.DAY_OF_MONTH, 1);
         calendarDate.set(Calendar.YEAR, year);
@@ -169,15 +202,21 @@ public class JDatePicker extends JPanel {
         }
     }
 
-    /** Highlight the currently selected date. */
+    /**
+     * Highlight the currently selected date.
+     */
     private void updateCalendarHighlights() {
         calendarComponent.clearDateHighlights();
-        if (date != null) calendarComponent.setDateHighlight(date, colorSelectedRange);
+	if (date != null) {
+	    calendarComponent.setDateHighlight(date, colorSelectedRange);
+	}
         calendarComponent.repaint();
     }
 
-    /** Provide special background highlight color if the current selection is different
-     * from the original selection. */
+    /**
+     * Provide special background highlight color if the current selection is
+     * different from the original selection.
+     */
     private void updateStatus() {
         if (isDateChanged()) {
             calendarComponent.setBackground(colorBackgroundChanged);
@@ -188,9 +227,11 @@ public class JDatePicker extends JPanel {
         }
     }
 
-    /**  Set the selected month in the combo box, and the selected year in the
-     * spinner.  Update the calendar view to reflect the new selections, as 
-     * well as the current date. */
+    /**
+     * Set the selected month in the combo box, and the selected year in the
+     * spinner. Update the calendar view to reflect the new selections, as well
+     * as the current date.
+     */
     private void updateView() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(calendarComponent.getCalendarView().getTime());
@@ -201,15 +242,21 @@ public class JDatePicker extends JPanel {
     }
 
     // ACTION LISTENER FUNCTIONALITY
-    /** Add an action listener.  The JCalendar provides ActionEvents for clicks
-     * as well as for moving the mouse between date cells.
-     * @param listener the listener object */
+    /**
+     * Add an action listener. The JCalendar provides ActionEvents for clicks as
+     * well as for moving the mouse between date cells.
+     *
+     * @param listener the listener object
+     */
     public final void addActionListener(ActionListener listener) {
         listenerList.add(ActionListener.class, listener);
     }
 
-    /** Remove an action listener.
-     * @param listener the listener object */
+    /**
+     * Remove an action listener.
+     *
+     * @param listener the listener object
+     */
     public final void removeActionListener(ActionListener listener) {
         listenerList.remove(ActionListener.class, listener);
     }
@@ -224,9 +271,12 @@ public class JDatePicker extends JPanel {
     }
 
     // DATE ACCESSORS
-    /** See if the current component date is different than the
-     * originally selected date.
-     * @return returns true if the date has changed */
+    /**
+     * See if the current component date is different than the originally
+     * selected date.
+     *
+     * @return returns true if the date has changed
+     */
     public boolean isDateChanged() {
         if (originalDate != null) {
             return (!originalDate.equals(getDate()));
@@ -234,23 +284,30 @@ public class JDatePicker extends JPanel {
         return false;
     }
 
-    /** Sets the originally selected date.  This affects the <code>isDateChanged()</code>
-     * method, as well as special highlighting to indicate that the date has changed.
-     * @param date the originally selected date */
+    /**
+     * Sets the originally selected date. This affects the
+     * <code>isDateChanged()</code> method, as well as special highlighting to
+     * indicate that the date has changed.
+     *
+     * @param date the originally selected date
+     */
     public void setOriginalDate(Date date) {
         this.originalDate = new JCalendar.BasicDate(date).getDate();
         updateStatus();
     }
 
-    /** Sets the currently selected date.  The calendar month and year UI is updated to
-     * reflect the date, and the JCalendar view itself displays the specified date as
-     * being highlighted selected.
-     * @param date the date to be selected and highlighted in the UI */
+    /**
+     * Sets the currently selected date. The calendar month and year UI is
+     * updated to reflect the date, and the JCalendar view itself displays the
+     * specified date as being highlighted selected.
+     *
+     * @param date the date to be selected and highlighted in the UI
+     */
     public void setDate(Date date) {
         if (date != null) {
             JCalendar.BasicDate oldDate = new JCalendar.BasicDate(this.date);
             this.date = new JCalendar.BasicDate(date).getDate();
-            if (oldDate != null && !this.date.equals(oldDate)) {
+	    if (!this.date.equals(oldDate.getDate())) {
                 ActionEvent event = new ActionEvent(JDatePicker.this, ActionEvent.ACTION_PERFORMED, "changed", System.currentTimeMillis(), 0);
                 fireActionPerformed(event);
             }
@@ -263,8 +320,12 @@ public class JDatePicker extends JPanel {
         updateView();
     }
 
-    /** Get the currently selected date.
-     * @return return the currently selected date in the component, or null if no date is selected */
+    /**
+     * Get the currently selected date.
+     *
+     * @return return the currently selected date in the component, or null if
+     * no date is selected
+     */
     public Date getDate() {
         return date != null ? new Date(date.getTime()) : null;
     }

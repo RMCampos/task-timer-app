@@ -1,14 +1,14 @@
-package contador;
+package database;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.sql.SQLException;
 
 public class ConnectionHolder {
+
 	private static BD instance;
 
-	protected ConnectionHolder() {}
+    protected ConnectionHolder() {
+    }
 
 	public static Connection getConnection() throws SQLException, ClassNotFoundException {
 		if( instance == null ) {
@@ -25,8 +25,7 @@ public class ConnectionHolder {
 			if( !instance.existsDataBase() ) {
 				instance.criarBancoDeDados( "" );
 			}
-		}
-		catch( ClassNotFoundException cl ){
+	} catch (ClassNotFoundException cl) {
 			System.out.println( "ClassNotFoundException: " + cl.getMessage() );
 		}
 	}

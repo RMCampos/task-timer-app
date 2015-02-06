@@ -3,7 +3,7 @@
  * 
  * Licensed under the Academic Free License version 1.2
  */
-package contador;
+package view;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -27,25 +27,40 @@ import java.util.HashMap;
 import java.util.List;
 import javax.swing.JPanel;
 
-/** This class renders and provides some UI interaction for a single calendar month.  When rendered, it
- * stretches to fit the area the component must occupy.  It provides action events for clicks and
- * cell changes.  It is intended to be used in more complex components to provide date selection, or
- * presentation capability. */
+/**
+ * This class renders and provides some UI interaction for a single calendar
+ * month. When rendered, it stretches to fit the area the component must occupy.
+ * It provides action events for clicks and cell changes. It is intended to be
+ * used in more complex components to provide date selection, or presentation
+ * capability.
+ */
 public class JCalendar extends JPanel {
-    /** This action event name indicates that the cursor has moved between date cells
-     * within the calendar. */
+
+    /**
+     * This action event name indicates that the cursor has moved between date
+     * cells within the calendar.
+     */
     public static final String ACTION_CURSOR_MOVED = "cursorMoved";
     
-    /** This action event name indicates that the calendar has been clicked.  */
+    /**
+     * This action event name indicates that the calendar has been clicked.
+     */
     public static final String ACTION_CLICKED = "clicked";
 
-    /** This class reduced Java's Date class into a simpler format for comparison purposes
-     * I effectively strips time out of the date and compares the simple text representation,
-     * but can return a Date object if necessary. */
+    /**
+     * This class reduced Java's Date class into a simpler format for comparison
+     * purposes I effectively strips time out of the date and compares the
+     * simple text representation, but can return a Date object if necessary.
+     */
     public static class BasicDate implements Serializable {
-        private SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-        private String textDate;
-        public BasicDate(Date date) { textDate = format.format(date == null ? new Date(0) : date); }
+
+	private final SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+	private final String textDate;
+
+	public BasicDate(Date date) {
+	    textDate = format.format(date == null ? new Date(0) : date);
+	}
+
         public Date getDate() { 
             try { 
                 return format.parse(textDate);
@@ -53,19 +68,30 @@ public class JCalendar extends JPanel {
                 return null;
             }
         }
-        public int hashCode() { return textDate.hashCode(); }
+
+	@Override
+	public int hashCode() {
+	    return textDate.hashCode();
+	}
+
+	@Override
         public boolean equals(Object o) {
-            if (o instanceof BasicDate) return textDate.equals(((BasicDate)o).textDate);
+	    if (o instanceof BasicDate) {
+		return textDate.equals(((BasicDate) o).textDate);
+	    }
             return false;
         }
     }
 
-    /** Short day-of-the-week labels used along the calendar heading */
-    private static String[] DAY_OF_WEEK_LABELS;
+    /**
+     * Short day-of-the-week labels used along the calendar heading
+     */
+    private final static String[] DAY_OF_WEEK_LABELS;
+
     static {
         // initialize the day-of-week labels using a date formatter
         // so as to be pre-localized
-        List<String> dayList = new ArrayList<String>();
+	List<String> dayList = new ArrayList<>();
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEE");
         Calendar calendar = Calendar.getInstance();
         for (int day = 1; day <= 7; day++) {
@@ -75,30 +101,46 @@ public class JCalendar extends JPanel {
         DAY_OF_WEEK_LABELS = dayList.toArray(new String[7]);
     }
     
-    /** Internal state variable - current visible month */
+    /**
+     * Internal state variable - current visible month
+     */
     private int month;
-    /** Internal state variable - current visible year */
+    /**
+     * Internal state variable - current visible year
+     */
     private int year;
-    /** Internal state variable - true if mouse cursor is currently over a date */
+    /**
+     * Internal state variable - true if mouse cursor is currently over a date
+     */
     private boolean useRolloverHighlight = true;
-    /** Internal state variable - the date the mouse cursor is currently over */
+    /**
+     * Internal state variable - the date the mouse cursor is currently over
+     */
     private BasicDate cursorDate = null;
-    /** Internal state variable - the date that the mouse was over when the button was first pressed */
+    /**
+     * Internal state variable - the date that the mouse was over when the
+     * button was first pressed
+     */
     private BasicDate beginClickDate = null;
-    /** Internal state variable - a map that describes which date cells should be displayed using a custom color */
-    private HashMap<BasicDate, Color> dateHighlightMap = new HashMap<BasicDate, Color>();
+    /**
+     * Internal state variable - a map that describes which date cells should be
+     * displayed using a custom color
+     */
+    private final HashMap<BasicDate, Color> dateHighlightMap = new HashMap<>();
 
-    private Color colorNeighborMonthBackground = Color.WHITE;
-    private Color colorNeighborDayLabel = Color.LIGHT_GRAY;
-    private Color colorMonthBorderBackground = Color.GRAY;
-    private Color colorMonthBackground = Color.WHITE;
-    private Color colorDayHighlightBackground = Color.BLUE;
-    private Color colorDayLabel = Color.BLACK;
-    private Color colorDayHighlightLabel = Color.WHITE;
-    private Color colorDayOfWeekLabel = Color.LIGHT_GRAY;
-    private Color colorWeekOfYearLabel = Color.LIGHT_GRAY;
-    
-    /** Construct a JCalendar initialized to display the current month and year. */
+    private final Color colorNeighborMonthBackground = Color.WHITE;
+    private final Color colorNeighborDayLabel = Color.LIGHT_GRAY;
+    private final Color colorMonthBorderBackground = Color.GRAY;
+    private final Color colorMonthBackground = Color.WHITE;
+    private final Color colorDayHighlightBackground = Color.BLUE;
+    private final Color colorDayLabel = Color.BLACK;
+    private final Color colorDayHighlightLabel = Color.WHITE;
+    private final Color colorDayOfWeekLabel = Color.LIGHT_GRAY;
+    private final Color colorWeekOfYearLabel = Color.LIGHT_GRAY;
+
+    /**
+     * Construct a JCalendar initialized to display the current month and year.
+     */
     public JCalendar() {
         // initialize with current month and year
         Calendar calendar = Calendar.getInstance();
@@ -116,9 +158,12 @@ public class JCalendar extends JPanel {
     }
 
     // UI FUNCTIONALITY    
-    private MouseMotionListener mouseMotionListener = new MouseMotionListener() {
-        public void mouseDragged(MouseEvent e) {}
+    private final MouseMotionListener mouseMotionListener = new MouseMotionListener() {
+	@Override
+	public void mouseDragged(MouseEvent e) {
+	}
 
+	@Override
         public void mouseMoved(MouseEvent e) {
             beginClickDate = null;
             if (isEnabled()) {
@@ -135,15 +180,19 @@ public class JCalendar extends JPanel {
         }
     };
 
-    private MouseListener mouseListener = new MouseListener() {
-        public void mouseClicked(MouseEvent e) {}
+    private final MouseListener mouseListener = new MouseListener() {
+	@Override
+	public void mouseClicked(MouseEvent e) {
+	}
 
+	@Override
         public void mousePressed(MouseEvent e) {
             if (isEnabled()) {
                 beginClickDate = cursorDate;
             }
         }
 
+	@Override
         public void mouseReleased(MouseEvent e) {
             if (isEnabled() && beginClickDate != null) {
                 Date mouseOverDate = getDate(e.getX(), e.getY());
@@ -155,8 +204,11 @@ public class JCalendar extends JPanel {
             }
         }
 
-        public void mouseEntered(MouseEvent e) {}
+	@Override
+	public void mouseEntered(MouseEvent e) {
+	}
 
+	@Override
         public void mouseExited(MouseEvent e) {
             if (isEnabled()) {
                 cursorDate = null;
@@ -167,15 +219,24 @@ public class JCalendar extends JPanel {
         }
     };
 
-    /** Toggle whether or to highlight the date when the mouse rolls over it.
-     * @param useRolloverHighlight if true, rollover highlighting is enabled. */
-    public void setUsesRolloverHighlight(boolean useRolloverHighlight) { this.useRolloverHighlight = useRolloverHighlight; }
+    /**
+     * Toggle whether or to highlight the date when the mouse rolls over it.
+     *
+     * @param useRolloverHighlight if true, rollover highlighting is enabled.
+     */
+    public void setUsesRolloverHighlight(boolean useRolloverHighlight) {
+	this.useRolloverHighlight = useRolloverHighlight;
+    }
 
-    /** Find the date value for the given X, Y coordinates relative to the top-left
-     * corner of the calendar.  Used to find which cell the mouse is over.
+    /**
+     * Find the date value for the given X, Y coordinates relative to the
+     * top-left corner of the calendar. Used to find which cell the mouse is
+     * over.
+     *
      * @param dateX the x coordinate used in the lookup
      * @param dateY the y coordinate used in the lookup
-     * @return the date of the cell intersected by the X, Y coordinates */
+     * @return the date of the cell intersected by the X, Y coordinates
+     */
     public Date getDate(int dateX, int dateY) {
         Date returnDate = null;
 
@@ -197,7 +258,8 @@ public class JCalendar extends JPanel {
                 int w = (int) Math.ceil(cellWidth);
                 int h = (int) Math.ceil(cellHeight);
                 Rectangle rectangle = new Rectangle(x, y, w, h);
-                if (iRow == 0 || iColumn == 0) {} else {
+		if (iRow == 0 || iColumn == 0) {
+		} else {
                     if (iColumn > 0) {
                         if (rectangle.contains(dateX, dateY)) {
                             returnDate = new Date(date.getTimeInMillis());
@@ -211,10 +273,14 @@ public class JCalendar extends JPanel {
         return new BasicDate(returnDate).getDate();
     }
     
-    /** Paint the JCalendar.  Without the paint method, the component is pretty much nothing.
-     * Labels days of the week, weeks of the year, and days of the month.  Also paints special
-     * highlight colors in date cells.
-     * @param g Graphics object used for painting. */
+    /**
+     * Paint the JCalendar. Without the paint method, the component is pretty
+     * much nothing. Labels days of the week, weeks of the year, and days of the
+     * month. Also paints special highlight colors in date cells.
+     *
+     * @param g Graphics object used for painting.
+     */
+    @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
@@ -262,7 +328,7 @@ public class JCalendar extends JPanel {
                     }
                 } else {
                     BasicDate dateObject = new BasicDate(new Date(date.getTimeInMillis()));
-                    long oldDate = dateObject == null ? 0 : dateObject.getDate().getTime();
+		    long oldDate = dateObject.getDate().getTime();
                     long newDate = cursorDate == null ? 0 : cursorDate.getDate().getTime();
 
                     boolean mouseOver = oldDate == newDate;
@@ -314,20 +380,26 @@ public class JCalendar extends JPanel {
     }
 
     // ACTION LISTENER FUNCTIONALITY
-    /** Add an action listener.  The JCalendar provides ActionEvents for clicks
-     * as well as for moving the mouse between date cells.
-     * @param listener the listener object */
+    /**
+     * Add an action listener. The JCalendar provides ActionEvents for clicks as
+     * well as for moving the mouse between date cells.
+     *
+     * @param listener the listener object
+     */
     public final void addActionListener(ActionListener listener) {
         listenerList.add(ActionListener.class, listener);
     }
 
-    /** Remove an action listener.
-     * @param listener the listener object */
+    /**
+     * Remove an action listener.
+     *
+     * @param listener the listener object
+     */
     public final void removeActionListener(ActionListener listener) {
         listenerList.remove(ActionListener.class, listener);
     }
 
-    private final void fireActionPerformed(ActionEvent event) {
+    private void fireActionPerformed(ActionEvent event) {
         Object[] listeners = listenerList.getListenerList();
         for (int i = listeners.length - 2; i >= 0; i -= 2) {
             if (listeners[i] == ActionListener.class) {
@@ -337,10 +409,13 @@ public class JCalendar extends JPanel {
     }
 
     // DATE ACCESSORS
-    /** Set the date which determines the month and year rendered by
-     * the calendar view.  The JCalendar object will use the month and
-     * year contained in the Date object.
-     * @param date the date used to set the month and year */
+    /**
+     * Set the date which determines the month and year rendered by the calendar
+     * view. The JCalendar object will use the month and year contained in the
+     * Date object.
+     *
+     * @param date the date used to set the month and year
+     */
     public void setCalendarView(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(date.getTime());
@@ -349,10 +424,13 @@ public class JCalendar extends JPanel {
         repaint();
     }
 
-    /** Get a date which corresponds with the currently viewed month
-     * on the JCalendar.  The date will be the beginning of the first
-     * day of the viewed month and year. 
-     * @return a date representing the currently viewed month in the calendar */
+    /**
+     * Get a date which corresponds with the currently viewed month on the
+     * JCalendar. The date will be the beginning of the first day of the viewed
+     * month and year.
+     *
+     * @return a date representing the currently viewed month in the calendar
+     */
     public Date getCalendarView() {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.MILLISECOND, 0);
@@ -365,11 +443,14 @@ public class JCalendar extends JPanel {
         return new BasicDate(new Date(calendar.getTimeInMillis())).getDate();
     }
 
-    /** Provide a special highlight color for a particular date on the Calendar.
+    /**
+     * Provide a special highlight color for a particular date on the Calendar.
      * The color provided will be used to colorize the particular day on the
      * JCalendar with a custom color.
+     *
      * @param date the date to be highlighted
-     * @param color the color to be used in highlighting the date cell */
+     * @param color the color to be used in highlighting the date cell
+     */
     public void setDateHighlight(Date date, Color color) {
         BasicDate basicDate = new BasicDate(date);
         if (color == null) {
@@ -379,23 +460,32 @@ public class JCalendar extends JPanel {
         }
     }
 
-    /** Get the highlight color for a particular date if there is one.  This will
-     * always return null until some highlights have been set for specific dates.
+    /**
+     * Get the highlight color for a particular date if there is one. This will
+     * always return null until some highlights have been set for specific
+     * dates.
+     *
      * @param date the date for which the highlight color is desired
-     * @return the color used to highlight the specified date */
+     * @return the color used to highlight the specified date
+     */
     public Color getDateHighlight(Date date) {
         BasicDate basicDate = new BasicDate(date);
         return dateHighlightMap.get(basicDate);
     }
 
-    /** Resets the highlights in the JCalendar so that no dates are highlighted. */
+    /**
+     * Resets the highlights in the JCalendar so that no dates are highlighted.
+     */
     public void clearDateHighlights() {
         dateHighlightMap.clear();
     }
 
-    /** Get the date over which the mouse cursor is positioned or was at the beginning of 
-     * a click.
-     * @return the date that the mouse is over */
+    /**
+     * Get the date over which the mouse cursor is positioned or was at the
+     * beginning of a click.
+     *
+     * @return the date that the mouse is over
+     */
     public Date getCursorDate() {
         return cursorDate != null ? cursorDate.getDate() : null;
     }

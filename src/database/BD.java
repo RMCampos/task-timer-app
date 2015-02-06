@@ -1,4 +1,4 @@
-package contador;
+package database;
 
 import java.io.File;
 import java.sql.Connection;
@@ -6,8 +6,10 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.SQLException;
+import utils.OS;
 
 public class BD {
+
 	private Connection connection;
 
 	public BD() throws SQLException, ClassNotFoundException {
@@ -21,12 +23,10 @@ public class BD {
 
 			if( f.exists() && f.isDirectory() ) {
 				return( "jdbc:sqlite:" + f.getAbsolutePath() + "\\Contador.db" );
-			}
-			else {
+	    } else {
 				return( "jdbc:sqlite:" + System.getProperty("user.home").substring( 0, System.getProperty("user.home").length()-1 ) + "\\Contador.db" );
 			}
-		}
-		else {
+	} else {
 			File f = new File( System.getProperty( "user.home" ) );
 			return( "jdbc:sqlite:" + f.getAbsolutePath() + "/.Contador/Contador.db" );
 		}
@@ -50,8 +50,7 @@ public class BD {
 	public void fecharConexao() {
 		try {
 			this.connection.close();
-		}
-		catch( SQLException ex ) {
+	} catch (SQLException ex) {
 			System.out.println( "SQL Exception: " + ex.getLocalizedMessage() );
 		}
 	}
@@ -64,22 +63,22 @@ public class BD {
 
 			this.connection.setAutoCommit( false );
 
-			String comandoSQL =
-				"CREATE TABLE IF NOT EXISTS tarefa " +
-				"(" +
-				" codigo INTEGER NOT NULL," +
-				" descricao VARCHAR(100) NOT NULL," +
-				" solicitante VARCHAR(50) NOT NULL," +
-				" obs VARCHAR(500) NOT NULL," +
-				" dataHoraInclusao DATETIME NOT NULL," +
-				" dataHoraInicio DATETIME NOT NULL," +
-				" dataHoraTermino DATETIME NOT NULL," +
-				" tempoDecorrido TIME NOT NULL," +
-				" emAndamento CHAR NOT NULL," +
-				" finalizada CHAR NOT NULL," +
-				" anotacoes VARCHAR(5000) NULL," +
-				" PRIMARY KEY(codigo) " +
-				")";
+	    String comandoSQL
+		    = "CREATE TABLE IF NOT EXISTS tarefa "
+		    + "("
+		    + " codigo INTEGER NOT NULL,"
+		    + " descricao VARCHAR(100) NOT NULL,"
+		    + " solicitante VARCHAR(50) NOT NULL,"
+		    + " obs VARCHAR(500) NOT NULL,"
+		    + " dataHoraInclusao DATETIME NOT NULL,"
+		    + " dataHoraInicio DATETIME NOT NULL,"
+		    + " dataHoraTermino DATETIME NOT NULL,"
+		    + " tempoDecorrido TIME NOT NULL,"
+		    + " emAndamento CHAR NOT NULL,"
+		    + " finalizada CHAR NOT NULL,"
+		    + " anotacoes VARCHAR(5000) NULL,"
+		    + " PRIMARY KEY(codigo) "
+		    + ")";
 
 			Statement st = this.connection.createStatement();
 			System.out.println( "SQL: Creating table ..." );
@@ -91,8 +90,7 @@ public class BD {
 				this.connection.rollback();
 			}
 			this.connection.commit();
-		}
-		catch( SQLException e ) {
+	} catch (SQLException e) {
 			System.out.println( "SQLException: " + e.getLocalizedMessage() );
 		}
 	}
@@ -105,11 +103,11 @@ public class BD {
 
 			Statement st = this.connection.createStatement();
 
-			String comandoSQL =
-				"SELECT name " +
-				"FROM sqlite_master " +
-				"WHERE type='table' " +
-				"	AND name = 'tarefa'";
+	    String comandoSQL
+		    = "SELECT name "
+		    + "FROM sqlite_master "
+		    + "WHERE type='table' "
+		    + "	AND name = 'tarefa'";
 
 			System.out.println( "SQL: Checking table.." );
 
@@ -121,8 +119,7 @@ public class BD {
 			}
 			System.out.println( "SQL: Table does not exist." );
 			return( false );
-		}
-		catch( SQLException e ) {
+	} catch (SQLException e) {
 			System.out.println( "SQLException: " + e.getLocalizedMessage() );
 			return( false );
 		}

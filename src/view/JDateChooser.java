@@ -3,7 +3,7 @@
  * 
  * Licensed under the Academic Free License version 1.2
  */
-package contador;
+package view;
 
 import java.applet.Applet;
 import java.awt.Color;
@@ -43,16 +43,23 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.plaf.basic.BasicArrowButton;
 
-/** This date chooser provides a combo box for selecting dates.  The date can be typed into
- * the input field, or selected from a combo popup which provides a GUI calendar date
- * picker.  The text date parsing is unique in that numerous date formats can be handled by the
- * text date parser. */
+/**
+ * This date chooser provides a combo box for selecting dates. The date can be
+ * typed into the input field, or selected from a combo popup which provides a
+ * GUI calendar date picker. The text date parsing is unique in that numerous
+ * date formats can be handled by the text date parser.
+ */
 public class JDateChooser extends JPanel {
-    /** Stores the last date formatter that successfully parsed a date */
+
+    /**
+     * Stores the last date formatter that successfully parsed a date
+     */
     //protected static DateFormat lastDateFormat = new SimpleDateFormat("MM/dd/yyyy");
     protected static DateFormat lastDateFormat = new SimpleDateFormat("dd/MM/yyyy");
     
-    /** A set of date formatters that could be used for parsing dates */
+    /**
+     * A set of date formatters that could be used for parsing dates
+     */
     protected static final SimpleDateFormat[] DATE_FORMATS = new SimpleDateFormat[] {
         new SimpleDateFormat("dd MMM yyyy"),
         new SimpleDateFormat("dd/MM/yyyy"),
@@ -61,35 +68,54 @@ public class JDateChooser extends JPanel {
         new SimpleDateFormat("ddMMyy" )
     };
 
-    /** Internal state varialble - date formatter for current local date format */
+    /**
+     * Internal state varialble - date formatter for current local date format
+     */
     protected DateFormat currentDateFormat = lastDateFormat;
     
-    /** Internal state varialble - the original selected date */
+    /**
+     * Internal state varialble - the original selected date
+     */
     protected Date originalDate = null;
     
-    /** Internal state varialble - the current selected date */
+    /**
+     * Internal state varialble - the current selected date
+     */
     protected Date date = null;
     
-    /** Internal state varialble - flag indicating whether the popup is visible or not */
+    /**
+     * Internal state varialble - flag indicating whether the popup is visible
+     * or not
+     */
     protected boolean datePickerVisible = false;
 
-    /** Date field for editing the date manually */
+    /**
+     * Date field for editing the date manually
+     */
     protected JTextField dateField;
     
-    /** The combo box toggle button */
+    /**
+     * The combo box toggle button
+     */
     protected JButton comboBoxButton;
     
-    /** The popup window date chooser window*/
+    /**
+     * The popup window date chooser window
+     */
     protected JWindow datePickerWindow;
     
-    /** The date picker within the popup window */
+    /**
+     * The date picker within the popup window
+     */
     protected JDatePicker datePicker;
     
     private final Color colorBackground = Color.WHITE;
     private final Color colorBackgroundError = new Color(0xFFAAAA);
     private final Color colorBackgroundChange = Color.WHITE;
     
-    /** Construct a JDateChooser initialized with selected date. */    
+    /**
+     * Construct a JDateChooser initialized with selected date.
+     */
     public JDateChooser() {
         dateField = new JTextField();
         comboBoxButton = new BasicArrowButton(BasicArrowButton.SOUTH, UIManager.getColor("ComboBox.buttonBackground"), UIManager.getColor("ComboBox.buttonShadow"), UIManager.getColor("ComboBox.buttonDarkShadow"), UIManager.getColor("ComboBox.buttonHighlight"));
@@ -144,10 +170,12 @@ public class JDateChooser extends JPanel {
           onTextChange();
           format();
         }
+
         @Override
         public void removeUpdate(DocumentEvent e) { 
           onTextChange();
         }
+
         @Override
         public void changedUpdate(DocumentEvent e) {
           onTextChange();
@@ -168,34 +196,55 @@ public class JDateChooser extends JPanel {
               dateField.setText( dfCorreto.format( d ) );
             }
           });
+	    } catch (ParseException p) {
         }
-        catch( ParseException p ){}
       }
     }
     
     private final ComponentListener componentListener = new ComponentListener() {
         @Override
-        public void componentResized(ComponentEvent e) { hideDatePicker(); }
+	public void componentResized(ComponentEvent e) {
+	    hideDatePicker();
+	}
+
         @Override
-        public void componentMoved(ComponentEvent e) { hideDatePicker(); }
+	public void componentMoved(ComponentEvent e) {
+	    hideDatePicker();
+	}
+
         @Override
-        public void componentShown(ComponentEvent e) { hideDatePicker(); }
+	public void componentShown(ComponentEvent e) {
+	    hideDatePicker();
+	}
+
         @Override
-        public void componentHidden(ComponentEvent e) { hideDatePicker(); }
+	public void componentHidden(ComponentEvent e) {
+	    hideDatePicker();
+	}
     };
     
     private final WindowFocusListener windowFocusListener = new WindowFocusListener() {
         @Override
-        public void windowGainedFocus(WindowEvent e) { }
+	public void windowGainedFocus(WindowEvent e) {
+	}
+
         @Override
-        public void windowLostFocus(WindowEvent e) { hideDatePicker(); }
+	public void windowLostFocus(WindowEvent e) {
+	    hideDatePicker();
+	}
     };
     
     private final AncestorListener ancestorListener = new AncestorListener() {
         @Override
-        public void ancestorAdded(AncestorEvent event){ hideDatePicker(); }
+	public void ancestorAdded(AncestorEvent event) {
+	    hideDatePicker();
+	}
+
         @Override
-        public void ancestorRemoved(AncestorEvent event){ hideDatePicker(); }
+	public void ancestorRemoved(AncestorEvent event) {
+	    hideDatePicker();
+	}
+
         @Override
         public void ancestorMoved(AncestorEvent event){
             if (event.getSource() != datePickerWindow) {
@@ -204,18 +253,26 @@ public class JDateChooser extends JPanel {
         }
     };
 
-    /** Find the frame parent of the component. 
-     * @param component the component whose frame is needed */
+    /**
+     * Find the frame parent of the component.
+     *
+     * @param component the component whose frame is needed
+     */
     private Frame getFrame(Component component) {
-        if (component == null) component = this;
+	if (component == null) {
+	    component = this;
+	}
         if (component.getParent() instanceof Frame) {
             return (Frame) component.getParent();
         }
         return getFrame(component.getParent());
     }
     
-    /** Toggle the visiblity of the date picker selection popup.  This is used as a response to the
-     * combo box toggle button, but it can be manually toggled as well if there is some need. */
+    /**
+     * Toggle the visiblity of the date picker selection popup. This is used as
+     * a response to the combo box toggle button, but it can be manually toggled
+     * as well if there is some need.
+     */
     public void showDatePicker() {
         if (datePickerWindow == null) {
             datePickerWindow = new JWindow(getFrame(null));
@@ -228,17 +285,27 @@ public class JDateChooser extends JPanel {
             datePicker.setFocusable(true);
         }
         if (datePickerVisible == false) {
-            Date date = getDate();
-            if (date != null || datePicker.getDate() != null) datePicker.setDate(date);
+	    Date dateLocal = getDate();
+	    if (dateLocal != null || datePicker.getDate() != null) {
+		datePicker.setDate(dateLocal);
+	    }
             Dimension max = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
             int x = JDateChooser.this.getWidth()-250+JDateChooser.this.getLocationOnScreen().x;
             int y = JDateChooser.this.getLocationOnScreen().y+JDateChooser.this.getHeight();
             int w = 250;
             int h = 220;
-            if (x + w > max.width) x = max.width - w;
-            if (x < 0) x = 0;
-            if (y + h > max.height) y = JDateChooser.this.getLocationOnScreen().y - h;
-            if (y < 0) y = 0;
+	    if (x + w > max.width) {
+		x = max.width - w;
+	    }
+	    if (x < 0) {
+		x = 0;
+	    }
+	    if (y + h > max.height) {
+		y = JDateChooser.this.getLocationOnScreen().y - h;
+	    }
+	    if (y < 0) {
+		y = 0;
+	    }
             datePickerWindow.setLocation(x, y);
             datePickerWindow.setSize(w, h);
             datePickerWindow.setVisible(true);
@@ -247,7 +314,9 @@ public class JDateChooser extends JPanel {
         }
     }
 
-    /** Hide the date picker popup if it is currently visible. */
+    /**
+     * Hide the date picker popup if it is currently visible.
+     */
     public void hideDatePicker() {
         if (datePickerVisible == true) {
             datePickerWindow.setVisible(false);
@@ -255,7 +324,10 @@ public class JDateChooser extends JPanel {
         }
     }
     
-    /** Handle parsing the text field date and updating the rest of the UI accorindingly. */
+    /**
+     * Handle parsing the text field date and updating the rest of the UI
+     * accorindingly.
+     */
     private void onTextChange() {
         String text = dateField.getText();
         date = null;
@@ -287,15 +359,21 @@ public class JDateChooser extends JPanel {
     }
 
     // ACTION LISTENER FUNCTIONALITY
-    /** Add an action listener.  The JCalendar provides ActionEvents for clicks
-     * as well as for moving the mouse between date cells.
-     * @param listener the listener object */
+    /**
+     * Add an action listener. The JCalendar provides ActionEvents for clicks as
+     * well as for moving the mouse between date cells.
+     *
+     * @param listener the listener object
+     */
     public final void addActionListener(ActionListener listener) {
         listenerList.add(ActionListener.class, listener);
     }
 
-    /** Remove an action listener.
-     * @param listener the listener object */
+    /**
+     * Remove an action listener.
+     *
+     * @param listener the listener object
+     */
     public final void removeActionListener(ActionListener listener) {
         listenerList.remove(ActionListener.class, listener);
     }
@@ -310,9 +388,13 @@ public class JDateChooser extends JPanel {
     }
     
     // DATE ACCESSORS
-    /** Set the current selected date of the date chooser.  The date may be null.
-     * This will update the text field and the rest of the UI to reflect the change.
-     * @param date the newly current selected date */
+    /**
+     * Set the current selected date of the date chooser. The date may be null.
+     * This will update the text field and the rest of the UI to reflect the
+     * change.
+     *
+     * @param date the newly current selected date
+     */
     public void setDate(Date date) {
         if (date != null) {
             dateField.setText(currentDateFormat.format(date));
@@ -322,36 +404,56 @@ public class JDateChooser extends JPanel {
         onTextChange();
     }
     
-    /** Set the originally selected date.  Used in detecting changes in the date
+    /**
+     * Set the originally selected date. Used in detecting changes in the date
      * selection of the component.
-     * @param date the originally selected date */
+     *
+     * @param date the originally selected date
+     */
     public void setOriginalDate(Date date) {
         this.originalDate = date;
         onTextChange();
     }
     
-    /** Get the currently chosen date.
-     * @return the date currently selected, or null if no date is selected (or if text date is invalid) */
+    /**
+     * Get the currently chosen date.
+     *
+     * @return the date currently selected, or null if no date is selected (or
+     * if text date is invalid)
+     */
     public Date getDate() {
         return (Date) date;
     }
     
-    /** Check to see if the currently selected date differs from the original date holder
-     * variable. 
-     * @return true if the date selection has changed, false otherwise */
+    /**
+     * Check to see if the currently selected date differs from the original
+     * date holder variable.
+     *
+     * @return true if the date selection has changed, false otherwise
+     */
     public boolean isDateChanged() { 
-        if (date == null && originalDate == null) return false;
-        if (originalDate == null) return true;
+	if (date == null && originalDate == null) {
+	    return false;
+	}
+	if (originalDate == null) {
+	    return true;
+	}
         return (date != null && !date.equals(originalDate));
     }
     
     // COMBO BOX UI
-    /** This class performs the ComboBox style layout of the component elements. */
+    /**
+     * This class performs the ComboBox style layout of the component elements.
+     */
     private class ComboBoxLayout implements LayoutManager {
+
         @Override
-        public void addLayoutComponent(String name, Component component) {}
+	public void addLayoutComponent(String name, Component component) {
+	}
+
         @Override
-        public void removeLayoutComponent(Component component) {}
+	public void removeLayoutComponent(Component component) {
+	}
 
         @Override
         public Dimension preferredLayoutSize(Container parent) {
@@ -394,15 +496,22 @@ public class JDateChooser extends JPanel {
         }
     }
 
-    /** Takes a set of dimensions and derives a maximum dimension that can be applied to other components. */
+    /**
+     * Takes a set of dimensions and derives a maximum dimension that can be
+     * applied to other components.
+     */
     private static Dimension combineDimensions(Dimension[] dimensions, boolean maximum) {
         if (maximum) {
             int w = 0;
             int h = 0;
             int size = dimensions.length;
             for (int i = 0; i < size; i++) {
-                if (dimensions[i].width > w) w = dimensions[i].width;
-                if (dimensions[i].height > h) h = dimensions[i].height;
+		if (dimensions[i].width > w) {
+		    w = dimensions[i].width;
+		}
+		if (dimensions[i].height > h) {
+		    h = dimensions[i].height;
+		}
             }
             return new Dimension(w, h);
         } else {
@@ -410,17 +519,24 @@ public class JDateChooser extends JPanel {
             int h = 100000;
             int size = dimensions.length;
             for (int i = 0; i < size; i++) {
-                if (dimensions[i].width < w) w = dimensions[i].width;
-                if (dimensions[i].height < h) h = dimensions[i].height;
+		if (dimensions[i].width < w) {
+		    w = dimensions[i].width;
+		}
+		if (dimensions[i].height < h) {
+		    h = dimensions[i].height;
+		}
             }
             return new Dimension(w, h);
         }
     }
     
-    /** Try to determine if an event is within the popup window so that it
-     * can be automatically closed if an event occurs outside of it.
+    /**
+     * Try to determine if an event is within the popup window so that it can be
+     * automatically closed if an event occurs outside of it.
+     *
      * @param source source component
-     * @return true is source component is a descendent of the JDateChooser */
+     * @return true is source component is a descendent of the JDateChooser
+     */
     private static boolean isInPopup(Component source) {
         for (Component component = source; component != null; component = component.getParent()) {
             if (component instanceof Applet || component instanceof Window) {

@@ -1,11 +1,13 @@
-package contador;
+package model;
 
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
+import data.TarefaResultado;
 
 public class TarefaResultadoModel extends DefaultTableModel {
-	private ArrayList<TarefaResultado> linhas;
+
+    private final ArrayList<TarefaResultado> linhas;
 	public static final int COL_SELECIONADA = 0;
 	public static final int COL_CODIGO = 1;
 	public static final int COL_NOME = 2;
@@ -21,26 +23,40 @@ public class TarefaResultadoModel extends DefaultTableModel {
 	@Override
 	public Class getColumnClass( int column ) {
 		switch( column ) {
-			case COL_SELECIONADA: return( Boolean.class );
-			case COL_CODIGO: return( String.class );
-			case COL_NOME: return( String.class );
-			case COL_SOLICITANTE: return( String.class );
-			case COL_ANDAMENTO: return( Character.class );
-			case COL_FINALIZADA: return( Character.class );
-			default: return( String.class );
+	    case COL_SELECIONADA:
+		return (Boolean.class);
+	    case COL_CODIGO:
+		return (String.class);
+	    case COL_NOME:
+		return (String.class);
+	    case COL_SOLICITANTE:
+		return (String.class);
+	    case COL_ANDAMENTO:
+		return (Character.class);
+	    case COL_FINALIZADA:
+		return (Character.class);
+	    default:
+		return (String.class);
 		}
 	}
 
 	@Override
 	public String getColumnName( int column ) {
 		switch( column ) {
-			case COL_SELECIONADA: return( "Sel." );
-			case COL_CODIGO: return( "Tarefa" );
-			case COL_NOME: return( "Nome" );
-			case COL_SOLICITANTE: return( "Solicitante" );
-			case COL_ANDAMENTO: return( "Em Andamento" );
-			case COL_FINALIZADA: return( "Finalizada" );
-			default: return( "" );
+	    case COL_SELECIONADA:
+		return ("Sel.");
+	    case COL_CODIGO:
+		return ("Tarefa");
+	    case COL_NOME:
+		return ("Nome");
+	    case COL_SOLICITANTE:
+		return ("Solicitante");
+	    case COL_ANDAMENTO:
+		return ("Em Andamento");
+	    case COL_FINALIZADA:
+		return ("Finalizada");
+	    default:
+		return ("");
 		}
 	}
 
@@ -77,13 +93,20 @@ public class TarefaResultadoModel extends DefaultTableModel {
 		}
 
 		switch( column ) {
-			case COL_SELECIONADA: return( tarefa.selecionada() );
-			case COL_CODIGO: return( tarefa.getCodigo() );
-			case COL_NOME: return( tarefa.getNome() );
-			case COL_SOLICITANTE: return( tarefa.getSolicitante() );
-			case COL_ANDAMENTO: return( tarefa.emAndamento() );
-			case COL_FINALIZADA: return( tarefa.finalizada() );
-			default: return( null );
+	    case COL_SELECIONADA:
+		return (tarefa.selecionada());
+	    case COL_CODIGO:
+		return (tarefa.getCodigo());
+	    case COL_NOME:
+		return (tarefa.getNome());
+	    case COL_SOLICITANTE:
+		return (tarefa.getSolicitante());
+	    case COL_ANDAMENTO:
+		return (tarefa.emAndamento());
+	    case COL_FINALIZADA:
+		return (tarefa.finalizada());
+	    default:
+		return (null);
 		}
 	}
 

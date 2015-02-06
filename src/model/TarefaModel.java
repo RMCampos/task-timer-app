@@ -1,10 +1,12 @@
-package contador;
+package model;
 
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
+import data.Tarefa;
 
 public class TarefaModel extends DefaultTableModel {
-	private ArrayList<Tarefa> linhas;
+
+    private final ArrayList<Tarefa> linhas;
 	public static final int COL_COD = 0;
 	public static final int COL_NOME = 1;
 	public static final int COL_SOL = 2;
@@ -26,14 +28,22 @@ public class TarefaModel extends DefaultTableModel {
 	@Override
 	public String getColumnName( int column ) {
 		switch( column ) {
-			case COL_COD: return( "Tarefa" );
-			case COL_NOME: return( "Nome" );
-			case COL_SOL: return( "Solicitante" );
-			case COL_INICIO: return( "Início" );
-			case COL_TERMINO: return( "Término" );
-			case COL_DECORRIDO: return( "Decorrido" );
-			case COL_ATIVO: return( "Ativo" );
-			default: return( "" );
+	    case COL_COD:
+		return ("Tarefa");
+	    case COL_NOME:
+		return ("Nome");
+	    case COL_SOL:
+		return ("Solicitante");
+	    case COL_INICIO:
+		return ("Início");
+	    case COL_TERMINO:
+		return ("Término");
+	    case COL_DECORRIDO:
+		return ("Decorrido");
+	    case COL_ATIVO:
+		return ("Ativo");
+	    default:
+		return ("");
 		}
 	}
 
@@ -70,14 +80,22 @@ public class TarefaModel extends DefaultTableModel {
 		}
 
 		switch( column ) {
-			case COL_COD: return( dia.getCodigo() );
-			case COL_NOME: return( dia.getNome() );
-			case COL_SOL: return( dia.getSolicitante() );
-			case COL_INICIO: return( dia.getHoraInicio() );
-			case COL_TERMINO: return( dia.getHoraTermino() );
-			case COL_DECORRIDO: return( dia.getDuracao() );
-			case COL_ATIVO: return( dia.getEmAndamento() );
-			default: return( null );
+	    case COL_COD:
+		return (dia.getCodigo());
+	    case COL_NOME:
+		return (dia.getNome());
+	    case COL_SOL:
+		return (dia.getSolicitante());
+	    case COL_INICIO:
+		return (dia.getHoraInicio());
+	    case COL_TERMINO:
+		return (dia.getHoraTermino());
+	    case COL_DECORRIDO:
+		return (dia.getDuracao());
+	    case COL_ATIVO:
+		return (dia.getEmAndamento());
+	    default:
+		return (null);
 		}
 	}
 

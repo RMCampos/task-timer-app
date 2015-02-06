@@ -1,6 +1,7 @@
-package contador;
+package data;
 
 public class TarefaResultado {
+
 	private Boolean selecionada;
 	private String codigo;
 	private String nome;
@@ -11,12 +12,12 @@ public class TarefaResultado {
 	private String tempoDecorrido;
 
 	public TarefaResultado() {
-		this.selecionada = new Boolean(false);
+	this.selecionada = false;
 		this.codigo = "";
 		this.nome = "";
 		this.solicitante = "";
-		this.emAndamento = new Character( ' ' );
-		this.finalizada = new Character( ' ' );
+	this.emAndamento = ' ';
+	this.finalizada = ' ';
 		this.dataHoraFinalizacao = "";
 		this.tempoDecorrido = "";
 	}
@@ -25,8 +26,8 @@ public class TarefaResultado {
 		this.codigo = "";
 		this.nome = pNome;
 		this.solicitante = "";
-		this.emAndamento = new Character( ' ' );
-		this.finalizada = new Character( ' ' );
+	this.emAndamento = ' ';
+	this.finalizada = ' ';
 		this.dataHoraFinalizacao = "";
 		this.tempoDecorrido = "";
 	}

@@ -1,14 +1,13 @@
-package contador;
+package view;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 import javax.swing.JTextArea;
 import javax.swing.JFrame;
 
 public class FrameConsole extends JFrame {
+
 	PrintStream printStream;
 
 	public FrameConsole(){
@@ -17,7 +16,6 @@ public class FrameConsole extends JFrame {
 		this.setDefaultCloseOperation( JFrame.HIDE_ON_CLOSE );
 	}
 
-	@SuppressWarnings("unchecked")
 	private void initComponents() {
 		pnlSuperior = new javax.swing.JPanel();
 		jScrollPane1 = new javax.swing.JScrollPane();
@@ -61,6 +59,7 @@ public class FrameConsole extends JFrame {
 		btnFechar.setText("Fechar");
 		btnFechar.setPreferredSize(new java.awt.Dimension(75, 30));
 		btnFechar.addActionListener(new java.awt.event.ActionListener() {
+	    @Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				btnFecharActionPerformed(evt);
 			}
@@ -69,6 +68,7 @@ public class FrameConsole extends JFrame {
 		btnLimpar.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
 		btnLimpar.setText("Limpar");
 		btnLimpar.addActionListener(new java.awt.event.ActionListener() {
+	    @Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				btnLimparActionPerformed(evt);
 			}
@@ -110,11 +110,11 @@ public class FrameConsole extends JFrame {
 		pack();
 	}
 
-	private void btnFecharActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFecharActionPerformed
+    private void btnFecharActionPerformed(java.awt.event.ActionEvent evt) {
 		AOCLICARbtnFechar();
 	}
 
-	private void btnLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimparActionPerformed
+    private void btnLimparActionPerformed(java.awt.event.ActionEvent evt) {
 		AOCLICARbtnLimpar();
 	}
 
@@ -126,13 +126,8 @@ public class FrameConsole extends JFrame {
 	private javax.swing.JTextArea txaConsole;
 
 	private void iniciarConsole() {
-		try {
-			this.printStream = new PrintStream( new CustomOutputStream( this.txaConsole ), true, "UTF-8");
-		}
-		catch( UnsupportedEncodingException e ) {
-			e.printStackTrace();
-			this.printStream = new PrintStream(new CustomOutputStream( this.txaConsole ) );
-		}
+		this.printStream = new PrintStream(new CustomOutputStream(this.txaConsole), true);
+		this.printStream = new PrintStream(new CustomOutputStream( this.txaConsole ) );
 		System.setOut(printStream);
 		System.setErr(printStream);
 	}
@@ -146,11 +141,13 @@ public class FrameConsole extends JFrame {
 	}
 
 	class CustomOutputStream extends OutputStream {
+
 		private final JTextArea area;
 
 		public CustomOutputStream( JTextArea pArea ) {
 			this.area = pArea;
 		}
+
 		@Override
 		public void write( int b ) throws IOException {
 			this.area.append( String.valueOf( (char)b) );

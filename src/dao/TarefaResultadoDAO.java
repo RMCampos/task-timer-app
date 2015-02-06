@@ -1,4 +1,4 @@
-package contador;
+package dao;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -10,9 +10,12 @@ import java.util.Date;
 import java.text.ParseException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import data.TarefaResultado;
+import database.ConnectionHolder;
 
 public class TarefaResultadoDAO {
-	private Connection connection;
+
+    private final Connection connection;
 
 	public TarefaResultadoDAO() throws SQLException, ClassNotFoundException {
 		this.connection = ConnectionHolder.getConnection();
@@ -44,8 +47,7 @@ public class TarefaResultadoDAO {
 						try {
 							dt = df.parse( rs.getString( "dataHoraTermino" ) );
 							tarefa.setDataHoraFinalizacao( "Finalizada em: " + df.format(dt) );
-						}
-						catch( ParseException pe ){
+			} catch (ParseException pe) {
 							tarefa.setDataHoraFinalizacao( "" );
 						}
 
@@ -53,17 +55,14 @@ public class TarefaResultadoDAO {
 
 						tarefaList.add( tarefa );
 					}
-				}
-				while( rs.next() );
+		} while (rs.next());
 
 				System.out.println( "SQL: " + tarefaList.size() + " Row(s)" );
-			}
-			else {
+	    } else {
 				System.out.println( "SQL: 0 Rows" );
 			}
 			return( tarefaList );
-		}
-		catch( SQLException ex ){
+	} catch (SQLException ex) {
 			System.out.println( "SQLException: " + ex.getMessage() );
 			return( tarefaList );
 		}
@@ -75,9 +74,9 @@ public class TarefaResultadoDAO {
 
 			this.connection.setAutoCommit( false );
 
-			String querySQL =
-				"DELETE FROM tarefa " +
-				"WHERE codigo IN (" + pLista + ")";
+	    String querySQL
+		    = "DELETE FROM tarefa "
+		    + "WHERE codigo IN (" + pLista + ")";
 
 			System.out.println( "SQL: " + querySQL );
 
@@ -86,15 +85,13 @@ public class TarefaResultadoDAO {
 			if( rowsAffecteds == Statement.EXECUTE_FAILED ) {
 				this.connection.rollback();
 				System.out.println( "SQL: 0 Rows affecteds" );
-			}
-			else {
+	    } else {
 				this.connection.commit();
 				System.out.println( "SQL: " + rowsAffecteds + " Row(s) affected(s)" );
 			}
 
 		this.connection.setAutoCommit( true );
-		}
-		catch( SQLException ex ){
+	} catch (SQLException ex) {
 			System.out.println( "SQLException: " + ex.getMessage() );
 		}
 	}
@@ -105,10 +102,10 @@ public class TarefaResultadoDAO {
 
 			this.connection.setAutoCommit( false );
 
-			String querySQL =
-				"UPDATE tarefa " +
-				"SET finalizada = 'N' " +
-				"WHERE codigo IN (" + pLista + ")";
+	    String querySQL
+		    = "UPDATE tarefa "
+		    + "SET finalizada = 'N' "
+		    + "WHERE codigo IN (" + pLista + ")";
 
 			System.out.println( "SQL: " + querySQL );
 
@@ -117,15 +114,13 @@ public class TarefaResultadoDAO {
 			if( rowsAffecteds == Statement.EXECUTE_FAILED ) {
 				this.connection.rollback();
 				System.out.println( "SQL: 0 Rows affecteds" );
-			}
-			else {
+	    } else {
 				this.connection.commit();
 				System.out.println( "SQL: " + rowsAffecteds + " Row(s) affected(s)" );
 			}
 
 		this.connection.setAutoCommit( true );
-		}
-		catch( SQLException ex ){
+	} catch (SQLException ex) {
 			System.out.println( "SQLException: " + ex.getMessage() );
 		}
 	}
