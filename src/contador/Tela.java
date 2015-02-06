@@ -56,6 +56,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.ListSelectionModel;
@@ -606,6 +607,18 @@ public class Tela extends JFrame {
 				}
 			}
 		});
+		this.btnERP.addMouseListener( new MouseAdapter() {
+			@Override
+			public void mousePressed( MouseEvent e ) {
+				popupERP.show( e.getComponent(), e.getX(), e.getY() );
+			}
+		});
+		this.btnMSSQL.addMouseListener( new MouseAdapter() {
+			@Override
+			public void mousePressed( MouseEvent e ) {
+				popupSQL.show( e.getComponent(), e.getX(), e.getY() );
+			}
+		});
 	}
 
 	private void carregarDadosLidos( String pTexto ) {
@@ -887,23 +900,18 @@ public class Tela extends JFrame {
 		this.btnERP.setFont( new Font( "Verdana", 0, 12 ) );
 		this.btnERP.setToolTipText( "<HTML>Click NORMAL para CORRECAO<BR>Click DO MEIO para PRODUCAO</HTML>" );
 		this.btnERP.setFocusable( false );
-		
+
 		this.popupERP = new JPopupMenu();
 		String[] itensMenuERP = { "Correção ERP", "Correção FFC", "Correção M", "Produção" };
 		for( int i=0; i<itensMenuERP.length; i++ ) {
 			final String name = itensMenuERP[i];
-			JMenuItem itemBtn = new JMenuItem(name);
-			itemBtn.setName(name);
-			itemBtn.addActionListener( new ActionListener() {
+			this.popupERP.add( new JMenuItem( new AbstractAction( name ) {
 				@Override
 				public void actionPerformed( ActionEvent e ) {
 					iniciarERP( name );
 				}
-			});
-			this.popupERP.add(itemBtn);
+			}));
 		}
-		
-		this.btnERP.setComponentPopupMenu( this.popupERP );
 
 		this.btnMSSQL = new JButton( "SQL" );
 		this.btnMSSQL.setBounds( (20+Tela.larguraBotao*6), 140, Tela.larguraBotao, 30 );
@@ -915,18 +923,13 @@ public class Tela extends JFrame {
 		String[] itensMenuSQL = { "mic", "suporte" };
 		for( int i=0; i<itensMenuSQL.length; i++ ) {
 			final String name = itensMenuSQL[i];
-			JMenuItem itemBtn = new JMenuItem(name);
-			itemBtn.setName(name);
-			itemBtn.addActionListener( new ActionListener() {
+			this.popupSQL.add( new JMenuItem( new AbstractAction( name ) {
 				@Override
 				public void actionPerformed( ActionEvent e ) {
 					iniciarSQLServer( name );
 				}
-			});
-			this.popupSQL.add(itemBtn);
+			}));
 		}
-		
-		this.btnMSSQL.setComponentPopupMenu( this.popupSQL );
 
 		this.btnExportar = new JButton( "Exportar" );
 		this.btnExportar.setBounds( 576, 5, 144, 30 );
@@ -1932,7 +1935,7 @@ public class Tela extends JFrame {
 		String portal = "";
 
 		for( String linha : pConteudo.split("\n") ) {
-			
+
 			if( linha.toUpperCase().contains( "PORTAL" ) ) {
 				int numeroEncontrado = 0;
 				for( int i=0; i<linha.length(); i++ ){
@@ -1969,7 +1972,7 @@ public class Tela extends JFrame {
 					tarefa = new Tarefa();
 					setTarefa( tarefa );
 				}
-				
+
 				System.out.println("portal: " + portal);
 
 				String enderecoBD = buscarEnderecoBDPortal( portal );
