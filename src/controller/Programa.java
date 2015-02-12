@@ -1,12 +1,17 @@
 package controller;
 
 import java.awt.AWTException;
+import java.awt.Desktop;
 import java.awt.event.KeyEvent;
 import java.awt.Robot;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.sql.SQLException;
@@ -76,7 +81,7 @@ public class Programa {
 			System.exit( 1 );
 		}
 
-		this.frame.setTitle( "Contador de Tarefas - v15.0" );
+		this.frame.setTitle( "Contador de Tarefas - v15.1" );
 		this.frame.setVisible( true );
 		this.tempoTotal = "00:00:00";
 		this.transacao = 'I';
@@ -168,6 +173,9 @@ public class Programa {
 				if( this.frame.getComandoTela().equals( "CONTINUAR" ) ) {
 					continuar();
 				}
+				if( this.frame.getComandoTela().equals( "DOWNLOAD" ) ) {
+					baixarAnexos();
+				}
 				if( this.frame.getComandoTela().equals( "EXPORTAR" ) ) {
 					exportar();
 				}
@@ -192,6 +200,27 @@ public class Programa {
 	    } while (true);
 	} catch (Exception ex) {
 	    System.out.println(ex.getMessage());
+		}
+	}
+
+	private void baixarAnexos() {
+		Tarefa tarefa = this.frame.getLinhaSelecionada();
+		
+		if( tarefa == null ) {
+			return;
+		}
+		
+		try {
+			URL website = new URL( "http://a-srv63/wfweb/Handler/DownloadFilesHandler.ashx?download=1&objeto_id=" + tarefa.getCodigo() );
+			ReadableByteChannel byteChannel = Channels.newChannel( website.openStream() );
+			FileOutputStream zip = new FileOutputStream( System.getProperty( "user.home" ) + "\\Downloads\\Linx_" + tarefa.getCodigo() + ".zip" );
+			
+			zip.getChannel().transferFrom( byteChannel, 0, Long.MAX_VALUE );
+			zip.close();
+			
+			Desktop.getDesktop().open( new File( System.getProperty( "user.home" ) + "\\Downloads\\Linx_" + tarefa.getCodigo() + ".zip" ) );
+		}
+		catch( Exception e ) {
 		}
 	}
 

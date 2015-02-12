@@ -95,7 +95,7 @@ import utils.StatusTarefa;
 
 public class Tela extends JFrame {
 
-	public static int larguraBotao = 105;
+	public static int larguraBotao = 92;
 	private String comandoTela;
 	private Timer  relogio;
 	private Tarefa tarefaAtual;
@@ -122,6 +122,7 @@ public class Tela extends JFrame {
 	private JButton btnMSSQL;
 	private JPopupMenu popupSQL;
 	private JButton btnERP;
+	private JButton btnAnexos;
 	private JPopupMenu popupERP;
     private JButton btnAdd;
     private JButton btnContinuar;
@@ -514,6 +515,12 @@ public class Tela extends JFrame {
 				comandoTela = "CANCELAR";
 			}
 		});
+		this.btnAnexos.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				comandoTela = "DOWNLOAD";
+			}
+		});
 		this.btnProcurarDiretorio.addActionListener( new ActionListener() {
 			@Override
 			public void actionPerformed( ActionEvent e ) {
@@ -736,6 +743,7 @@ public class Tela extends JFrame {
 			this.btnExcluir.setIcon(new ImageIcon(getClass().getResource("/images/trash.png")));
 			this.btnCancelar.setIcon(new ImageIcon(getClass().getResource("/images/cancel.png")));
 			this.btnAlterar.setIcon(new ImageIcon(getClass().getResource("/images/edit.png")));
+			this.btnAnexos.setIcon(new ImageIcon(getClass().getResource("/images/download.gif")));
 			this.btnMiniSQL.setIcon(new ImageIcon(getClass().getResource("/images/sql16.png")));
 			this.btnMiniERP.setIcon(new ImageIcon(getClass().getResource("/images/erp16.png")));
 		} catch (Exception ex) {
@@ -887,37 +895,37 @@ public class Tela extends JFrame {
 		this.btnAdd.setToolTipText( "Adiciona o Tarefa ao GRID." );
 		this.btnAdd.setFocusable( false );
 
-		this.btnParar = new JButton( "Parar" );
+		this.btnParar = new JButton();
 		this.btnParar.setBounds( 20, 140, Tela.larguraBotao, 30 );
 		this.btnParar.setFont( new Font( "Verdana", 0, 12 ) );
 		this.btnParar.setToolTipText( "Para a contagem da tarefa selecionada." );
 		this.btnParar.setFocusable( false );
 
-		this.btnContinuar = new JButton( "Iniciar" );
+		this.btnContinuar = new JButton();
 		this.btnContinuar.setBounds( (20+Tela.larguraBotao), 140, Tela.larguraBotao, 30);
 		this.btnContinuar.setFont( new Font( "Verdana", 0, 12 ) );
 		this.btnContinuar.setToolTipText( "Continua a contagem da tarefa selecionada" );
 		this.btnContinuar.setFocusable( false );
 
-		this.btnExcluir = new JButton( "Exclui" );
+		this.btnExcluir = new JButton();
 		this.btnExcluir.setBounds( (20+Tela.larguraBotao*2), 140, Tela.larguraBotao, 30 );
 		this.btnExcluir.setFont( new Font( "Verdana", 0, 12 ) );
 		this.btnExcluir.setToolTipText( "Exclui a tarefa selecionada" );
 		this.btnExcluir.setFocusable( false );
 
-		this.btnCancelar = new JButton( "Cancel" );
+		this.btnCancelar = new JButton();
 		this.btnCancelar.setBounds( (20+Tela.larguraBotao*3), 140, Tela.larguraBotao, 30 );
 		this.btnCancelar.setFont( new Font( "Verdana", 0, 12 ) );
 		this.btnCancelar.setToolTipText( "Cancelar" );
 		this.btnCancelar.setFocusable( false );
 
-		this.btnAlterar = new JButton( "Altera" );
+		this.btnAlterar = new JButton();
 		this.btnAlterar.setBounds( (20+Tela.larguraBotao*4), 140, Tela.larguraBotao, 30 );
 		this.btnAlterar.setFont( new Font( "Verdana", 0, 12 ) );
 		this.btnAlterar.setToolTipText( "Alterar" );
 		this.btnAlterar.setFocusable( false );
 
-		this.btnERP = new JButton( "Portal" );
+		this.btnERP = new JButton();
 		this.btnERP.setBounds( (20+Tela.larguraBotao*5), 140, Tela.larguraBotao, 30 );
 		this.btnERP.setFont( new Font( "Verdana", 0, 12 ) );
 		this.btnERP.setToolTipText( "<HTML>Click NORMAL para CORRECAO<BR>Click DO MEIO para PRODUCAO</HTML>" );
@@ -934,7 +942,7 @@ public class Tela extends JFrame {
 			}));
 		}
 
-		this.btnMSSQL = new JButton( "SQL" );
+		this.btnMSSQL = new JButton();
 		this.btnMSSQL.setBounds( (20+Tela.larguraBotao*6), 140, Tela.larguraBotao, 30 );
 		this.btnMSSQL.setFont( new Font( "Verdana", 0, 12 ) );
 		this.btnMSSQL.setToolTipText( "Abrir SQL Server conectando no portal selecionado" );
@@ -942,7 +950,7 @@ public class Tela extends JFrame {
 
 		this.popupSQL = new JPopupMenu();
 		String[] itensMenuSQL = { "mic", "suporte" };
-	for (final String name : itensMenuSQL) {
+		for (final String name : itensMenuSQL) {
 			this.popupSQL.add( new JMenuItem( new AbstractAction( name ) {
 				@Override
 				public void actionPerformed( ActionEvent e ) {
@@ -950,6 +958,12 @@ public class Tela extends JFrame {
 				}
 			}));
 		}
+		
+		this.btnAnexos = new JButton();
+		this.btnAnexos.setBounds( (20+Tela.larguraBotao*7), 140, Tela.larguraBotao, 30 );
+		this.btnAnexos.setFont( new Font( "Verdana", 0, 12 ) );
+		this.btnAnexos.setToolTipText( "Baixar anexos" );
+		this.btnAnexos.setFocusable( false );
 
 		this.btnExportar = new JButton( "Exportar" );
 		this.btnExportar.setBounds( 576, 5, 144, 30 );
@@ -1204,6 +1218,7 @@ public class Tela extends JFrame {
 		this.containerCampos.add( this.btnMSSQL );
 		this.containerCampos.add( this.btnERP );
 		this.containerCampos.add( this.btnAdd );
+		this.containerCampos.add( this.btnAnexos );
 		this.containerCampos.add( this.btnParar );
 		this.containerCampos.add( this.btnContinuar );
 		this.containerCampos.add( this.btnExcluir );
@@ -1337,7 +1352,7 @@ public class Tela extends JFrame {
 
 						String producaoCorrecao = "CORRECAO";
 
-			if (pProducaoCorrecao.equals("Produção")) {
+						if (pProducaoCorrecao.equals("Produção")) {
 							producaoCorrecao = "PRODUCAO";
 						}
 
@@ -1350,26 +1365,30 @@ public class Tela extends JFrame {
 							}
 
 							if( producaoCorrecao.equals( "CORRECAO" ) ) {
-				String destinoUsuario;
-				switch (pProducaoCorrecao) {
-				    case "Correção ERP": {
-					destinoUsuario = "correcaoERP";
-				    }
-				    case "Correção FFC": {
-					destinoUsuario = "correcaoFFC";
-				    }
-				    case "Correção M": {
-					destinoUsuario = "correcaoM";
-				    }
-				    case "Produção": {
-					destinoUsuario = "correcaoERP";
-				    }
-				    default: {
-					destinoUsuario = "correcaoERP";
-				    }
-				}
+								String destinoUsuario;
+								switch (pProducaoCorrecao) {
+									case "Correção ERP": {
+										destinoUsuario = "correcaoERP";
+										break;
+									}
+									case "Correção FFC": {
+										destinoUsuario = "correcaoFFC";
+										break;
+									}
+									case "Correção M": {
+										destinoUsuario = "correcaoM";
+										break;
+									}
+									case "Produção": {
+										destinoUsuario = "correcaoERP";
+										break;
+									}
+									default: {
+										destinoUsuario = "correcaoERP";
+									}
+								}
 								comando = "C:\\Program Files\\Internet Explorer\\iexplore.exe http://192.168.18.12/config/bighost/admin/controle_acesso.asp?operacao=1&d=d&equipe=2&portal=" + tarefa.getPortal().trim() + "&homologacao=S&" + destinoUsuario + "=S";
-			    } else if (producaoCorrecao.equals("PRODUCAO")) {
+							} else if (producaoCorrecao.equals("PRODUCAO")) {
 								comando = "C:\\Program Files\\Internet Explorer\\iexplore.exe http://192.168.18.12/config/bighost/admin/controle_acesso.asp?operacao=1&d=d&equipe=2&portal=" + tarefa.getPortal().trim() + "&homologacao=N";
 							}
 
@@ -1534,6 +1553,7 @@ public class Tela extends JFrame {
 		this.btnAlterar.setEnabled( simOuNao );
 		this.btnERP.setEnabled( simOuNao );
 		this.btnMSSQL.setEnabled( simOuNao );
+		this.btnAnexos.setEnabled( simOuNao );
 	}
 
 	public void habilitarContinuar( final boolean simOuNao ) {
