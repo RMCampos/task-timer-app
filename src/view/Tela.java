@@ -743,7 +743,7 @@ public class Tela extends JFrame {
 			this.btnExcluir.setIcon(new ImageIcon(getClass().getResource("/images/trash.png")));
 			this.btnCancelar.setIcon(new ImageIcon(getClass().getResource("/images/cancel.png")));
 			this.btnAlterar.setIcon(new ImageIcon(getClass().getResource("/images/edit.png")));
-			this.btnAnexos.setIcon(new ImageIcon(getClass().getResource("/images/download.gif")));
+			this.btnAnexos.setIcon(new ImageIcon(getClass().getResource("/images/download.png")));
 			this.btnMiniSQL.setIcon(new ImageIcon(getClass().getResource("/images/sql16.png")));
 			this.btnMiniERP.setIcon(new ImageIcon(getClass().getResource("/images/erp16.png")));
 		} catch (Exception ex) {
