@@ -40,6 +40,7 @@ import java.awt.event.WindowListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -92,6 +93,7 @@ import model.TarefaResultadoModel;
 import utils.Mensagem;
 import utils.OS;
 import utils.StatusTarefa;
+import dao.WorkflowDAO;
 
 public class Tela extends JFrame {
 
@@ -335,11 +337,11 @@ public class Tela extends JFrame {
 					if( e.isControlDown() && e.getKeyCode() == KeyEvent.VK_I && e.getID() == KeyEvent.KEY_PRESSED ) {
 						if( console.isVisible() ) {
 							console.setVisible( false );
-			} else {
+						} else {
 							console.setVisible( true );
 						}
 					}
-		} catch (Exception exc) {
+				} catch (Exception exc) {
 					System.out.println( "Erro ao disparar evento de tecla: " + exc.getMessage() );
 				}
 				return false;
@@ -368,7 +370,7 @@ public class Tela extends JFrame {
 			public void windowClosing( WindowEvent we ){
 				if( todasTarefasParadas() ){
 					System.exit(0);
-		} else {
+				} else {
 					Mensagem.informacao( "Não é possível sair com tarefas em andamento.", null );
 				}
 			}
@@ -402,6 +404,7 @@ public class Tela extends JFrame {
 			public void keyPressed( KeyEvent kev ) {
 				if( kev.getKeyCode() == KeyEvent.VK_ENTER ) {
 					setTxfCodTarefa( getTxfCodigo() );
+					buscarDescricaoTarefa();
 					carregarPaginaEvolucao( 'S' );
 					txfNome.requestFocus();
 				}
@@ -468,7 +471,7 @@ public class Tela extends JFrame {
 					tray.add( trayIcon );
 					setVisible( false );
 					setExtendedState( JFrame.MAXIMIZED_BOTH );
-		} catch (AWTException ex) {
+				} catch (AWTException ex) {
 					System.out.println( "ERRO: AWTException: " + ex.getLocalizedMessage() );
 				}
 			}
@@ -545,13 +548,13 @@ public class Tela extends JFrame {
 			@Override
 			public void mouseClicked( MouseEvent e ) {
 				switch( e.getButton() ) {
-		    case 1: {
-			iniciarERP("CORRECAO");
-			break;
-		    }
-		    case 2: {
-			iniciarERP("PRODUCAO");
-		    }
+					case 1: {
+						iniciarERP("CORRECAO");
+						break;
+					}
+					case 2: {
+						iniciarERP("PRODUCAO");
+					}
 				}
 			}
 		});
@@ -620,11 +623,11 @@ public class Tela extends JFrame {
 					if( Desktop.isDesktopSupported() ) {
 						try {
 							Desktop.getDesktop().browse( uri );
-			} catch (IOException ie) {
-			}
-		    }
-		} catch (URISyntaxException ex) {
-		}
+						} catch (IOException ie) {
+						}
+					}
+				} catch (URISyntaxException ex) {
+				}
 			}
 
 			@Override
@@ -678,7 +681,9 @@ public class Tela extends JFrame {
 			}
 		}
 
-		setTxfNome( tituloTp );
+		if( getTxfNome().isEmpty() ) {
+			setTxfNome( tituloTp );
+		}
 		setTxfSolicitante( solicitanteTp );
 		setTxfObs( obsTp );
 	}
@@ -800,13 +805,13 @@ public class Tela extends JFrame {
 		if( OS.isWindows() ) {
 			try{
 				UIManager.setLookAndFeel( "com.sun.java.swing.plaf.windows.WindowsLookAndFeel" );
-	    } catch (ClassNotFoundException ex) {
+			} catch (ClassNotFoundException ex) {
 				System.out.println( "ClassNotFoundException: " + ex.getLocalizedMessage() );
-	    } catch (InstantiationException ex) {
+			} catch (InstantiationException ex) {
 				System.out.println( "InstantiationException: " + ex.getLocalizedMessage() );
-	    } catch (IllegalAccessException ex) {
+			} catch (IllegalAccessException ex) {
 				System.out.println( "IllegalAccessException: " + ex.getLocalizedMessage() );
-	    } catch (UnsupportedLookAndFeelException ex) {
+			} catch (UnsupportedLookAndFeelException ex) {
 				System.out.println( "UnsupportedLookAndFeelException: " + ex.getLocalizedMessage() );
 			}
 		}
@@ -1313,8 +1318,19 @@ public class Tela extends JFrame {
 						}
 
 						try {
-							String tempFolder = System.getenv( "TEMP" );
-							String fileName = tempFolder + "\\temp.sql";
+							String tempFolder = System.getenv( "TEMP" ) + "\\";
+							String fileName;
+							Boolean existeArquivo = false;
+							Integer indice = 0;
+							
+							do {
+								indice++;
+								fileName = tempFolder + "temp" + indice.toString() + ".sql";
+								File f = new File( fileName );
+								existeArquivo = f.exists();
+							}
+							while( existeArquivo );
+							
 							String usuario = (pUsuarioSql.equals( "suporte" ))? "usr_suporte" : "mic" + tarefa.getPortal();
 							String senha = (pUsuarioSql.equals( "suporte" ))? "@@#vx3Wt$6v" : "Y87LQ!/m";
 							FileWriter sqlFile = new FileWriter( fileName );
@@ -1323,7 +1339,7 @@ public class Tela extends JFrame {
 							String comando = "Ssms.exe -S " + tarefa.getEnderecoBD() + " -U " + usuario + " -P " + senha + " -nosplash " + fileName;
 							System.out.println( "LOG: Iniciando SQL Server: " + comando);
 							Runtime.getRuntime().exec( comando );
-			} catch (IOException e) {
+						} catch (IOException e) {
 							System.out.println( "IOException: " + e.getMessage() );
 						}
 					}
@@ -1394,7 +1410,7 @@ public class Tela extends JFrame {
 
 							System.out.println( "LOG: Iniciando ERP: " + comando);
 							Runtime.getRuntime().exec( comando );
-			} catch (IOException e) {
+						} catch (IOException e) {
 							System.out.println( "IOException: " + e.getMessage() );
 						}
 					}
@@ -1436,26 +1452,26 @@ public class Tela extends JFrame {
 			@Override
 			public void run() {
 				Thread thread = new Thread(){
-		    @Override
+					@Override
 					public void run(){
 						if( username.getText().isEmpty() ) {
 							return;
 						}
 
 						try {
-			    String comando
-				    = "http://wwwf.microvix.com.br/Log.asp?login=" + username.getText()
-				    + "&senha=" + new String(password.getPassword())
-				    + "&frase=" + new String(frase.getPassword());
+							String comando
+								= "http://wwwf.microvix.com.br/Log.asp?login=" + username.getText()
+								+ "&senha=" + new String(password.getPassword())
+								+ "&frase=" + new String(frase.getPassword());
 
 							System.out.println( "LOG: Iniciando ERP Linx: " + comando );
 							final URI uri = new URI( comando );
 							if( Desktop.isDesktopSupported() ) {
 								Desktop.getDesktop().browse( uri );
 							}
-			} catch (IOException e) {
+						} catch (IOException e) {
 							System.out.println( "IOException: " + e.getMessage() );
-			} catch (URISyntaxException ex) {
+						} catch (URISyntaxException ex) {
 						}
 					}
 				};
@@ -1496,7 +1512,7 @@ public class Tela extends JFrame {
 
 				if( row % 2 == 0 ) {
 					comp.setBackground( new Color( 202, 225, 255 ) );
-		} else {
+				} else {
 					comp.setBackground( new Color( 254, 254, 254 ) );
 				}
 
@@ -1504,9 +1520,9 @@ public class Tela extends JFrame {
 					String url = "http://a-srv63/suporte/followup_find.asp?OBJETO_ID=" + value;
 					((JLabel) comp).setText( "<html><a href=\"" + url + "\">" + value + "</a>" );
 					((JLabel) comp).setHorizontalAlignment( JLabel.LEFT );
-		} else if (column == 6) {
+				} else if (column == 6) {
 					((JLabel) comp).setHorizontalAlignment( JLabel.CENTER );
-		} else {
+				} else {
 					((JLabel) comp).setHorizontalAlignment( JLabel.LEFT );
 				}
 
@@ -1517,7 +1533,7 @@ public class Tela extends JFrame {
 						Tarefa t = getLinhaSelecionada();
 						String toolTip = "Incluído em " + t.getDataHoraInclusao();
 						((JLabel) comp).setToolTipText( toolTip );
-		    } catch (Exception ex) {
+					} catch (Exception ex) {
 						System.out.println( "erro: " + ex.getMessage() );
 					}
 				}
@@ -1585,9 +1601,9 @@ public class Tela extends JFrame {
 
 		String saudacao = (Integer.parseInt(String.valueOf( hora.format( dataAtual ))) <= 12)? "Bom dia!" : "Boa tarde!";
 
-	return (cidade
-		+ dia.format(dataAtual) + " de " + mes.format(dataAtual) + " de " + ano.format(dataAtual) + ". "
-		+ saudacao);
+		return (cidade
+			+ dia.format(dataAtual) + " de " + mes.format(dataAtual) + " de " + ano.format(dataAtual) + ". "
+			+ saudacao);
 	}
 
 	public void acessar() {
@@ -1597,8 +1613,8 @@ public class Tela extends JFrame {
 			while( comandoTela.isEmpty() ) {
 				Thread.sleep(50);
 			}
-	} catch (InterruptedException e) {
-	    System.out.println(e.getMessage());
+		} catch (InterruptedException e) {
+			System.out.println(e.getMessage());
 		}
 	}
 
@@ -1743,7 +1759,7 @@ public class Tela extends JFrame {
 
 		if( pPosicao == '-' ) {
 			contador--;
-	} else {
+		} else {
 			contador++;
 		}
 
@@ -1956,20 +1972,20 @@ public class Tela extends JFrame {
 
 		try {
 			url = new URL("http://a-srv63/suporte/followup_find.asp?OBJETO_ID=" + this.txfCodTarefa.getText());
-	} catch (Exception e) {
+		} catch (Exception e) {
 			System.out.println( "Exception: " + e.getMessage() );
 			return;
 		}
 
 		try {
 			in = new BufferedReader( new InputStreamReader( url.openStream() ) );
-	} catch (IOException ex) {
+		} catch (IOException ex) {
 			System.out.println( "IOException: " + ex.getMessage() );
 			return;
 		}
 
 		String linha;
-	final ArrayList<String> linhas = new ArrayList<>();
+		final ArrayList<String> linhas = new ArrayList<>();
 
 		try {
 			setCursorOcupado();
@@ -1979,7 +1995,7 @@ public class Tela extends JFrame {
 			}
 
 			in.close();
-	} catch (IOException e) {
+		} catch (IOException e) {
 			System.out.println( "IOException: " + e.getMessage() );
 			return;
 		}
@@ -2041,8 +2057,6 @@ public class Tela extends JFrame {
 					setTarefa( tarefa );
 				}
 
-				System.out.println("portal: " + portal);
-
 				String enderecoBD = buscarEnderecoBDPortal( portal );
 
 				if( !tarefa.existeBdInformado() ){
@@ -2056,7 +2070,7 @@ public class Tela extends JFrame {
 
 				if( linha.substring( 0, posicaoInicio ).length() >= linha.length() ) {
 					resultadoDaBusca += linha + enderecoBD + "\n";
-		} else {
+				} else {
 					resultadoDaBusca += linha.substring( 0, posicaoInicio+1 ) + enderecoBD + linha.substring( posicaoInicio+1 ) + "\n";
 				}
 				posicaoInicio = -1;
@@ -2075,7 +2089,7 @@ public class Tela extends JFrame {
 
 		try {
 			url = new URL("http://192.168.18.12/config/bighost/admin/administrador.asp?equipe=2&opcao_pesquisa=P&equipe=2&operacao=1&conteudo=" + pPortal);
-	} catch (Exception e) {
+		} catch (Exception e) {
 			System.out.println( "Exception: " + e.getMessage() );
 			return( "" );
 		}
@@ -2319,6 +2333,25 @@ public class Tela extends JFrame {
 
 	public String getTxfTextoLivre() {
 		return( this.txfTextoLivre.getText() );
+	}
+
+	private void buscarDescricaoTarefa() {
+		String descricao = "";
+		WorkflowDAO wf = new WorkflowDAO();
+
+		try {
+			descricao = wf.getDescricaoTP( getTxfCodigo() );
+			wf.fecharConexao();
+		}
+		catch( Exception ex ) {
+			System.out.println( "Exception: " + ex.getMessage() );
+		}
+		
+		if ( !descricao.isEmpty() ) {
+			descricao = descricao.substring( 0, 1 ) + descricao.substring( 1 ).toLowerCase();
+		}
+	
+		setTxfNome( descricao );
 	}
 }
 
