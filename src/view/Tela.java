@@ -93,7 +93,6 @@ import model.TarefaResultadoModel;
 import utils.Mensagem;
 import utils.OS;
 import utils.StatusTarefa;
-import dao.WorkflowDAO;
 
 public class Tela extends JFrame {
 
@@ -120,12 +119,6 @@ public class Tela extends JFrame {
     private JLabel lblObs;
     private JTextField txfObs;
 	private JButton btnTray;
-	private JButton btnLinxERP;
-	private JButton btnMSSQL;
-	private JPopupMenu popupSQL;
-	private JButton btnERP;
-	private JButton btnAnexos;
-	private JPopupMenu popupERP;
     private JButton btnAdd;
     private JButton btnContinuar;
     private JButton btnParar;
@@ -145,8 +138,6 @@ public class Tela extends JFrame {
     private JTextField txfDiretorio;
     private JButton btnProcurarDiretorio;
 	private JPanel pnlEvolucao;
-	private JButton btnMiniSQL;
-	private JButton btnMiniERP;
     private JLabel lblTarefa;
 	private JTextField txfCodTarefa;
 	private JLabel lblDescrTarefa;
@@ -175,16 +166,10 @@ public class Tela extends JFrame {
 	private JButton btnReativarBusca;
 	private JButton btnExcluirBusca;
 
-	private JPanel pnlAnotacoes;
-	private JLabel lblCaracteres;
-	private JTextArea txaAnotacoes;
-	private JScrollPane scrollPaneAnotacoes;
-
 	public JTable contadorTable;
 	public TarefaModel contadorModel;
 	private TrayIcon trayIcon;
 	private SystemTray tray;
-	private JPopupMenu popm;
 	private JScrollPane scpBusca;
 
 	private String usuarioLogado;
@@ -323,13 +308,6 @@ public class Tela extends JFrame {
 			}
 		});
 
-		this.txaAnotacoes.addKeyListener( new KeyAdapter() {
-			@Override
-			public void keyPressed( KeyEvent ke ) {
-				lblCaracteres.setText( String.valueOf( 5000 - getTxaAnotacoes().length() ) + " Caracteres Restantes" );
-			}
-		});
-
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher( new KeyEventDispatcher() {
 			@Override
 			public boolean dispatchKeyEvent( KeyEvent e ) {
@@ -404,8 +382,6 @@ public class Tela extends JFrame {
 			public void keyPressed( KeyEvent kev ) {
 				if( kev.getKeyCode() == KeyEvent.VK_ENTER ) {
 					setTxfCodTarefa( getTxfCodigo() );
-					buscarDescricaoTarefa();
-					carregarPaginaEvolucao( 'S' );
 					txfNome.requestFocus();
 				}
 			}
@@ -456,12 +432,6 @@ public class Tela extends JFrame {
 			@Override
 			public void focusGained( FocusEvent fe ) {
 				txfObs.selectAll();
-			}
-		});
-		this.btnLinxERP.addActionListener( new ActionListener() {
-			@Override
-			public void actionPerformed( ActionEvent e ) {
-				iniciarERPLinx();
 			}
 		});
 		this.btnTray.addActionListener( new java.awt.event.ActionListener() {
@@ -518,44 +488,10 @@ public class Tela extends JFrame {
 				comandoTela = "CANCELAR";
 			}
 		});
-		this.btnAnexos.addActionListener( new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				comandoTela = "DOWNLOAD";
-			}
-		});
 		this.btnProcurarDiretorio.addActionListener( new ActionListener() {
 			@Override
 			public void actionPerformed( ActionEvent e ) {
 				comandoTela = "PROCURAR_DIRETORIO";
-			}
-		});
-		this.btnMiniSQL.addMouseListener( new MouseAdapter() {
-			@Override
-			public void mouseClicked( MouseEvent e ) {
-				switch( e.getButton() ) {
-		    case 1: {
-			iniciarSQLServer("SUPORTE");
-			break;
-		    }
-		    case 2: {
-			iniciarSQLServer("MIC");
-		    }
-				}
-			}
-		});
-		this.btnMiniERP.addMouseListener( new MouseAdapter() {
-			@Override
-			public void mouseClicked( MouseEvent e ) {
-				switch( e.getButton() ) {
-					case 1: {
-						iniciarERP("CORRECAO");
-						break;
-					}
-					case 2: {
-						iniciarERP("PRODUCAO");
-					}
-				}
 			}
 		});
 		this.txfCodTarefa.addKeyListener( new KeyAdapter(){
@@ -563,7 +499,6 @@ public class Tela extends JFrame {
 			public void keyPressed( KeyEvent ke ){
 				if( ke.getKeyCode() == KeyEvent.VK_ENTER ){
 					lblDescrTarefa.setText( "" );
-					carregarPaginaEvolucao( 'N' );
 				}
 			}
 		});
@@ -646,18 +581,6 @@ public class Tela extends JFrame {
 				}
 			}
 		});
-		this.btnERP.addMouseListener( new MouseAdapter() {
-			@Override
-			public void mousePressed( MouseEvent e ) {
-				popupERP.show( e.getComponent(), e.getX(), e.getY() );
-			}
-		});
-		this.btnMSSQL.addMouseListener( new MouseAdapter() {
-			@Override
-			public void mousePressed( MouseEvent e ) {
-				popupSQL.show( e.getComponent(), e.getX(), e.getY() );
-			}
-		});
 	}
 
 	private void carregarDadosLidos( String pTexto ) {
@@ -730,27 +653,17 @@ public class Tela extends JFrame {
 		// ajusta a posicao dos botoes do painel de busca
 		this.btnReativarBusca.setBounds( 20, pnlResultado.getHeight()+130, 150, 30 );
 		this.btnExcluirBusca.setBounds( 190, pnlResultado.getHeight()+130, 150, 30 );
-
-		// ajusta a largura e altura do painel de anotações
-		this.txaAnotacoes.setBounds( this.txaAnotacoes.getX(), this.txaAnotacoes.getY(), largura-20, altura-200 );
-		this.scrollPaneAnotacoes.setBounds( this.scrollPaneAnotacoes.getX(), this.scrollPaneAnotacoes.getY(), largura-70, altura-180 );
 	}
 
 	private void setarIcones() {
 		try {
 			this.setIconImage(new ImageIcon(getClass().getResource("/images/clock.png")).getImage());
 			this.btnProcurarDiretorio.setIcon(new ImageIcon(getClass().getResource("/images/folder.png")));
-			this.btnLinxERP.setIcon(new ImageIcon(getClass().getResource("/images/logolinx.png")));
-			this.btnMSSQL.setIcon(new ImageIcon(getClass().getResource("/images/sql.png")));
-			this.btnERP.setIcon(new ImageIcon(getClass().getResource("/images/erp.png")));
 			this.btnContinuar.setIcon(new ImageIcon(getClass().getResource("/images/play.png")));
 			this.btnParar.setIcon(new ImageIcon(getClass().getResource("/images/pause.png")));
 			this.btnExcluir.setIcon(new ImageIcon(getClass().getResource("/images/trash.png")));
 			this.btnCancelar.setIcon(new ImageIcon(getClass().getResource("/images/cancel.png")));
 			this.btnAlterar.setIcon(new ImageIcon(getClass().getResource("/images/edit.png")));
-			this.btnAnexos.setIcon(new ImageIcon(getClass().getResource("/images/download.png")));
-			this.btnMiniSQL.setIcon(new ImageIcon(getClass().getResource("/images/sql16.png")));
-			this.btnMiniERP.setIcon(new ImageIcon(getClass().getResource("/images/erp16.png")));
 		} catch (Exception ex) {
 			System.out.println( "Exception: " + ex.getMessage() );
 			ex.printStackTrace();
@@ -848,7 +761,7 @@ public class Tela extends JFrame {
 		this.containerCampos.setLayout( null );
 		this.containerCampos.setBounds( 0, 2, 780, 170 );
 
-		this.lblCodigo = new JLabel( "Tarefa (TP):" );
+		this.lblCodigo = new JLabel( "Programa:" );
 		this.lblCodigo.setHorizontalAlignment( JLabel.RIGHT );
 		this.lblCodigo.setBounds( 10, 10, 90, 21 ); // y = 31 + 5 // x = 100
 		this.lblCodigo.setFont( new Font( "Verdana", 0, 12 ) );
@@ -889,11 +802,6 @@ public class Tela extends JFrame {
 		this.btnTray.setToolTipText( "Enviar para o system tray" );
 		this.btnTray.setFocusable( false );
 
-		this.btnLinxERP = new JButton( "ERP" );
-		this.btnLinxERP.setBounds( 650, 10, 100, 30 );
-		this.btnLinxERP.setToolTipText( "Abrir ERP Linx" );
-		this.btnLinxERP.setFocusable( false );
-
 		this.btnAdd = new JButton( "Adicionar" );
 		this.btnAdd.setBounds( 650, 83, 100, 30 );
 		this.btnAdd.setFont( new Font( "Verdana", 0, 12 ) );
@@ -929,46 +837,6 @@ public class Tela extends JFrame {
 		this.btnAlterar.setFont( new Font( "Verdana", 0, 12 ) );
 		this.btnAlterar.setToolTipText( "Alterar" );
 		this.btnAlterar.setFocusable( false );
-
-		this.btnERP = new JButton();
-		this.btnERP.setBounds( (20+Tela.larguraBotao*5), 140, Tela.larguraBotao, 30 );
-		this.btnERP.setFont( new Font( "Verdana", 0, 12 ) );
-		this.btnERP.setToolTipText( "<HTML>Click NORMAL para CORRECAO<BR>Click DO MEIO para PRODUCAO</HTML>" );
-		this.btnERP.setFocusable( false );
-
-		this.popupERP = new JPopupMenu();
-		String[] itensMenuERP = { "Correção ERP", "Correção FFC", "Correção M", "Produção" };
-	for (final String name : itensMenuERP) {
-			this.popupERP.add( new JMenuItem( new AbstractAction( name ) {
-				@Override
-				public void actionPerformed( ActionEvent e ) {
-					iniciarERP( name );
-				}
-			}));
-		}
-
-		this.btnMSSQL = new JButton();
-		this.btnMSSQL.setBounds( (20+Tela.larguraBotao*6), 140, Tela.larguraBotao, 30 );
-		this.btnMSSQL.setFont( new Font( "Verdana", 0, 12 ) );
-		this.btnMSSQL.setToolTipText( "Abrir SQL Server conectando no portal selecionado" );
-		this.btnMSSQL.setFocusable( false );
-
-		this.popupSQL = new JPopupMenu();
-		String[] itensMenuSQL = { "mic", "suporte" };
-		for (final String name : itensMenuSQL) {
-			this.popupSQL.add( new JMenuItem( new AbstractAction( name ) {
-				@Override
-				public void actionPerformed( ActionEvent e ) {
-					iniciarSQLServer( name );
-				}
-			}));
-		}
-		
-		this.btnAnexos = new JButton();
-		this.btnAnexos.setBounds( (20+Tela.larguraBotao*7), 140, Tela.larguraBotao, 30 );
-		this.btnAnexos.setFont( new Font( "Verdana", 0, 12 ) );
-		this.btnAnexos.setToolTipText( "Baixar anexos" );
-		this.btnAnexos.setFocusable( false );
 
 		this.btnExportar = new JButton( "Exportar" );
 		this.btnExportar.setBounds( 576, 5, 144, 30 );
@@ -1044,14 +912,6 @@ public class Tela extends JFrame {
 		this.pnlEvolucao.setLayout( null );
 		this.pnlEvolucao.setName( "Evolução" );
 		this.pnlEvolucao.setBorder( BorderFactory.createEtchedBorder() );
-
-		this.btnMiniSQL = new JButton();
-		this.btnMiniSQL.setBounds( 10, 15, 21, 21 );
-		this.btnMiniSQL.setFocusable( false );
-
-		this.btnMiniERP = new JButton();
-		this.btnMiniERP.setBounds( 35, 15, 21, 21 );
-		this.btnMiniERP.setFocusable( false );
 
 		this.lblTarefa = new JLabel( "Tarefa: " );
 		this.lblTarefa.setHorizontalAlignment( JLabel.RIGHT );
@@ -1185,31 +1045,6 @@ public class Tela extends JFrame {
 		this.btnExcluirBusca.setToolTipText( "Excluir do sistema as Tarefas selecionadas" );
 		this.btnExcluirBusca.setFocusable( false );
 
-		this.pnlAnotacoes = new JPanel();
-		this.pnlAnotacoes.setBounds( 0, 0, 800, 520 );
-		this.pnlAnotacoes.setLayout( null );
-		this.pnlAnotacoes.setName( "Anotações" );
-		this.pnlAnotacoes.setBorder( BorderFactory.createEtchedBorder() );
-
-		this.lblCaracteres = new JLabel( "0 Caracteres Restantes" );
-		this.lblCaracteres.setBounds( 10, 10, 350, 21 );
-		this.lblCaracteres.setFont( new Font( "Verdana", 0, 12 ) );
-
-		this.txaAnotacoes = new JTextArea();
-		this.txaAnotacoes.setLayout( null );
-		this.txaAnotacoes.setBounds( 10, 40, 740, 460 );
-		this.txaAnotacoes.setFont( new Font( "Verdana", 0, 12 ) );
-		this.txaAnotacoes.setEditable( false );
-		this.txaAnotacoes.setBackground( Color.white );
-		this.txaAnotacoes.setBorder( BorderFactory.createEtchedBorder() );
-		this.txaAnotacoes.setLineWrap( true );
-
-		this.scrollPaneAnotacoes = new JScrollPane( txaAnotacoes );
-		this.scrollPaneAnotacoes.setBounds( 10, 40, 740, 460 );
-
-		final JScrollBar bar2 = scrollPaneAnotacoes.getVerticalScrollBar();
-		bar2.setUnitIncrement( 20 );
-
 	    this.containerCampos.add( this.lblCodigo );
         this.containerCampos.add( this.txfCodigo );
         this.containerCampos.add( this.lblNome );
@@ -1218,12 +1053,8 @@ public class Tela extends JFrame {
         this.containerCampos.add( this.txfSolicitante );
 	    this.containerCampos.add( this.lblObs );
         this.containerCampos.add( this.txfObs );
-		this.containerCampos.add( this.btnLinxERP );
 		this.containerCampos.add( this.btnTray );
-		this.containerCampos.add( this.btnMSSQL );
-		this.containerCampos.add( this.btnERP );
 		this.containerCampos.add( this.btnAdd );
-		this.containerCampos.add( this.btnAnexos );
 		this.containerCampos.add( this.btnParar );
 		this.containerCampos.add( this.btnContinuar );
 		this.containerCampos.add( this.btnExcluir );
@@ -1243,8 +1074,6 @@ public class Tela extends JFrame {
 		this.pnlExportar.add( this.btnProcurarDiretorio );
 		this.pnlExportar.add( this.btnExportar );
 		this.tbpPainelAbas.add( this.pnlEvolucao, null );
-		this.pnlEvolucao.add( this.btnMiniSQL );
-		this.pnlEvolucao.add( this.btnMiniERP );
 		this.pnlEvolucao.add( this.lblTarefa );
 		this.pnlEvolucao.add( this.txfCodTarefa );
 		this.pnlEvolucao.add( this.lblDescrTarefa );
@@ -1268,9 +1097,6 @@ public class Tela extends JFrame {
 		this.pnlBuscar.add( this.pnlResultado );
 		this.pnlBuscar.add( this.btnReativarBusca );
 		this.pnlBuscar.add( this.btnExcluirBusca );
-		this.tbpPainelAbas.add( this.pnlAnotacoes, null );
-		this.pnlAnotacoes.add( this.lblCaracteres );
-		this.pnlAnotacoes.add( this.scrollPaneAnotacoes );
 
 		JLabel lblTab1 = new JLabel( "  Tarefas  " );
 		lblTab1.setUI(new VerticalLabelUI(false));
@@ -1283,202 +1109,12 @@ public class Tela extends JFrame {
 		JLabel lblTab3 = new JLabel( "  Buscar  " );
 		lblTab3.setUI(new VerticalLabelUI(false));
 		this.tbpPainelAbas.setTabComponentAt(2, lblTab3);
-
-		JLabel lblTab4 = new JLabel( "  Anotações  " );
-		lblTab4.setUI(new VerticalLabelUI(false));
-		this.tbpPainelAbas.setTabComponentAt(3, lblTab4);
 	}
 
 	private void iniciarPrograma( final String pNomeCidade ) {
 		setDataPainel( obterData( pNomeCidade ) );
 		this.relogio.start();
 		habilitarBotoes( false );
-	}
-
-	private void iniciarSQLServer( final String pUsuarioSql ) {
-		SwingUtilities.invokeLater( new Runnable() {
-			@Override
-			public void run() {
-				Thread thread = new Thread(){
-		    @Override
-					public void run(){
-						Tarefa tarefa = getLinhaSelecionada();
-
-						if( tarefa == null ) {
-							tarefa = getTarefa();
-
-							if( tarefa == null ) {
-								return;
-							}
-						}
-
-						if( tarefa.getPortal().isEmpty() ) {
-							Mensagem.informacao( "Portal não encontrado.", null );
-							return;
-						}
-
-						try {
-							String tempFolder = System.getenv( "TEMP" ) + "\\";
-							String fileName;
-							Boolean existeArquivo = false;
-							Integer indice = 0;
-							
-							do {
-								indice++;
-								fileName = tempFolder + "temp" + indice.toString() + ".sql";
-								File f = new File( fileName );
-								existeArquivo = f.exists();
-							}
-							while( existeArquivo );
-							
-							String usuario = (pUsuarioSql.equals( "suporte" ))? "usr_suporte" : "mic" + tarefa.getPortal();
-							String senha = (pUsuarioSql.equals( "suporte" ))? "@@#vx3Wt$6v" : "Y87LQ!/m";
-							FileWriter sqlFile = new FileWriter( fileName );
-							sqlFile.write( "USE portal_" + tarefa.getPortal() );
-							sqlFile.close();
-							String comando = "Ssms.exe -S " + tarefa.getEnderecoBD() + " -U " + usuario + " -P " + senha + " -nosplash " + fileName;
-							System.out.println( "LOG: Iniciando SQL Server: " + comando);
-							Runtime.getRuntime().exec( comando );
-						} catch (IOException e) {
-							System.out.println( "IOException: " + e.getMessage() );
-						}
-					}
-				};
-
-				thread.start();
-			}
-		});
-	}
-
-	private void iniciarERP( final String pProducaoCorrecao ) {
-		SwingUtilities.invokeLater( new Runnable() {
-			@Override
-			public void run() {
-				Thread thread = new Thread(){
-					public void run(){
-						Tarefa tarefa = getLinhaSelecionada();
-
-						if( tarefa == null ) {
-							tarefa = getTarefa();
-
-							if( tarefa == null ) {
-								return;
-							}
-						}
-
-						String producaoCorrecao = "CORRECAO";
-
-						if (pProducaoCorrecao.equals("Produção")) {
-							producaoCorrecao = "PRODUCAO";
-						}
-
-						try {
-							String comando = "";
-
-							if( tarefa.getPortal().isEmpty() ) {
-								Mensagem.informacao( "Portal não encontrado.", null );
-								return;
-							}
-
-							if( producaoCorrecao.equals( "CORRECAO" ) ) {
-								String destinoUsuario;
-								switch (pProducaoCorrecao) {
-									case "Correção ERP": {
-										destinoUsuario = "correcaoERP";
-										break;
-									}
-									case "Correção FFC": {
-										destinoUsuario = "correcaoFFC";
-										break;
-									}
-									case "Correção M": {
-										destinoUsuario = "correcaoM";
-										break;
-									}
-									case "Produção": {
-										destinoUsuario = "correcaoERP";
-										break;
-									}
-									default: {
-										destinoUsuario = "correcaoERP";
-									}
-								}
-								comando = "C:\\Program Files\\Internet Explorer\\iexplore.exe http://192.168.18.12/config/bighost/admin/controle_acesso.asp?operacao=1&d=d&equipe=2&portal=" + tarefa.getPortal().trim() + "&homologacao=S&" + destinoUsuario + "=S";
-							} else if (producaoCorrecao.equals("PRODUCAO")) {
-								comando = "C:\\Program Files\\Internet Explorer\\iexplore.exe http://192.168.18.12/config/bighost/admin/controle_acesso.asp?operacao=1&d=d&equipe=2&portal=" + tarefa.getPortal().trim() + "&homologacao=N";
-							}
-
-							System.out.println( "LOG: Iniciando ERP: " + comando);
-							Runtime.getRuntime().exec( comando );
-						} catch (IOException e) {
-							System.out.println( "IOException: " + e.getMessage() );
-						}
-					}
-				};
-
-				thread.start();
-			}
-		});
-	}
-
-	public void iniciarERPLinx() {
-		final JTextField username = new JTextField();
-		final JPasswordField password = new JPasswordField();
-		final JPasswordField frase = new JPasswordField();
-
-		JPanel panel = new JPanel(new BorderLayout( 5, 5));
-		JPanel label = new JPanel( new GridLayout(0, 1, 2, 2 ) );
-		JPanel controls = new JPanel( new GridLayout( 0, 1, 2, 2 ) );
-		label.add(new JLabel( "Usuário", SwingConstants.RIGHT ) );
-		label.add(new JLabel( "Senha", SwingConstants.RIGHT ) );
-		label.add(new JLabel( "Frase", SwingConstants.RIGHT ) );
-
-		controls.add( username );
-		controls.add( password );
-		controls.add( frase );
-
-		panel.add( label, BorderLayout.WEST );
-		panel.add( controls, BorderLayout.CENTER );
-
-		int result = JOptionPane.showConfirmDialog(this, panel,
-			"Dados de Login", JOptionPane.OK_CANCEL_OPTION
-		);
-
-		if( result != JOptionPane.OK_OPTION ){
-			return;
-		}
-
-		SwingUtilities.invokeLater( new Runnable() {
-			@Override
-			public void run() {
-				Thread thread = new Thread(){
-					@Override
-					public void run(){
-						if( username.getText().isEmpty() ) {
-							return;
-						}
-
-						try {
-							String comando
-								= "http://wwwf.microvix.com.br/Log.asp?login=" + username.getText()
-								+ "&senha=" + new String(password.getPassword())
-								+ "&frase=" + new String(frase.getPassword());
-
-							System.out.println( "LOG: Iniciando ERP Linx: " + comando );
-							final URI uri = new URI( comando );
-							if( Desktop.isDesktopSupported() ) {
-								Desktop.getDesktop().browse( uri );
-							}
-						} catch (IOException e) {
-							System.out.println( "IOException: " + e.getMessage() );
-						} catch (URISyntaxException ex) {
-						}
-					}
-				};
-
-				thread.start();
-			}
-		});
 	}
 
 	private void criarModel() {
@@ -1545,20 +1181,6 @@ public class Tela extends JFrame {
 		this.contadorTable.setDefaultRenderer( String.class, new RRenderer() );
 		this.contadorTable.setDefaultRenderer( Character.class, new RRenderer() );
 
-		this.popm = new JPopupMenu();
-
-		JMenuItem menuItem = new JMenuItem( "Finalizar Atendimento" );
-		menuItem.addActionListener( new ActionListener() {
-			@Override
-			public void actionPerformed( ActionEvent e ) {
-				comandoTela = "FINALIZAR";
-			}
-		});
-
-		this.popm.add( menuItem );
-
-		this.contadorTable.setComponentPopupMenu(this.popm);
-
 		((DefaultTableCellRenderer)contadorTable.getTableHeader().getDefaultRenderer()).setHorizontalAlignment( JLabel.CENTER );
 	}
 
@@ -1567,9 +1189,6 @@ public class Tela extends JFrame {
 		this.btnParar.setEnabled( simOuNao );
 		habilitarExcluir( simOuNao );
 		this.btnAlterar.setEnabled( simOuNao );
-		this.btnERP.setEnabled( simOuNao );
-		this.btnMSSQL.setEnabled( simOuNao );
-		this.btnAnexos.setEnabled( simOuNao );
 	}
 
 	public void habilitarContinuar( final boolean simOuNao ) {
@@ -1598,8 +1217,17 @@ public class Tela extends JFrame {
 		final DateFormat hora = new SimpleDateFormat( "HH" );
 
 		final Date dataAtual = new Date();
-
-		String saudacao = (Integer.parseInt(String.valueOf( hora.format( dataAtual ))) <= 12)? "Bom dia!" : "Boa tarde!";
+        
+        String saudacao = "";
+        if (Integer.parseInt(String.valueOf( hora.format( dataAtual ))) <= 12) {
+            saudacao = "Bom dia!";
+        }
+        else if (Integer.parseInt(String.valueOf( hora.format( dataAtual ))) <= 18) {
+            saudacao = "Boa tarde!";
+        }
+        else {
+            saudacao = "Boa noite!";
+        }
 
 		return (cidade
 			+ dia.format(dataAtual) + " de " + mes.format(dataAtual) + " de " + ano.format(dataAtual) + ". "
@@ -1626,10 +1254,6 @@ public class Tela extends JFrame {
 		setTxfCodTarefa( "" );
 		setPnlParse( "" );
 		setTxaDetalhesFollowUp( "" );
-		setLblCaracteres( "0 Caracteres Restantes" );
-		setTxaAnotacoes( "" );
-
-		this.txaAnotacoes.setEditable( false );
 	}
 
 	public String getPnlParse() {
@@ -1654,10 +1278,6 @@ public class Tela extends JFrame {
 
 	public String getTxfObs() {
 		return( this.txfObs.getText() );
-	}
-
-	public void setLblCaracteres( final String pLabel ) {
-		this.lblCaracteres.setText( pLabel );
 	}
 
 	public void setPnlParse( final String pTexto ) {
@@ -1733,11 +1353,6 @@ public class Tela extends JFrame {
 
 	public void setTarefa( final Tarefa pTarefa ) {
 		this.tarefaAtual = pTarefa;
-
-		if( pTarefa != null ) {
-			this.txaAnotacoes.setEditable( true );
-			setLblCaracteres( String.valueOf( 5000 - pTarefa.getAnotacoes().length() ) + " Caracteres Restantes" );
-		}
 	}
 
 	public Tarefa getTarefa() {
@@ -1960,181 +1575,6 @@ public class Tela extends JFrame {
 		getComponent( 0 ).setCursor( Cursor.getDefaultCursor() );
 	}
 
-	public void carregarPaginaEvolucao( final char pCarregarDadosInsercao ) {
-	URL url;
-	BufferedReader in;
-
-		if( getTxfCodTarefa().isEmpty() ) {
-			setPnlParse( "" );
-			setTxaDetalhesFollowUp( "" );
-			return;
-		}
-
-		try {
-			url = new URL("http://a-srv63/suporte/followup_find.asp?OBJETO_ID=" + this.txfCodTarefa.getText());
-		} catch (Exception e) {
-			System.out.println( "Exception: " + e.getMessage() );
-			return;
-		}
-
-		try {
-			in = new BufferedReader( new InputStreamReader( url.openStream() ) );
-		} catch (IOException ex) {
-			System.out.println( "IOException: " + ex.getMessage() );
-			return;
-		}
-
-		String linha;
-		final ArrayList<String> linhas = new ArrayList<>();
-
-		try {
-			setCursorOcupado();
-
-			while( (linha = in.readLine()) != null ) {
-				linhas.add( linha );
-			}
-
-			in.close();
-		} catch (IOException e) {
-			System.out.println( "IOException: " + e.getMessage() );
-			return;
-		}
-
-		linha = parseHTML( linhas, true );
-		linha = removerEspacos( linha );
-		linha = buscarPortal( linha );
-
-		if( pCarregarDadosInsercao == 'S' ) {
-			carregarDadosLidos( linha );
-		}
-
-		setPnlParse( linha );
-		setTxaDetalhesFollowUp( linha );
-
-		setCursorLivre();
-	}
-
-	private String buscarPortal( String pConteudo ) {
-		Integer posicaoInicio = -1;
-		String resultadoDaBusca = "";
-		String portal = "";
-
-		for( String linha : pConteudo.split("\n") ) {
-
-			if( linha.toUpperCase().contains( "PORTAL" ) ) {
-				int numeroEncontrado = 0;
-				for( int i=0; i<linha.length(); i++ ){
-					Character charAtual = linha.charAt( i );
-
-		    if (charAtual == '|' || charAtual == ',') {
-						continue;
-					}
-
-					if( numeroEncontrado == 1 ) {
-						portal += charAtual.toString();
-					}
-
-		    if (charAtual >= '0' && charAtual <= '9' && numeroEncontrado == 0) {
-						numeroEncontrado++;
-						portal += charAtual.toString();
-		    } else if (numeroEncontrado == 1 && (charAtual == ' ' || i == linha.length() - 1)) {
-			posicaoInicio = i;
-						break;
-					}
-				}
-			}
-
-			if( linha.toUpperCase().contains( "DATA:" ) ){
-				linha = "_________________________________________________________________________________________\n" + linha;
-				resultadoDaBusca = resultadoDaBusca.substring( 0, resultadoDaBusca.length()-1 );
-			}
-
-			if( posicaoInicio > -1 ) {
-				Tarefa tarefa = getLinhaSelecionada();
-
-				if( tarefa == null ) {
-					tarefa = new Tarefa();
-					setTarefa( tarefa );
-				}
-
-				String enderecoBD = buscarEnderecoBDPortal( portal );
-
-				if( !tarefa.existeBdInformado() ){
-					tarefa.setEnderecoBD( enderecoBD );
-					tarefa.setPortal( portal );
-				}
-
-				if( !enderecoBD.isEmpty() ){
-					enderecoBD = " (" + enderecoBD + ")";
-				}
-
-				if( linha.substring( 0, posicaoInicio ).length() >= linha.length() ) {
-					resultadoDaBusca += linha + enderecoBD + "\n";
-				} else {
-					resultadoDaBusca += linha.substring( 0, posicaoInicio+1 ) + enderecoBD + linha.substring( posicaoInicio+1 ) + "\n";
-				}
-				posicaoInicio = -1;
-				portal = "";
-	    } else {
-				resultadoDaBusca += linha + "\n";
-			}
-		}
-
-		return( resultadoDaBusca );
-	}
-
-	private String lerPaginaPortal( final String pPortal ) {
-	URL url;
-	BufferedReader in;
-
-		try {
-			url = new URL("http://192.168.18.12/config/bighost/admin/administrador.asp?equipe=2&opcao_pesquisa=P&equipe=2&operacao=1&conteudo=" + pPortal);
-		} catch (Exception e) {
-			System.out.println( "Exception: " + e.getMessage() );
-			return( "" );
-		}
-
-		try {
-			in = new BufferedReader( new InputStreamReader( url.openStream() ) );
-	} catch (IOException ex) {
-			System.out.println( "IOException: " + ex.getMessage() );
-			return( "" );
-		}
-
-		String linha;
-	ArrayList<String> linhas = new ArrayList<>();
-
-		try {
-			setCursorOcupado();
-
-			while( (linha = in.readLine()) != null ) {
-				linhas.add( linha );
-			}
-
-			in.close();
-	} catch (IOException e) {
-			System.out.println( "IOException: " + e.getMessage() );
-		}
-
-		linha = parseHTML( linhas, false );
-		linha = removerEspacos( linha );
-
-		setCursorLivre();
-
-		return( linha );
-	}
-
-	private String buscarEnderecoBDPortal( final String pPortal ) {
-		String pagina = lerPaginaPortal( pPortal );
-
-		for( String linha : pagina.split("\n" ) ) {
-			if( linha.contains( "10.10.0" ) ) {
-				return( linha.trim() );
-			}
-		}
-		return( "" );
-	}
-
 	private void criarModelResultado() {
 		this.resultadoTable = new JTable();
 		this.resultadoModel = new TarefaResultadoModel();
@@ -2323,35 +1763,8 @@ public class Tela extends JFrame {
 		);
 	}
 
-	public String getTxaAnotacoes() {
-		return( this.txaAnotacoes.getText().replaceAll( "\n", "##" ) );
-	}
-
-	public void setTxaAnotacoes( final String pAnotacoes ) {
-		this.txaAnotacoes.setText( pAnotacoes.replaceAll( "##", "\n" ) );
-	}
-
 	public String getTxfTextoLivre() {
 		return( this.txfTextoLivre.getText() );
-	}
-
-	private void buscarDescricaoTarefa() {
-		String descricao = "";
-		WorkflowDAO wf = new WorkflowDAO();
-
-		try {
-			descricao = wf.getDescricaoTP( getTxfCodigo() );
-			wf.fecharConexao();
-		}
-		catch( Exception ex ) {
-			System.out.println( "Exception: " + ex.getMessage() );
-		}
-		
-		if ( !descricao.isEmpty() ) {
-			descricao = descricao.substring( 0, 1 ) + descricao.substring( 1 ).toLowerCase();
-		}
-	
-		setTxfNome( descricao );
 	}
 }
 

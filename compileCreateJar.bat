@@ -7,19 +7,17 @@ IF NOT EXIST bin (
 
 CD src\
 
-javac -d ..\bin\ -cp .;..\lib\* utils\*.java
-javac -d ..\bin\ -cp .;..\lib\* model\*.java
-javac -d ..\bin\ -cp .;..\lib\* data\*.java
-javac -d ..\bin\ -cp .;..\lib\* database\*.java
-javac -d ..\bin\ -cp .;..\lib\* dao\*.java
-javac -d ..\bin\ -cp .;..\lib\* view\*.java
-javac -d ..\bin\ -cp .;..\lib\* controller\*.java
+"C:\Program Files (x86)\Java\jdk1.8.0_121\bin\javac.exe" -d ..\bin\ -cp .;..\lib\* utils\*.java
+"C:\Program Files (x86)\Java\jdk1.8.0_121\bin\javac.exe" -d ..\bin\ -cp .;..\lib\* model\*.java
+"C:\Program Files (x86)\Java\jdk1.8.0_121\bin\javac.exe" -d ..\bin\ -cp .;..\lib\* data\*.java
+"C:\Program Files (x86)\Java\jdk1.8.0_121\bin\javac.exe" -d ..\bin\ -cp .;..\lib\* view\*.java
+"C:\Program Files (x86)\Java\jdk1.8.0_121\bin\javac.exe" -d ..\bin\ -cp .;..\lib\* controller\*.java
 
 ::javac -d ..\bin\ -cp ..\lib\* contador\controller\Programa.java
 
 CD ..\bin\
 
-jar cmf MANIFEST.txt Contador.jar utils\* model\* data\* database\* dao\* images\* view\* controller\*
+"C:\Program Files (x86)\Java\jdk1.8.0_121\bin\jar.exe" cmf MANIFEST.txt Contador.jar utils\* model\* data\* database\* dao\* images\* view\* controller\*
 
 CD ..
 
