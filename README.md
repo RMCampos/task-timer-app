@@ -4,8 +4,6 @@ Contador é um programa feito para ajudar no controle do tempo decorrido de uma 
 
 Existem botões para parar e continuar, o que possibilita realizar mais de uma tarefa ao mesmo tempo, isto é, iniciar uma nova tarefa sem ter terminado uma anterior. É possível também exportar para um formato txt.
 
-### Printscreen da versão 16.1.0 de 06/06/2017###
-
-### Printscreen da versão 1.1.0 de 30/06/2014###
+### Printscreen da versão 1.1.0 de 30/06/2014 ###
 
 ![contador.png](https://bitbucket.org/repo/gr5EjL/images/1768745615-contador.png)
