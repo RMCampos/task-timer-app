@@ -1,36 +1,29 @@
 @ECHO OFF
 
+:: Create the compiled class folder if needed
 IF NOT EXIST bin (
 	ECHO "Creating bin folder"
 	MD bin
 )
 
-CD src\
+:: The source folder
+CD Contador\src\
 
-"C:\Program Files (x86)\Java\jdk1.8.0_121\bin\javac.exe" -d ..\bin\ -cp .;..\lib\* utils\*.java
-"C:\Program Files (x86)\Java\jdk1.8.0_121\bin\javac.exe" -d ..\bin\ -cp .;..\lib\* model\*.java
-"C:\Program Files (x86)\Java\jdk1.8.0_121\bin\javac.exe" -d ..\bin\ -cp .;..\lib\* data\*.java
-"C:\Program Files (x86)\Java\jdk1.8.0_121\bin\javac.exe" -d ..\bin\ -cp .;..\lib\* view\*.java
-"C:\Program Files (x86)\Java\jdk1.8.0_121\bin\javac.exe" -d ..\bin\ -cp .;..\lib\* controller\*.java
+:: Update HERE with your javac path!
+"C:\Program Files (x86)\Java\jdk1.7.0_80\bin\javac.exe" -d ..\..\bin\ controller\*.java
+"C:\Program Files (x86)\Java\jdk1.7.0_80\bin\javac.exe" -d ..\..\bin\ data\*.java
+"C:\Program Files (x86)\Java\jdk1.7.0_80\bin\javac.exe" -d ..\..\bin\ model\*.java
+"C:\Program Files (x86)\Java\jdk1.7.0_80\bin\javac.exe" -d ..\..\bin\ utils\*.java
+"C:\Program Files (x86)\Java\jdk1.7.0_80\bin\javac.exe" -d ..\..\bin\ view\*.java
+MD ..\..\bin\images\
+COPY images\* ..\..\bin\images\
 
-::javac -d ..\bin\ -cp ..\lib\* contador\controller\Programa.java
+:: Enter in the binary folder
+CD ..\..\bin\
 
-CD ..\bin\
-
-"C:\Program Files (x86)\Java\jdk1.8.0_121\bin\jar.exe" cmf MANIFEST.txt Contador.jar utils\* model\* data\* database\* dao\* images\* view\* controller\*
+:: Creathe the jar executable file
+"C:\Program Files (x86)\Java\jdk1.7.0_80\bin\jar.exe" cmf ..\manifest.mf ..\Contador.jar controller\* data\* model\* utils\* view\* images\*
 
 CD ..
-
-
-
-IF EXIST bin\Contador.jar (
-	IF EXIST Contador.jar (
-		DEL Contador.jar
-	)
-	MOVE bin\Contador.jar
-	ECHO "Done"
-) ELSE (
-	ECHO "Error"
-)
 
 PAUSE

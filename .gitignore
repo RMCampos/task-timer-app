@@ -13,3 +13,5 @@ hs_err_pid*
 
 # sql files
 *.sql
+/Contador/nbproject/private/
+/Contador/build/
