@@ -29,19 +29,19 @@ public class TarefaModel extends DefaultTableModel {
 	public String getColumnName( int column ) {
 		switch( column ) {
 	    case COL_COD:
-		return ("Program");
+		return ("Diagrama/Programa");
 	    case COL_NOME:
-		return ("Short description");
+		return ("Descrição");
 	    case COL_SOL:
-		return ("Requester");
+		return ("Cliente");
 	    case COL_INICIO:
-		return ("Started at");
+		return ("Início");
 	    case COL_TERMINO:
-		return ("Finished at");
+		return ("Término");
 	    case COL_DECORRIDO:
-		return ("Time spent");
+		return ("Decorrido");
 	    case COL_ATIVO:
-		return ("Active");
+		return ("Ativo");
 	    default:
 		return ("");
 		}

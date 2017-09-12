@@ -13,29 +13,26 @@ import java.util.Collection;
 import java.util.Date;
 import javax.swing.JFileChooser;
 import data.Tarefa;
-import java.awt.Desktop;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import utils.Mensagem;
 import utils.OS;
 import view.Tela;
 
 public class Programa {
-
     private Tela frame;
     private String tempoTotal;
     private char transacao;
 
-    public Programa(String[] s) {
-        
+    public Programa() {
         try {
             SwingUtilities.invokeAndWait(new Runnable() {
                 @Override
                 public void run() {
                     try {
                         frame = new Tela();
-                        frame.setTitle("Task time counter - v012 (06/06/2017)");
+                        frame.setTitle("KTaxímetro - v1.0.0 - 12/09/2017");
                         frame.setVisible(true);
                     }
                     catch (Exception e) {
@@ -123,10 +120,9 @@ public class Programa {
                 if (this.frame.getComandoTela().equals("PROCURAR_DIRETORIO")) {
                     procurarDiretorio();
                 }
-                if (frame.getComandoTela().equals("SOBRE")) sobreNos();
             } while (true);
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+            ex.printStackTrace();
         }
     }
 
@@ -151,9 +147,15 @@ public class Programa {
         if (this.transacao == 'A') {
             Tarefa tarefa = this.frame.getTarefa();
 
+            tarefa.setCodigo(frame.getTxfCodigo());
             tarefa.setNome(this.frame.getTxfNome());
             tarefa.setSoliciante(this.frame.getTxfSolicitante());
             tarefa.setObs(this.frame.getTxfObs());
+            
+            frame.contadorModel.fireTableDataChanged();
+            frame.limpar();
+            
+            JOptionPane.showMessageDialog(frame, "Dados salvos!");
         }
     }
 
@@ -161,14 +163,9 @@ public class Programa {
         boolean flValidar = true;
         String strMsg = "";
 
-        if (this.frame.getTxfCodigo().isEmpty()) {
+        if (this.frame.getTxfSolicitante().isEmpty()) {
             flValidar = false;
-            strMsg += "->Código da tarefa não informado.\n";
-        }
-
-        if (this.frame.getTxfNome().isEmpty()) {
-            flValidar = false;
-            strMsg += "->Nome da tarefa não informado.\n";
+            strMsg += "->Informe o Cliente.\n";
         }
 
         if (!flValidar) {
@@ -194,10 +191,17 @@ public class Programa {
             Tarefa tarefa = criarTarefa();
 
             DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-
+            DateFormat df2 = new SimpleDateFormat("HH:mm:ss");
+            
             tarefa.setDataHoraInclusao(df.format(new java.util.Date()));
+            tarefa.setHoraInicio(df2.format(new java.util.Date()));
+            tarefa.setHoraIntervalo(new java.util.Date());
+            tarefa.setEmAndamento(true);
+            tarefa.iniciarTempo();
             this.frame.addTarefa(tarefa);
             this.frame.limpar();
+        } else if (this.transacao == 'A') {
+            alterar();
         } else {
             cancelar();
         }
@@ -208,7 +212,6 @@ public class Programa {
 
         this.frame.setTarefa(tarefa);
         this.transacao = 'A';
-        this.frame.mudarEstado("EDICAO");
         this.frame.setTxfCodigo(tarefa.getCodigo());
         this.frame.setTxfNome(tarefa.getNome());
         this.frame.setTxfSolicitante(tarefa.getSolicitante());
@@ -281,6 +284,8 @@ public class Programa {
         tarefa.pararTempo();
 
         this.frame.habilitarContinuar(false);
+        frame.contadorModel.fireTableDataChanged();
+        frame.limpar();
         this.transacao = 'I';
 
         togglePlayPause();
@@ -292,7 +297,6 @@ public class Programa {
         this.frame.limparTempoDecorrido();
         this.frame.habilitarBotoes(false);
         this.frame.habilitarBotaoInserir(true);
-        this.frame.mudarEstado("");
         this.transacao = 'I';
         this.frame.contadorTable.getSelectionModel().clearSelection();
     }
@@ -402,18 +406,6 @@ public class Programa {
             System.out.println(ex.getMessage());
         }
     }
-    private void sobreNos() {
-        Desktop desktop = Desktop.isDesktopSupported()? Desktop.getDesktop() : null;
-        
-        if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
-            try {
-                desktop.browse(new URL("https://github.com/RMCampos/Contador").toURI());
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
     private String somarDuracao(String duracao1Param, String duracao2Param) {
         try {
             Integer hor1 = Integer.parseInt(String.valueOf(duracao1Param.substring(0, 2).replaceAll(":", "")));
@@ -502,11 +494,7 @@ public class Programa {
     }
 
     public static void main(String[] s) {
-        try {
-            Programa p = new Programa(s);
-            p.exec();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Programa p = new Programa();
+        p.exec();
     }
 }

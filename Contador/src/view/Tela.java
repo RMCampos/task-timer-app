@@ -3,16 +3,13 @@ package view;
 import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Component;
-import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.Image;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
-import java.awt.Point;
 import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
@@ -31,10 +28,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -47,13 +40,11 @@ import javax.swing.JLabel;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.UIManager;
-import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import data.Tarefa;
 import model.TarefaModel;
@@ -61,18 +52,14 @@ import utils.Mensagem;
 import utils.OS;
 
 public class Tela extends JFrame {
-
-    public static int larguraBotao = 92;
+    public static int larguraBotao = 148;
     private String comandoTela;
     private Timer relogio;
     private Tarefa tarefaAtual;
     private FrameConsole console;
-
     private JPanel pnlSuperior;
     private JLabel lblData;
     private JLabel lblHora;
-
-    
     private JPanel pnlInferior;
     private JButton btnCancelar;
     private JLabel lblCodigo;
@@ -83,7 +70,6 @@ public class Tela extends JFrame {
     private JTextField txfSolicitante;
     private JLabel lblObs;
     private JTextField txfObs;
-    private JButton btnSobre;
     private JButton btnTray;
     private JButton btnAdd;
     private JButton btnContinuar;
@@ -101,16 +87,11 @@ public class Tela extends JFrame {
     private JLabel lblExportarPara;
     private JTextField txfDiretorio;
     private JButton btnProcurarDiretorio;
-    private JTextArea pnlParse;
     private JPanel containerCampos;
-
     public JTable contadorTable;
     public TarefaModel contadorModel;
     private TrayIcon trayIcon;
     private SystemTray tray;
-    private JScrollPane scpBusca;
-
-    private String usuarioLogado;
 
     public Tela() {
         iniciarComponentes();
@@ -347,12 +328,6 @@ public class Tela extends JFrame {
                 txfObs.selectAll();
             }
         });
-        this.btnSobre.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                comandoTela = "SOBRE";
-            }
-        });
         this.btnTray.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -411,45 +386,6 @@ public class Tela extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 comandoTela = "PROCURAR_DIRETORIO";
-            }
-        });
-        this.contadorTable.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                int linha = contadorTable.rowAtPoint(new Point(e.getX(), e.getY()));
-                int coluna = contadorTable.columnAtPoint(new Point(e.getX(), e.getY()));
-                String conteudoCelula = (String) contadorTable.getValueAt(linha, coluna);
-
-                if (conteudoCelula == null || conteudoCelula.isEmpty() || coluna > 0) {
-                    return;
-                }
-
-                try {
-                    final URI uri = new URI("http://a-srv63/suporte/followup_find.asp?OBJETO_ID=" + conteudoCelula);
-                    if (Desktop.isDesktopSupported()) {
-                        try {
-                            Desktop.getDesktop().browse(uri);
-                        } catch (IOException ie) {
-                        }
-                    }
-                } catch (URISyntaxException ex) {
-                }
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                int coluna = contadorTable.columnAtPoint(new Point(e.getX(), e.getY()));
-                if (coluna == 0) {
-                    contadorTable.setCursor(new Cursor(Cursor.HAND_CURSOR));
-                }
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                int coluna = contadorTable.columnAtPoint(new Point(e.getX(), e.getY()));
-                if (coluna > 0) {
-                    contadorTable.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-                }
             }
         });
     }
@@ -511,20 +447,12 @@ public class Tela extends JFrame {
 
         // centraliza o painel de exportar
         this.pnlExportar.setBounds(((largura - this.pnlExportar.getWidth()) / 2) - 20, this.pnlTempoDecorrido.getY() + this.pnlTempoDecorrido.getHeight() + 10, this.pnlExportar.getWidth(), this.pnlExportar.getHeight());
-
-        // ajusta a largura e altura do painel de parse
-        this.pnlParse.setBounds(this.pnlParse.getX(), this.pnlParse.getY(), largura - 20, altura - 200);
     }
 
     private void setarIcones() {
         try {
             this.setIconImage(new ImageIcon(getClass().getResource("/images/clock.png")).getImage());
             this.btnProcurarDiretorio.setIcon(new ImageIcon(getClass().getResource("/images/folder.png")));
-            this.btnContinuar.setIcon(new ImageIcon(getClass().getResource("/images/play.png")));
-            this.btnParar.setIcon(new ImageIcon(getClass().getResource("/images/pause.png")));
-            this.btnExcluir.setIcon(new ImageIcon(getClass().getResource("/images/trash.png")));
-            this.btnCancelar.setIcon(new ImageIcon(getClass().getResource("/images/cancel.png")));
-            this.btnAlterar.setIcon(new ImageIcon(getClass().getResource("/images/edit.png")));
         } catch (Exception ex) {
             System.out.println("Exception: " + ex.getMessage());
             ex.printStackTrace();
@@ -546,16 +474,6 @@ public class Tela extends JFrame {
         this.console = new FrameConsole();
         this.console.setVisible(false);
         this.console.setTitle("Console");
-    }
-
-    public void mudarEstado(final String pEstado) {
-        boolean estado = true;
-
-        if (pEstado.equals("EDICAO")) {
-            estado = false;
-        }
-
-        this.txfCodigo.setEditable(estado);
     }
 
     private void iniciarComponentes() {
@@ -616,7 +534,7 @@ public class Tela extends JFrame {
         this.containerCampos.setLayout(null);
         this.containerCampos.setBounds(0, 2, 780, 170);
 
-        this.lblCodigo = new JLabel("Program:");
+        this.lblCodigo = new JLabel("Diagrama/Programa:");
         this.lblCodigo.setHorizontalAlignment(JLabel.RIGHT);
         this.lblCodigo.setBounds(10, 10, 140, 21); // y = 31 + 5 // x = 100
         this.lblCodigo.setFont(new Font("Verdana", 0, 12));
@@ -625,7 +543,7 @@ public class Tela extends JFrame {
         this.txfCodigo.setBounds(155, 10, 90, 21);
         this.txfCodigo.setFont(new Font("Monospaced", 0, 12));
 
-        this.lblNome = new JLabel("Short description:");
+        this.lblNome = new JLabel("Descrição:");
         this.lblNome.setHorizontalAlignment(JLabel.RIGHT);
         this.lblNome.setBounds(30, 36, 120, 21); // y = 57 + 5 // x = 100
         this.lblNome.setFont(new Font("Verdana", 0, 12));
@@ -634,7 +552,7 @@ public class Tela extends JFrame {
         this.txfNome.setBounds(155, 36, 300, 21);
         this.txfNome.setFont(new Font("Monospaced", 0, 12));
 
-        this.lblSolicitante = new JLabel("Requester:");
+        this.lblSolicitante = new JLabel("Cliente:");
         this.lblSolicitante.setHorizontalAlignment(JLabel.RIGHT);
         this.lblSolicitante.setBounds(0, 62, 150, 21); // y = 83 + 5 // x = 100
         this.lblSolicitante.setFont(new Font("Verdana", 0, 12));
@@ -643,7 +561,7 @@ public class Tela extends JFrame {
         this.txfSolicitante.setBounds(155, 62, 120, 21);
         this.txfSolicitante.setFont(new Font("Monospaced", 0, 12));
 
-        this.lblObs = new JLabel("TODO:");
+        this.lblObs = new JLabel("Serviço:");
         this.lblObs.setHorizontalAlignment(JLabel.RIGHT);
         this.lblObs.setBounds(60, 88, 90, 21); // y = 109 + 5 // x = 100
         this.lblObs.setFont(new Font("Verdana", 0, 12));
@@ -652,53 +570,48 @@ public class Tela extends JFrame {
         this.txfObs.setBounds(155, 88, 400, 21);
         this.txfObs.setFont(new Font("Monospaced", 0, 12));
         
-        this.btnSobre = new JButton("About");
-        this.btnSobre.setBounds(650, 7, 100, 30);
-        this.btnSobre.setToolTipText("About this program");
-        this.btnSobre.setFocusable(false);
-
         this.btnTray = new JButton("Tray");
         this.btnTray.setBounds(650, 45, 100, 30);
-        this.btnTray.setToolTipText("Send to system tray");
+        this.btnTray.setToolTipText("Enviar para o tray");
         this.btnTray.setFocusable(false);
 
-        this.btnAdd = new JButton("Add task");
+        this.btnAdd = new JButton("Adicionar");
         this.btnAdd.setBounds(650, 83, 100, 30);
         this.btnAdd.setFont(new Font("Verdana", 0, 12));
         this.btnAdd.setToolTipText("Add task to system board");
         this.btnAdd.setFocusable(false);
 
-        this.btnParar = new JButton();
-        this.btnParar.setBounds(20, 140, Tela.larguraBotao, 30);
+        this.btnParar = new JButton("Parar");
+        this.btnParar.setBounds((20 + Tela.larguraBotao), 140, Tela.larguraBotao, 30);
         this.btnParar.setFont(new Font("Verdana", 0, 12));
         this.btnParar.setToolTipText("Para a contagem da tarefa selecionada.");
         this.btnParar.setFocusable(false);
 
-        this.btnContinuar = new JButton();
-        this.btnContinuar.setBounds((20 + Tela.larguraBotao), 140, Tela.larguraBotao, 30);
+        this.btnContinuar = new JButton("Iniciar/Continuar");
+        this.btnContinuar.setBounds(20, 140, Tela.larguraBotao, 30);
         this.btnContinuar.setFont(new Font("Verdana", 0, 12));
         this.btnContinuar.setToolTipText("Continua a contagem da tarefa selecionada");
         this.btnContinuar.setFocusable(false);
 
-        this.btnExcluir = new JButton();
+        this.btnExcluir = new JButton("Excluir");
         this.btnExcluir.setBounds((20 + Tela.larguraBotao * 2), 140, Tela.larguraBotao, 30);
         this.btnExcluir.setFont(new Font("Verdana", 0, 12));
         this.btnExcluir.setToolTipText("Exclui a tarefa selecionada");
         this.btnExcluir.setFocusable(false);
 
-        this.btnCancelar = new JButton();
+        this.btnCancelar = new JButton("Cancelar");
         this.btnCancelar.setBounds((20 + Tela.larguraBotao * 3), 140, Tela.larguraBotao, 30);
         this.btnCancelar.setFont(new Font("Verdana", 0, 12));
         this.btnCancelar.setToolTipText("Cancelar");
         this.btnCancelar.setFocusable(false);
 
-        this.btnAlterar = new JButton();
+        this.btnAlterar = new JButton("Alterar");
         this.btnAlterar.setBounds((20 + Tela.larguraBotao * 4), 140, Tela.larguraBotao, 30);
         this.btnAlterar.setFont(new Font("Verdana", 0, 12));
         this.btnAlterar.setToolTipText("Alterar");
         this.btnAlterar.setFocusable(false);
 
-        this.btnExportar = new JButton("Go!");
+        this.btnExportar = new JButton("Salvar!");
         this.btnExportar.setBounds(576, 5, 144, 30);
         this.btnExportar.setFont(new Font("Verdana", 0, 12));
         this.btnExportar.setToolTipText("Exporta para um arquivo CSV.");
@@ -717,7 +630,7 @@ public class Tela extends JFrame {
         this.pnlTempoDecorrido.setLayout(null);
         this.pnlTempoDecorrido.setBorder(BorderFactory.createEtchedBorder());
 
-        this.lblTempoDecorrido = new JLabel("Elapsed time (task):");
+        this.lblTempoDecorrido = new JLabel("Tempo do Serviço:");
         this.lblTempoDecorrido.setBounds(10, 10, 135, 21);
         this.lblTempoDecorrido.setFont(new Font("Verdana", 0, 12));
         this.lblTempoDecorrido.setHorizontalAlignment(JLabel.RIGHT);
@@ -726,7 +639,7 @@ public class Tela extends JFrame {
         this.lblTotalTarefa.setBounds(150, 10, 115, 21);
         this.lblTotalTarefa.setFont(new Font("Verdana", 0, 12));
 
-        this.lblTempoTodos = new JLabel("Elapsed time:");
+        this.lblTempoTodos = new JLabel("Tempo Total:");
         this.lblTempoTodos.setBounds(510, 10, 115, 21);
         this.lblTempoTodos.setFont(new Font("Verdana", 0, 12));
         this.lblTempoTodos.setHorizontalAlignment(JLabel.RIGHT);
@@ -741,7 +654,7 @@ public class Tela extends JFrame {
         this.pnlExportar.setBounds(20, pnlTempoDecorrido.getY() + pnlTempoDecorrido.getHeight() + 10, 740, 40);
         this.pnlExportar.setBorder(BorderFactory.createEtchedBorder());
 
-        this.lblExportarPara = new JLabel("Export:");
+        this.lblExportarPara = new JLabel("Exportar:");
         this.lblExportarPara.setBounds(25, 10, 100, 21);
         this.lblExportarPara.setHorizontalAlignment(JLabel.RIGHT);
         this.lblExportarPara.setFont(new Font("Verdana", 0, 12));
@@ -769,7 +682,6 @@ public class Tela extends JFrame {
         this.containerCampos.add(this.txfSolicitante);
         this.containerCampos.add(this.lblObs);
         this.containerCampos.add(this.txfObs);
-        this.containerCampos.add(this.btnSobre);
         this.containerCampos.add(this.btnTray);
         this.containerCampos.add(this.btnAdd);
         this.containerCampos.add(this.btnParar);
@@ -809,8 +721,8 @@ public class Tela extends JFrame {
         this.contadorTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         this.contadorTable.setFont(new Font("Monospaced", 0, 12));
 
-        this.contadorTable.getColumnModel().getColumn(0).setPreferredWidth(80);
-        this.contadorTable.getColumnModel().getColumn(1).setPreferredWidth(255);
+        this.contadorTable.getColumnModel().getColumn(0).setPreferredWidth(110);
+        this.contadorTable.getColumnModel().getColumn(1).setPreferredWidth(240);
         this.contadorTable.getColumnModel().getColumn(2).setPreferredWidth(110);
         this.contadorTable.getColumnModel().getColumn(3).setPreferredWidth(70);
         this.contadorTable.getColumnModel().getColumn(4).setPreferredWidth(70);
@@ -833,8 +745,6 @@ public class Tela extends JFrame {
                 }
 
                 if (column == 0) {
-                    String url = "http://a-srv63/suporte/followup_find.asp?OBJETO_ID=" + value;
-                    ((JLabel) comp).setText("<html><a href=\"" + url + "\">" + value + "</a>");
                     ((JLabel) comp).setHorizontalAlignment(JLabel.LEFT);
                 } else if (column == 6) {
                     ((JLabel) comp).setHorizontalAlignment(JLabel.CENTER);
@@ -894,11 +804,11 @@ public class Tela extends JFrame {
 
         String saudacao = "";
         if (Integer.parseInt(String.valueOf(hora.format(dataAtual))) <= 12) {
-            saudacao = "God Morning!";
+            saudacao = "Bom dia!";
         } else if (Integer.parseInt(String.valueOf(hora.format(dataAtual))) <= 18) {
-            saudacao = "God afternon!";
+            saudacao = "Boa tarde!";
         } else {
-            saudacao = "It's not time to stop?";
+            saudacao = "Não é hora de parar?";
         }
 
         return (dia.format(dataAtual) + " de " + mes.format(dataAtual) + " de " + ano.format(dataAtual) + ". "
@@ -918,13 +828,10 @@ public class Tela extends JFrame {
     }
 
     public void limpar() {;
+        setTxfCodigo("");
+        setTxfNome("");
         setTxfSolicitante("");
         setTxfObs("");
-        setPnlParse("");
-    }
-
-    public String getPnlParse() {
-        return (this.pnlParse.getText());
     }
 
     public String getTxfCodigo() {
@@ -941,10 +848,6 @@ public class Tela extends JFrame {
 
     public String getTxfObs() {
         return (this.txfObs.getText());
-    }
-
-    public void setPnlParse(final String pTexto) {
-        this.pnlParse.setText(pTexto);
     }
 
     public void setTxfSolicitante(final String pSolicitante) {
