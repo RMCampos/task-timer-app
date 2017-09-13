@@ -6,224 +6,185 @@ import java.awt.event.ActionListener;
 import javax.swing.Timer;
 
 public class Tarefa {
+    private String diagramaPrograma;
+    private String descricao;
+    private String cliente;
+    private String servico;
+    private String horaInicio;
+    private String duracao;
+    private String horaTermino;
+    private Date horaIntervalo;
+    private boolean emAndamento;
+    private boolean finalizada;
+    private final Timer timer;
+    private String cronometro;
+    private String dataHoraInclusao;
+    private String dataHoraTermino;
 
-	private String codigo;
-	private String nome;
-	private String solicitante;
-	private String horaInicio;
-	private String duracao;
-	private String horaTermino;
-	private Date horaIntervalo;
-	private boolean emAndamento;
-	private boolean finalizada;
-	private String obs;
-	private final Timer timer;
-	private String cronometro;
-	private String dataHoraInclusao;
-	private String dataHoraTermino;
-	private String enderecoBD;
-	private String portal;
-	private String anotacoes;
+    public Tarefa() {
+        this.diagramaPrograma = "";
+        this.descricao = "";
+        this.cliente = "";
+        this.servico = "";
+        this.horaInicio = "";
+        this.duracao = "00:00:00";
+        this.horaTermino = "00:00:00";
+        this.dataHoraInclusao = "00:00:00";
+        this.dataHoraTermino = "00:00:00";
+        this.horaIntervalo = new Date();
+        this.emAndamento = false;
+        this.finalizada = false;
+        this.cronometro = "00:00:00";
 
-	public Tarefa() {
-		this.codigo = "";
-		this.nome = "";
-		this.solicitante = "";
-		this.horaInicio  = "";
-		this.duracao = "00:00:00";
-		this.horaTermino = "00:00:00";
-		this.obs = "";
-		this.dataHoraInclusao = "00:00:00";
-		this.dataHoraTermino = "00:00:00";
-		this.horaIntervalo = new Date();
-		this.emAndamento = false;
-		this.finalizada = false;
-		this.cronometro = "00:00:00";
-		this.enderecoBD = "";
-		this.portal = "";
-		this.anotacoes = "";
+        ActionListener updateClockAction = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cronometro = incrementarUmSegundo(cronometro);
+            }
+        };
+        this.timer = new Timer(1000, updateClockAction);
+    }
 
-		ActionListener updateClockAction = new ActionListener() {
-			@Override
-			public void actionPerformed( ActionEvent e ) {
-				cronometro = incrementarUmSegundo( cronometro );
-			}
-		};
-		this.timer = new Timer( 1000, updateClockAction );
-	}
+    private String incrementarUmSegundo(String tempo) {
+        try {
+            int hora = Integer.parseInt(tempo.substring(0, 2));
+            int min = Integer.parseInt(tempo.substring(3, 5));
+            int seg = Integer.parseInt(tempo.substring(6, 8));
 
-	private String incrementarUmSegundo( String tempo ) {
-		try {
-			int hora = Integer.parseInt( tempo.substring( 0, 2 ) );
-			int min = Integer.parseInt( tempo.substring( 3, 5 ) );
-			int seg = Integer.parseInt( tempo.substring( 6, 8 ) );
+            seg++;
 
-			seg++;
+            if (seg >= 60) {
+                min++;
+                seg -= 60;
+            }
 
-			if( seg >= 60 ) {
-				min++;
-				seg -= 60;
-			}
+            if (min >= 60) {
+                hora++;
+                min -= 60;
+            }
 
-			if( min >= 60 ) {
-				hora++;
-				min -= 60;
-			}
+            String horaS = (hora < 10) ? "0" + hora + ":" : hora + ":";
+            String minS = (min < 10) ? "0" + min + ":" : min + ":";
+            String segS = (seg < 10) ? "0" + seg : seg + "";
 
-			String horaS = (hora < 10)? "0"+hora+":" : hora+":";
-			String minS = (min < 10)? "0"+min+":" : min+":";
-			String segS = (seg < 10)? "0"+seg : seg+"";
+            return (horaS + minS + segS);
+        } catch (NumberFormatException e) {
+            System.out.println("NumberFormatException: " + e.getLocalizedMessage());
+            return ("00:00:00");
+        }
+    }
 
-			return( horaS+minS+segS );
-	} catch (NumberFormatException e) {
-			System.out.println( "NumberFormatException: " + e.getLocalizedMessage() );
-			return( "00:00:00" );
-		}
-	}
+    public String getDiagramaPrograma() {
+        return diagramaPrograma;
+    }
 
-	public String getCodigo() {
-		return( this.codigo );
-	}
+    public String getDescricao() {
+        return descricao;
+    }
 
-	public String getNome() {
-		return( this.nome );
-	}
+    public String getCliente() {
+        return cliente;
+    }
 
-	public String getSolicitante() {
-		return( this.solicitante );
-	}
+    public String getServico() {
+        return servico;
+    }
 
-	public String getHoraInicio() {
-		return horaInicio;
-	}
+    public String getHoraInicio() {
+        return horaInicio;
+    }
 
-	public String getDuracao() {
-		return duracao;
-	}
+    public String getDuracao() {
+        return duracao;
+    }
 
-	public String getHoraTermino() {
-		return horaTermino;
-	}
+    public String getHoraTermino() {
+        return horaTermino;
+    }
 
-	public char getEmAndamento() {
-		return( (this.emAndamento)? 'S' : 'N' );
-	}
+    public boolean isEmAndamento() {
+        return this.emAndamento;
+    }
 
-	public Date getHoraIntervalo() {
-		return horaIntervalo;
-	}
+    public Date getHoraIntervalo() {
+        return horaIntervalo;
+    }
 
-	public String getObs() {
-		return( this.obs );
-	}
+    public String getCronometro() {
+        return (this.cronometro);
+    }
 
-	public String getCronometro() {
-		return( this.cronometro );
-	}
+    public void setCronometro(String pCron) {
+        this.cronometro = pCron;
+    }
 
-	public String getEnderecoBD() {
-		return( this.enderecoBD );
-	}
+    public void setDiagramaPrograma(String diagramaPrograma) {
+        this.diagramaPrograma = diagramaPrograma;
+    }
 
-	public String getPortal() {
-		return( this.portal );
-	}
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
 
-	public String getAnotacoes() {
-		return( this.anotacoes );
-	}
+    public void setCliente(String cliente) {
+        this.cliente = cliente;
+    }
 
-	public void setCronometro( String pCron ) {
-		this.cronometro = pCron;
-	}
+    public void setServico(String servico) {
+        this.servico = servico;
+    }
 
-	public boolean emAndamento() {
-		return( emAndamento );
-	}
+    public void setHoraInicio(String horaInicio) {
+        this.horaInicio = horaInicio;
+    }
 
-	public void setCodigo(String pCodigo) {
-		this.codigo = pCodigo;
-	}
+    public void setDuracao(String duracao) {
+        this.duracao = duracao;
+        setCronometro(duracao);
+    }
 
-	public void setNome(String pNome) {
-		this.nome = pNome;
-	}
+    public void setHoraTermino(String horaTermino) {
+        this.horaTermino = horaTermino;
+    }
 
-	public void setSoliciante(String cliente) {
-		this.solicitante = cliente;
-	}
+    public void setHoraIntervalo(Date hora) {
+        this.horaIntervalo = hora;
+    }
 
-	public void setHoraInicio(String horaInicio) {
-		this.horaInicio = horaInicio;
-	}
+    public void setEmAndamento(boolean sim) {
+        this.emAndamento = sim;
+    }
 
-	public void setDuracao(String duracao) {
-		this.duracao = duracao;
-		setCronometro( duracao );
-	}
+    public void iniciarTempo() {
+        this.timer.start();
+    }
 
-	public void setHoraTermino(String horaTermino) {
-		this.horaTermino = horaTermino;
-	}
+    public void pararTempo() {
+        this.timer.stop();
+        this.cronometro = getDuracao();
+    }
 
-	public void setHoraIntervalo( Date hora ) {
-		this.horaIntervalo = hora;
-	}
+    public String getDataHoraInclusao() {
+        return (this.dataHoraInclusao);
+    }
 
-	public void setEmAndamento( boolean sim ) {
-		this.emAndamento = sim;
-	}
+    public void setDataHoraInclusao(String pData) {
+        this.dataHoraInclusao = pData;
+    }
 
-	public void setObs( String obs ) {
-		this.obs = obs;
-	}
+    public String getDataHoraTermino() {
+        return (this.dataHoraTermino);
+    }
 
-	public void iniciarTempo() {
-		this.timer.start();
-	}
+    public void setDataHoraTermino(String pData) {
+        this.dataHoraTermino = pData;
+    }
 
-	public void pararTempo() {
-		this.timer.stop();
-		this.cronometro = getDuracao();
-	}
+    public boolean finalizada() {
+        return (this.finalizada);
+    }
 
-	public String getDataHoraInclusao(){
-		return( this.dataHoraInclusao );
-	}
-
-	public void setDataHoraInclusao( String pData ){
-		this.dataHoraInclusao = pData;
-	}
-
-	public String getDataHoraTermino(){
-		return( this.dataHoraTermino );
-	}
-
-	public boolean existeBdInformado() {
-		return( !this.enderecoBD.isEmpty() );
-	}
-
-	public void setDataHoraTermino( String pData ){
-		this.dataHoraTermino = pData;
-	}
-
-	public boolean finalizada(){
-		return( this.finalizada );
-	}
-
-	public void setFinalizada( boolean pFin ) {
-		this.finalizada = pFin;
-	}
-
-	public void setEnderecoBD( String pEndereco ) {
-		this.enderecoBD = pEndereco;
-	}
-
-	public void setPortal( String pPortal ) {
-		this.portal = pPortal;
-	}
-
-	public void setAnotacoes( String pAnotacoes ) {
-		this.anotacoes = pAnotacoes;
-	}
+    public void setFinalizada(boolean pFin) {
+        this.finalizada = pFin;
+    }
 }

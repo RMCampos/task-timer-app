@@ -24,7 +24,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
 import java.awt.event.WindowListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
@@ -70,7 +69,7 @@ public class Tela extends JFrame {
     private JTextField txfSolicitante;
     private JLabel lblObs;
     private JTextField txfObs;
-    private JButton btnTray;
+    private JButton btnSair;
     private JButton btnAdd;
     private JButton btnContinuar;
     private JButton btnParar;
@@ -95,9 +94,9 @@ public class Tela extends JFrame {
 
     public Tela() {
         iniciarComponentes();
-        this.getContentPane().setLayout(null);
-        this.setSize(815, 640);
-        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        getContentPane().setLayout(null);
+        setSize(815, 640);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         iniciarPrograma();
         criarModel();
         iniciarConsole();
@@ -125,7 +124,7 @@ public class Tela extends JFrame {
 
         pop.add(defaultItem);
 
-        this.trayIcon = new TrayIcon(img, "Contador", pop);
+        this.trayIcon = new TrayIcon(img, "KTaxímetro", pop);
         this.trayIcon.setImageAutoSize(true);
 
         this.trayIcon.addMouseListener(new MouseListener() {
@@ -172,13 +171,6 @@ public class Tela extends JFrame {
                     setVisible(true);
                     setExtendedState(JFrame.NORMAL);
                 }
-            }
-        });
-
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                comandoTela = "SAIR";
             }
         });
 
@@ -241,11 +233,7 @@ public class Tela extends JFrame {
         this.addWindowListener(new WindowListener() {
             @Override
             public void windowClosing(WindowEvent we) {
-                if (todasTarefasParadas()) {
-                    System.exit(0);
-                } else {
-                    Mensagem.informacao("Não é possível sair com tarefas em andamento.", null);
-                }
+                sendToTray();
             }
 
             @Override
@@ -328,15 +316,13 @@ public class Tela extends JFrame {
                 txfObs.selectAll();
             }
         });
-        this.btnTray.addActionListener(new java.awt.event.ActionListener() {
+        this.btnSair.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                try {
-                    tray.add(trayIcon);
-                    setVisible(false);
-                    setExtendedState(JFrame.MAXIMIZED_BOTH);
-                } catch (AWTException ex) {
-                    System.out.println("ERRO: AWTException: " + ex.getLocalizedMessage());
+                if (todasTarefasParadas()) {
+                    System.exit(0);
+                } else {
+                    Mensagem.informacao("Não é possível sair com tarefas em andamento.", null);
                 }
             }
         });
@@ -417,6 +403,16 @@ public class Tela extends JFrame {
         setTxfSolicitante(solicitanteTp);
         setTxfObs(obsTp);
     }
+    
+    public void sendToTray() {
+        try {
+            tray.add(trayIcon);
+            setVisible(false);
+            setExtendedState(JFrame.MAXIMIZED_BOTH);
+        } catch (AWTException ex) {
+            System.out.println("ERRO: AWTException: " + ex.getLocalizedMessage());
+        }
+    }
 
     private void ajustarPosicao() {
         final int largura = this.getWidth();
@@ -463,7 +459,7 @@ public class Tela extends JFrame {
         Collection<Tarefa> dList = this.contadorModel.getLinhas();
 
         for (Tarefa t : dList) {
-            if (t.emAndamento()) {
+            if (t.isEmAndamento()) {
                 return (false);
             }
         }
@@ -570,10 +566,11 @@ public class Tela extends JFrame {
         this.txfObs.setBounds(155, 88, 400, 21);
         this.txfObs.setFont(new Font("Monospaced", 0, 12));
         
-        this.btnTray = new JButton("Tray");
-        this.btnTray.setBounds(650, 45, 100, 30);
-        this.btnTray.setToolTipText("Enviar para o tray");
-        this.btnTray.setFocusable(false);
+        this.btnSair = new JButton("Sair");
+        this.btnSair.setBounds(650, 45, 100, 30);
+        this.btnSair.setFont(new Font("Verdana", 0, 12));
+        this.btnSair.setToolTipText("Sair do programa");
+        this.btnSair.setFocusable(false);
 
         this.btnAdd = new JButton("Adicionar");
         this.btnAdd.setBounds(650, 83, 100, 30);
@@ -682,7 +679,7 @@ public class Tela extends JFrame {
         this.containerCampos.add(this.txfSolicitante);
         this.containerCampos.add(this.lblObs);
         this.containerCampos.add(this.txfObs);
-        this.containerCampos.add(this.btnTray);
+        this.containerCampos.add(this.btnSair);
         this.containerCampos.add(this.btnAdd);
         this.containerCampos.add(this.btnParar);
         this.containerCampos.add(this.btnContinuar);
@@ -934,8 +931,8 @@ public class Tela extends JFrame {
 
         if (antes != null) {
             setTarefa(antes);
-            setTxfSolicitante(antes.getSolicitante());
-            setTxfObs(antes.getObs());
+            setTxfSolicitante(antes.getCliente());
+            setTxfObs(antes.getServico());
         }
     }
 

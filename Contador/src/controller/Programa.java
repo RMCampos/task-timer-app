@@ -32,7 +32,7 @@ public class Programa {
                 public void run() {
                     try {
                         frame = new Tela();
-                        frame.setTitle("KTaxímetro - v1.0.0 - 12/09/2017");
+                        frame.setTitle("KTaxímetro - v1.0.3 - 13/09/2017");
                         frame.setVisible(true);
                     }
                     catch (Exception e) {
@@ -43,6 +43,7 @@ public class Programa {
             
             this.tempoTotal = "00:00:00";
             this.transacao = 'I';
+            frame.sendToTray();
         }
         catch (InterruptedException | InvocationTargetException ex) {
             ex.printStackTrace();
@@ -79,7 +80,7 @@ public class Programa {
 
             return horaS + minS + segS;
         } catch (NumberFormatException e) {
-            System.out.println("Erro no formato do numero.");
+            System.out.println("Erro no formato do número.");
             return "00:00:00";
         }
     }
@@ -147,10 +148,10 @@ public class Programa {
         if (this.transacao == 'A') {
             Tarefa tarefa = this.frame.getTarefa();
 
-            tarefa.setCodigo(frame.getTxfCodigo());
-            tarefa.setNome(this.frame.getTxfNome());
-            tarefa.setSoliciante(this.frame.getTxfSolicitante());
-            tarefa.setObs(this.frame.getTxfObs());
+            tarefa.setDiagramaPrograma(frame.getTxfCodigo());
+            tarefa.setDescricao(this.frame.getTxfNome());
+            tarefa.setCliente(this.frame.getTxfSolicitante());
+            tarefa.setServico(this.frame.getTxfObs());
             
             frame.contadorModel.fireTableDataChanged();
             frame.limpar();
@@ -178,10 +179,10 @@ public class Programa {
     private Tarefa criarTarefa() {
         Tarefa tarefa = new Tarefa();
 
-        tarefa.setCodigo(this.frame.getTxfCodigo());
-        tarefa.setNome(this.frame.getTxfNome());
-        tarefa.setSoliciante(this.frame.getTxfSolicitante());
-        tarefa.setObs(this.frame.getTxfObs());
+        tarefa.setDiagramaPrograma(this.frame.getTxfCodigo());
+        tarefa.setDescricao(this.frame.getTxfNome());
+        tarefa.setCliente(this.frame.getTxfSolicitante());
+        tarefa.setServico(this.frame.getTxfObs());
 
         return tarefa;
     }
@@ -212,12 +213,12 @@ public class Programa {
 
         this.frame.setTarefa(tarefa);
         this.transacao = 'A';
-        this.frame.setTxfCodigo(tarefa.getCodigo());
-        this.frame.setTxfNome(tarefa.getNome());
-        this.frame.setTxfSolicitante(tarefa.getSolicitante());
-        this.frame.setTxfObs(tarefa.getObs());
+        this.frame.setTxfCodigo(tarefa.getDiagramaPrograma());
+        this.frame.setTxfNome(tarefa.getDescricao());
+        this.frame.setTxfSolicitante(tarefa.getCliente());
+        this.frame.setTxfObs(tarefa.getServico());
         this.frame.habilitarBotoes(true);
-        this.frame.habilitarContinuar(tarefa.emAndamento());
+        this.frame.habilitarContinuar(tarefa.isEmAndamento());
         this.frame.habilitarBotaoInserir(false);
         this.frame.setLblTotalTarefa(tarefa.getDuracao());
         this.frame.setLblTotalTempo(obterTempoTotalDecorrido());
@@ -346,14 +347,14 @@ public class Programa {
         gravarArq.printf(cabecalho + "\r\n");
 
         for (Tarefa tarefa : tarefaList) {
-            String linha = ((tarefa.getCodigo().isEmpty()) ? " N " : tarefa.getCodigo()) + ";"
-                    + tarefa.getNome() + ";"
-                    + ((tarefa.getSolicitante().isEmpty()) ? " N " : tarefa.getSolicitante()) + ";"
+            String linha = ((tarefa.getDiagramaPrograma().isEmpty()) ? " N " : tarefa.getDiagramaPrograma()) + ";"
+                    + tarefa.getDescricao() + ";"
+                    + ((tarefa.getCliente().isEmpty()) ? " N " : tarefa.getCliente()) + ";"
                     + tarefa.getDuracao() + ";"
                     + dataAtual + ";"
                     + tarefa.getHoraInicio() + ";"
                     + tarefa.getHoraTermino() + ";"
-                    + ((tarefa.getObs().isEmpty()) ? "Nenhuma." : tarefa.getObs()) + "\r\n";
+                    + ((tarefa.getServico().isEmpty()) ? "Nenhuma." : tarefa.getServico()) + "\r\n";
 
             System.out.println("gravando a linha: " + linha);
 
