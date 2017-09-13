@@ -32,7 +32,7 @@ public class Programa {
                 public void run() {
                     try {
                         frame = new Tela();
-                        frame.setTitle("KTaxímetro - v1.0.3 - 13/09/2017");
+                        frame.setTitle("KTaxímetro - v1.0.4 - 13/09/2017");
                         frame.setVisible(true);
                     }
                     catch (Exception e) {

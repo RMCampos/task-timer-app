@@ -46,7 +46,13 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.UIManager;
 import javax.swing.Timer;
 import data.Tarefa;
+import java.awt.Desktop;
+import java.io.File;
+import java.net.URI;
+import java.util.Properties;
+import javax.swing.JOptionPane;
 import model.TarefaModel;
+import utils.ArquivoPropriedades;
 import utils.Mensagem;
 import utils.OS;
 
@@ -91,6 +97,7 @@ public class Tela extends JFrame {
     public TarefaModel contadorModel;
     private TrayIcon trayIcon;
     private SystemTray tray;
+    private Properties prop;
 
     public Tela() {
         iniciarComponentes();
@@ -103,6 +110,85 @@ public class Tela extends JFrame {
         setLocationRelativeTo(null);
         setarIcones();
         adicionarListener();
+        prop = ArquivoPropriedades.getProperties();
+    }
+    
+    public void checarPropriedades() {
+        if (prop == null) {
+            ArquivoPropriedades.criarArquivoProperties();
+            prop = ArquivoPropriedades.getProperties();
+        }
+        
+        String usuarioApont = prop.getProperty(ArquivoPropriedades.propUsuarioApontamento);
+        if (usuarioApont.isEmpty()) {
+            usuarioApont = JOptionPane.showInputDialog(this, "Informe o usuário do apontamento");
+            ArquivoPropriedades.salvarPropriedade(ArquivoPropriedades.propUsuarioApontamento, usuarioApont);
+        }
+        
+        String usuarioSite = prop.getProperty(ArquivoPropriedades.propUsuarioSite);
+        if (usuarioSite.isEmpty()) {
+            usuarioSite = JOptionPane.showInputDialog(this, "Informe o email de login no site kugel");
+            ArquivoPropriedades.salvarPropriedade(ArquivoPropriedades.propUsuarioSite, usuarioSite);
+        }
+        
+        String senhaSite = prop.getProperty(ArquivoPropriedades.propSenhaSite);
+        if (senhaSite.isEmpty()) {
+            senhaSite = JOptionPane.showInputDialog(this, "Informe a senha de login no site kugel");
+            ArquivoPropriedades.salvarPropriedade(ArquivoPropriedades.propSenhaSite, senhaSite);
+        }
+        
+        prop = ArquivoPropriedades.getProperties();
+    }
+    
+    private void abrir(String atalho) {
+        try {
+            File link = new File(".");
+            if (atalho.equals("APONTAMENTO")) {
+                if (prop == null || prop.getProperty(ArquivoPropriedades.propUsuarioApontamento).isEmpty()) {
+                    checarPropriedades();
+                }
+                
+                if (prop == null || prop.getProperty(ArquivoPropriedades.propUsuarioApontamento).isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Informe a propriedade 'usuario_apontamento' no arquivo properties!");
+                    return;
+                }
+                Process p = new ProcessBuilder("F:\\util\\apont2.bat", prop.getProperty(ArquivoPropriedades.propUsuarioApontamento)).start();
+                return;
+            }
+            else if (atalho.equals("GERADOR_WEB")) {
+                link = new File("F:\\publico\\Atalhos\\GeradorProgramasWeb.lnk");
+            }
+            else if (atalho.equals("GERENCIA_INFO")) {
+                link = new File("F:\\publico\\Atalhos\\GERENCIA_INFO.lnk");
+            }
+            else if (atalho.equals("KONEXAO_REMOTA")) {
+                link = new File("F:\\publico\\Atalhos\\KonexaoRemota.lnk");
+            }
+            else if (atalho.equals("KUGEL_PLAY")) {
+                link = new File("F:\\publico\\Atalhos\\KugelPlay.lnk");
+            }
+            else if (atalho.equals("PESQUISAR_TABELAS")) {
+                link = new File("F:\\publico\\Atalhos\\PesquisarTabelas.lnk");
+            }
+            else if (atalho.equals("SAIDAS_KUGEL")) {
+                if (prop == null || prop.getProperty(ArquivoPropriedades.propUsuarioSite).isEmpty() || prop.getProperty(ArquivoPropriedades.propSenhaSite).isEmpty()) {
+                    checarPropriedades();
+                }
+                
+                if (prop == null || prop.getProperty(ArquivoPropriedades.propUsuarioSite).isEmpty() || prop.getProperty(ArquivoPropriedades.propSenhaSite).isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Informe as propriedades '"+ArquivoPropriedades.propUsuarioSite+"' e '"+ArquivoPropriedades.propSenhaSite+"' no arquivo properties!");
+                    return;
+                }
+                //link = new File("F:\\publico\\Atalhos\\PesquisarTabelas.lnk");
+                Desktop.getDesktop().browse(new URI("http://www.kugel.com.br/admin/logar.php?email="+prop.getProperty(ArquivoPropriedades.propUsuarioSite)+"&senha=" + prop.getProperty(ArquivoPropriedades.propSenhaSite)));
+                return;
+            }
+            
+            Desktop.getDesktop().open(link);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void adicionarListener() {
@@ -113,7 +199,7 @@ public class Tela extends JFrame {
         this.tray = SystemTray.getSystemTray();
         Image img = new ImageIcon(getClass().getResource("/images/clock.png")).getImage();
         PopupMenu pop = new PopupMenu();
-        final MenuItem defaultItem = new MenuItem("Restaurar");
+        final MenuItem defaultItem = new MenuItem("KTaxímetro");
         defaultItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -121,8 +207,78 @@ public class Tela extends JFrame {
                 setExtendedState(JFrame.NORMAL);
             }
         });
-
+        
         pop.add(defaultItem);
+        
+        // Apontamento
+        final MenuItem apontamento = new MenuItem("Apontamento");
+        apontamento.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                abrir("APONTAMENTO");
+            }
+        });
+        pop.add(apontamento);
+        
+        // Gerador de programas web
+        final MenuItem geradorWeb = new MenuItem("Gerador de Programas Web");
+        geradorWeb.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                abrir("GERADOR_WEB");
+            }
+        });
+        pop.add(geradorWeb);
+
+        // Gerencia Info
+        final MenuItem gerenciaInfo = new MenuItem("Gerencia Info");
+        gerenciaInfo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                abrir("GERENCIA_INFO");
+            }
+        });
+        pop.add(gerenciaInfo);
+        
+        // Konexao Remota
+        final MenuItem konexaoRemota = new MenuItem("Konexão Remota");
+        konexaoRemota.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                abrir("KONEXAO_REMOTA");
+            }
+        });
+        pop.add(konexaoRemota);
+        
+        // Kugel Play
+        final MenuItem kugelPlay = new MenuItem("Kugel Play");
+        kugelPlay.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                abrir("KUGEL_PLAY");
+            }
+        });
+        pop.add(kugelPlay);
+        
+        // Pesquisar Tabelas
+        final MenuItem pesquisarTabelas = new MenuItem("Pesquisar Tabelas");
+        pesquisarTabelas.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                abrir("PESQUISAR_TABELAS");
+            }
+        });
+        pop.add(pesquisarTabelas);
+        
+        // Saídas Kugel
+        final MenuItem saidasKugel = new MenuItem("Saídas Kugel");
+        saidasKugel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                abrir("SAIDAS_KUGEL");
+            }
+        });
+        pop.add(saidasKugel);
 
         this.trayIcon = new TrayIcon(img, "KTaxímetro", pop);
         this.trayIcon.setImageAutoSize(true);
