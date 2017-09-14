@@ -159,16 +159,20 @@ public class Tela extends JFrame {
                 link = new File("F:\\publico\\Atalhos\\GeradorProgramasWeb.lnk");
             }
             else if (atalho.equals("GERENCIA_INFO")) {
-                link = new File("F:\\publico\\Atalhos\\GERENCIA_INFO.lnk");
+                Process p = new ProcessBuilder("F:\\GESTAOINFO\\GESTAO_INFO.bat").start();
+                return;
             }
             else if (atalho.equals("KONEXAO_REMOTA")) {
-                link = new File("F:\\publico\\Atalhos\\KonexaoRemota.lnk");
+                Process p = new ProcessBuilder("F:\\util\\KonexaoRemota\\KonexaoRemota.bat").start();
+                return;
             }
             else if (atalho.equals("KUGEL_PLAY")) {
-                link = new File("F:\\publico\\Atalhos\\KugelPlay.lnk");
+                Process p = new ProcessBuilder("M:\\JAVA\\KugelPlay\\liberacao\\executar.bat").start();
+                return;
             }
             else if (atalho.equals("PESQUISAR_TABELAS")) {
-                link = new File("F:\\publico\\Atalhos\\PesquisarTabelas.lnk");
+                Process p = new ProcessBuilder("M:\\JAVA\\PesquisarTabelas\\liberacao\\PesquisarTabelas.bat").start();
+                return;
             }
             else if (atalho.equals("SAIDAS_KUGEL")) {
                 if (prop == null || prop.getProperty(ArquivoPropriedades.propUsuarioSite).isEmpty() || prop.getProperty(ArquivoPropriedades.propSenhaSite).isEmpty()) {
@@ -209,6 +213,8 @@ public class Tela extends JFrame {
         });
         
         pop.add(defaultItem);
+        
+        pop.addSeparator();
         
         // Apontamento
         final MenuItem apontamento = new MenuItem("Apontamento");
@@ -279,7 +285,19 @@ public class Tela extends JFrame {
             }
         });
         pop.add(saidasKugel);
-
+        
+        pop.addSeparator();
+        
+        // Sair
+        final MenuItem sairGeral = new MenuItem("Fechar");
+        sairGeral.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                fecharPrograma();
+            }
+        });
+        pop.add(sairGeral);
+        
         this.trayIcon = new TrayIcon(img, "KTaxímetro", pop);
         this.trayIcon.setImageAutoSize(true);
 
@@ -475,11 +493,7 @@ public class Tela extends JFrame {
         this.btnSair.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                if (todasTarefasParadas()) {
-                    System.exit(0);
-                } else {
-                    Mensagem.informacao("Não é possível sair com tarefas em andamento.", null);
-                }
+                fecharPrograma();
             }
         });
         this.btnAdd.addActionListener(new ActionListener() {
@@ -531,33 +545,13 @@ public class Tela extends JFrame {
             }
         });
     }
-
-    private void carregarDadosLidos(String pTexto) {
-        String tituloTp = "";
-        String solicitanteTp = "";
-        String obsTp = "";
-
-        for (String linha : pTexto.split("\n")) {
-            if (tituloTp.isEmpty() && linha.contains("Chamado:")) {
-                tituloTp = linha;
-            }
-            if (solicitanteTp.isEmpty() && linha.contains("Cadastrado por:")) {
-                solicitanteTp = linha.replaceAll("Cadastrado por:", "");
-            }
-            if (obsTp.isEmpty() && linha.contains("Fim Previsto")) {
-                obsTp = linha;
-            }
-
-            if (!solicitanteTp.isEmpty()) {
-                break;
-            }
+    
+    public void fecharPrograma() {
+        if (todasTarefasParadas()) {
+            System.exit(0);
+        } else {
+            Mensagem.informacao("Não é possível sair com tarefas em andamento.", null);
         }
-
-        if (getTxfNome().isEmpty()) {
-            
-        }
-        setTxfSolicitante(solicitanteTp);
-        setTxfObs(obsTp);
     }
     
     public void sendToTray() {
@@ -573,7 +567,6 @@ public class Tela extends JFrame {
     private void ajustarPosicao() {
         final int largura = this.getWidth();
         final int altura = this.getHeight();
-        final int alturaTela = Toolkit.getDefaultToolkit().getScreenSize().height;
 
         // ajusta a largura do painel superior
         this.pnlSuperior.setBounds(this.pnlSuperior.getX(), this.pnlSuperior.getY(), largura, this.pnlSuperior.getHeight());
@@ -586,13 +579,6 @@ public class Tela extends JFrame {
 
         // centraliza o painel grid
         this.pnlContador.setBounds(((largura - this.pnlContador.getWidth()) / 2) - 20, this.pnlContador.getY(), this.pnlContador.getWidth(), this.pnlContador.getHeight());
-
-        // centraliza o painel followup_home
-        int alturaPainel = altura - (this.pnlSuperior.getHeight()
-                + this.containerCampos.getHeight()
-                + this.pnlContador.getHeight()
-                + this.pnlTempoDecorrido.getHeight()
-                + this.pnlExportar.getHeight() + 80);
 
         // centraliza o painel de tempo
         this.pnlTempoDecorrido.setBounds(((largura - this.pnlTempoDecorrido.getWidth()) / 2) - 20, this.pnlContador.getY() + this.pnlContador.getHeight() + 10, this.pnlTempoDecorrido.getWidth(), this.pnlTempoDecorrido.getHeight());
