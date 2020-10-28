@@ -1,4 +1,6 @@
-package task.timer.app;
+package task.timer.front;
+
+import task.timer.back.Tarefa;
 
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;

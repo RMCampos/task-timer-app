@@ -1,4 +1,4 @@
-package task.timer.app;
+package task.timer.back;
 
 public class OS {
     public static boolean isWindows() {

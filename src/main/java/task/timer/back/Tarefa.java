@@ -1,5 +1,7 @@
-package task.timer.app;
+package task.timer.back;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.awt.event.ActionListener;
 import javax.swing.Timer;
@@ -37,6 +39,41 @@ public class Tarefa {
 
         ActionListener updateClockAction = e -> cronometro = incrementarUmSegundo(cronometro);
         this.timer = new Timer(1000, updateClockAction);
+        iniciar();
+    }
+
+    public void iniciar() {
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        DateFormat df2 = new SimpleDateFormat("HH:mm:ss");
+        Date date = new Date();
+
+        setDataHoraInclusao(df.format(date));
+        setHoraInicio(df2.format(date));
+        setHoraIntervalo(date);
+        setEmAndamento(true);
+        iniciarTempo();
+    }
+
+    public void continuar() {
+        DateFormat df = new SimpleDateFormat("HH:mm:ss");
+        Date date = new Date();
+
+        setHoraInicio(df.format(date));
+        setHoraIntervalo(date);
+        setEmAndamento(true);
+        iniciarTempo();
+    }
+
+    public void parar() {
+        DateFormat data = new SimpleDateFormat("HH:mm:ss");
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date date = new Date();
+
+        setHoraTermino(data.format(date));
+        setDataHoraTermino(df.format(date));
+        setEmAndamento(false);
+        setHoraIntervalo(date);
+        pararTempo();
     }
 
     private String incrementarUmSegundo(String tempo) {

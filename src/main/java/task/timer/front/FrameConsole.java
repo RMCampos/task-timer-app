@@ -1,4 +1,4 @@
-package task.timer.app;
+package task.timer.front;
 
 import java.awt.*;
 import java.io.OutputStream;
