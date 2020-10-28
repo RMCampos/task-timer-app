@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/task-timer-app.iml" filepath="$PROJECT_DIR$/task-timer-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tray-task-caller.iml" filepath="$PROJECT_DIR$/tray-task-caller.iml" />
+    </modules>
+  </component>
+</project>

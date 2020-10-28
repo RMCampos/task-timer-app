@@ -1,4 +1,0 @@
-Java-Bean: True
-Created-By: Ricardo Montania Prado de Campos
-Main-Class: controller.Programa
-Name: Contador
