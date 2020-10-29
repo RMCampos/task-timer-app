@@ -129,12 +129,14 @@ public class View extends JFrame {
                 }
             }
         });
+
         this.txfCodigo.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent fe) {
                 txfCodigo.selectAll();
             }
         });
+
         this.txfNome.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent kev) {
@@ -143,12 +145,14 @@ public class View extends JFrame {
                 }
             }
         });
+
         this.txfNome.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent fe) {
                 txfNome.selectAll();
             }
         });
+
         this.txfSolicitante.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent kev) {
@@ -157,6 +161,7 @@ public class View extends JFrame {
                 }
             }
         });
+
         this.txfSolicitante.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent fe) {
@@ -168,6 +173,15 @@ public class View extends JFrame {
             @Override
             public void focusGained(FocusEvent fe) {
                 txfObs.selectAll();
+            }
+        });
+
+        this.txfObs.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent keyEvent) {
+                if (keyEvent.getKeyCode() == KeyEvent.VK_ENTER) {
+                    btnAdd.doClick();
+                }
             }
         });
 
@@ -357,7 +371,9 @@ public class View extends JFrame {
             }
         }
 
-        final Font notoSant12 = new Font("Noto Sans", Font.PLAIN, 12);
+        final Font notoSansLabel = new Font("Noto Sans", Font.PLAIN, 13);
+        final Font notoSansInput = new Font("Noto Sans", Font.PLAIN, 12);
+        final Font notoSans18 = new Font("Noto Sans", Font.PLAIN, 18);
 
         // Painel com data e hora do dia
         this.pnlSuperior = new JPanel();
@@ -367,11 +383,11 @@ public class View extends JFrame {
 
         this.lblData = new JLabel();
         this.lblData.setBounds(25, 25, 500, 21);
-        this.lblData.setFont(new Font("Verdana", Font.PLAIN, 18));
+        this.lblData.setFont(notoSans18);
 
         this.lblHora = new JLabel();
         this.lblHora.setBounds(700, 25, 100, 21);
-        this.lblHora.setFont(new Font("Verdana", Font.PLAIN, 18));
+        this.lblHora.setFont(notoSans18);
 
         // Painel inferior geral
         this.pnlInferior = new JPanel();
@@ -388,88 +404,89 @@ public class View extends JFrame {
         final JLabel lblCodigo = new JLabel("Name/code:");
         lblCodigo.setHorizontalAlignment(JLabel.RIGHT);
         lblCodigo.setBounds(10, 10, 140, 21); // y = 31 + 5 // x = 100
-        lblCodigo.setFont(notoSant12);
+        lblCodigo.setFont(notoSansLabel);
 
         this.txfCodigo = new JTextField();
         this.txfCodigo.setBounds(155, 10, 90, 21);
-        this.txfCodigo.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        this.txfCodigo.setFont(notoSansInput);
 
         final JLabel lblNome = new JLabel("Description:");
         lblNome.setHorizontalAlignment(JLabel.RIGHT);
         lblNome.setBounds(30, 36, 120, 21); // y = 57 + 5 // x = 100
-        lblNome.setFont(notoSant12);
+        lblNome.setFont(notoSansLabel);
 
         this.txfNome = new JTextField();
         this.txfNome.setBounds(155, 36, 300, 21);
-        this.txfNome.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        this.txfNome.setFont(notoSansInput);
 
         final JLabel lblSolicitante = new JLabel("Client:*");
         lblSolicitante.setHorizontalAlignment(JLabel.RIGHT);
         lblSolicitante.setBounds(0, 62, 150, 21); // y = 83 + 5 // x = 100
-        lblSolicitante.setFont(notoSant12);
+        lblSolicitante.setFont(notoSansLabel);
+
         this.txfSolicitante = new JTextField();
         this.txfSolicitante.setBounds(155, 62, 120, 21);
-        this.txfSolicitante.setFont(notoSant12);
+        this.txfSolicitante.setFont(notoSansInput);
 
         final JLabel lblObs = new JLabel("Task brief:");
         lblObs.setHorizontalAlignment(JLabel.RIGHT);
         lblObs.setBounds(60, 88, 90, 21); // y = 109 + 5 // x = 100
-        lblObs.setFont(notoSant12);
+        lblObs.setFont(notoSansLabel);
 
         this.txfObs = new JTextField();
         this.txfObs.setBounds(155, 88, 400, 21);
-        this.txfObs.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        this.txfObs.setFont(notoSansInput);
 
         this.btnSair = new JButton("Exit");
         this.btnSair.setBounds(650, 45, 100, 30);
-        this.btnSair.setFont(notoSant12);
-        this.btnSair.setToolTipText("Sair do programa");
+        this.btnSair.setFont(notoSansLabel);
+        this.btnSair.setToolTipText("Close the program and leave");
         this.btnSair.setFocusable(false);
 
         this.btnAdd = new JButton("Add");
         this.btnAdd.setBounds(650, 83, 100, 30);
-        this.btnAdd.setFont(notoSant12);
+        this.btnAdd.setFont(notoSansLabel);
         this.btnAdd.setToolTipText("Add task to system board");
         this.btnAdd.setFocusable(false);
 
         this.btnParar = new JButton("Pause");
         this.btnParar.setBounds((20 + larguraBotao), 140, larguraBotao, 30);
-        this.btnParar.setFont(notoSant12);
+        this.btnParar.setFont(notoSansLabel);
         this.btnParar.setToolTipText("Para a contagem da tarefa selecionada.");
         this.btnParar.setFocusable(false);
         this.btnParar.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getClassLoader().getResource("images/pause.png"))));
 
         this.btnContinuar = new JButton("Start");
         this.btnContinuar.setBounds(20, 140, larguraBotao, 30);
-        this.btnContinuar.setFont(notoSant12);
+        this.btnContinuar.setFont(notoSansLabel);
         this.btnContinuar.setToolTipText("Continua a contagem da tarefa selecionada");
         this.btnContinuar.setFocusable(false);
         this.btnContinuar.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getClassLoader().getResource("images/play.png"))));
 
         this.btnExcluir = new JButton("Remove");
         this.btnExcluir.setBounds((20 + larguraBotao * 2), 140, larguraBotao, 30);
-        this.btnExcluir.setFont(notoSant12);
+        this.btnExcluir.setFont(notoSansLabel);
         this.btnExcluir.setToolTipText("Exclui a tarefa selecionada");
         this.btnExcluir.setFocusable(false);
         this.btnExcluir.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getClassLoader().getResource("images/trash.png"))));
 
         this.btnCancelar = new JButton("Cancel");
         this.btnCancelar.setBounds((20 + larguraBotao * 3), 140, larguraBotao, 30);
-        this.btnCancelar.setFont(notoSant12);
+        this.btnCancelar.setFont(notoSansLabel);
         this.btnCancelar.setToolTipText("Cancelar");
         this.btnCancelar.setFocusable(false);
         this.btnCancelar.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getClassLoader().getResource("images/cancel.png"))));
 
         this.btnAlterar = new JButton("Edit");
         this.btnAlterar.setBounds((20 + larguraBotao * 4), 140, larguraBotao, 30);
-        this.btnAlterar.setFont(notoSant12);
+        this.btnAlterar.setFont(notoSansLabel);
         this.btnAlterar.setToolTipText("Alterar");
         this.btnAlterar.setFocusable(false);
         this.btnAlterar.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getClassLoader().getResource("images/edit.png"))));
 
         this.btnExportar = new JButton("Do it!");
         this.btnExportar.setBounds(576, 5, 144, 30);
-        this.btnExportar.setFont(notoSant12);
+        this.btnExportar.setFont(notoSansLabel);
         this.btnExportar.setToolTipText("Exporta para um arquivo CSV.");
         this.btnExportar.setFocusable(false);
 
@@ -488,21 +505,21 @@ public class View extends JFrame {
 
         final JLabel lblTempoDecorrido = new JLabel("Task timer:");
         lblTempoDecorrido.setBounds(10, 10, 135, 21);
-        lblTempoDecorrido.setFont(notoSant12);
+        lblTempoDecorrido.setFont(notoSansLabel);
         lblTempoDecorrido.setHorizontalAlignment(JLabel.RIGHT);
 
         this.lblTotalTarefa = new JLabel("00:00:00");
         this.lblTotalTarefa.setBounds(150, 10, 115, 21);
-        this.lblTotalTarefa.setFont(notoSant12);
+        this.lblTotalTarefa.setFont(notoSansLabel);
 
         final JLabel lblTempoTodos = new JLabel("Total timer:");
         lblTempoTodos.setBounds(510, 10, 115, 21);
-        lblTempoTodos.setFont(notoSant12);
+        lblTempoTodos.setFont(notoSansLabel);
         lblTempoTodos.setHorizontalAlignment(JLabel.RIGHT);
 
         this.lblTotalTempo = new JLabel("00:00:00");
         this.lblTotalTempo.setBounds(630, 10, 115, 21);
-        this.lblTotalTempo.setFont(notoSant12);
+        this.lblTotalTempo.setFont(notoSansLabel);
 
         // Painel que contém os campos para exportar
         this.pnlExportar = new JPanel();
@@ -513,12 +530,12 @@ public class View extends JFrame {
         final JLabel lblExportarPara = new JLabel("Export:");
         lblExportarPara.setBounds(25, 10, 100, 21);
         lblExportarPara.setHorizontalAlignment(JLabel.RIGHT);
-        lblExportarPara.setFont(notoSant12);
+        lblExportarPara.setFont(notoSansLabel);
 
         this.txfDiretorio = new JTextField(System.getProperty("user.home"));
         this.txfDiretorio.setText(this.txfDiretorio.getText() + ((OS.isWindows()) ? "\\Desktop\\Tarefas.csv" : "/Tarefas.csv"));
         this.txfDiretorio.setBounds(130, 10, 400, 21);
-        this.txfDiretorio.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        this.txfDiretorio.setFont(notoSansInput);
 
         this.btnProcurarDiretorio = new JButton();
         this.btnProcurarDiretorio.setBounds(535, 10, 21, 21);
