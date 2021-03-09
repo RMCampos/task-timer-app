@@ -120,13 +120,14 @@ public class Program {
             if (OS.isWindows()) {
                 filePath += File.separator + "Desktop";
             }
+
+            if (!filePath.endsWith(File.separator)) {
+                filePath += File.separator;
+            }
+
+            filePath += "Tarefas.csv";
         }
 
-        if (!filePath.endsWith(File.separator)) {
-            filePath += File.separator;
-        }
-
-        filePath += "Tarefas.csv";
         File file = new File(filePath);
 
         if (!file.isFile()) {
