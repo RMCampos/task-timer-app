@@ -40,6 +40,7 @@ import task.timer.back.OS;
 import task.timer.back.Program;
 import task.timer.back.Tarefa;
 import task.timer.util.ExportUtil;
+import task.timer.util.JsonUtil;
 
 
 public class View extends JFrame {
@@ -146,6 +147,9 @@ public class View extends JFrame {
             @Override
             public void keyPressed(KeyEvent kev) {
                 if (kev.getKeyCode() == KeyEvent.VK_ENTER) {
+                    if (!txfCodigo.getText().trim().isEmpty()) {
+                        setTxfNome(JsonUtil.getNome(txfCodigo.getText().trim()));
+                    }
                     txfNome.requestFocus();
                 }
             }
@@ -224,6 +228,7 @@ public class View extends JFrame {
             tarefa.setServico(getTxfObs());
 
             program.addTask(tarefa);
+            JsonUtil.salvarNome(getTxfCodigo(), getTxfNome());
 
             addTarefa(tarefa);
             limpar();

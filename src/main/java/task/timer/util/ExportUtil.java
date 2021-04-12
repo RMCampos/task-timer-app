@@ -7,8 +7,8 @@ import java.util.Date;
 import task.timer.back.OS;
 
 public class ExportUtil {
-    
-    public static String getDestPath() {
+
+    public static String getDestDirectory() {
         String destPath = System.getProperty("user.home");
 
         if (OS.isWindows()) {
@@ -17,10 +17,15 @@ public class ExportUtil {
 
         destPath += File.separator + "Tasks" + File.separator;
 
-        // File name: AAAA-MM-DD-HH
-        String fileName = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-            .format(new Date()) + ".csv";
+        return destPath;
+    }
 
-        return destPath + fileName;
+    public static String getCsvName() {
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+            .format(new Date()) + ".csv";
+    }
+    
+    public static String getDestPath() {
+        return getDestDirectory() + getCsvName();
     }
 }
