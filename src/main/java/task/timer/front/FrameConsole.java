@@ -1,13 +1,16 @@
 package task.timer.front;
 
-import java.awt.*;
+import java.awt.Font;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import javax.swing.JTextArea;
+
 import javax.swing.JFrame;
+import javax.swing.JTextArea;
 
 public class FrameConsole extends JFrame {
 
+	private static final long serialVersionUID = 87577363590776963L;
+	
 	PrintStream printStream;
 
 	public FrameConsole(){

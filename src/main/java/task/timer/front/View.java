@@ -1,10 +1,12 @@
 package task.timer.front;
 
-import task.timer.back.Tarefa;
-import task.timer.back.OS;
-import task.timer.back.Program;
-
-import java.awt.*;
+import java.awt.AWTException;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.KeyboardFocusManager;
+import java.awt.Robot;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -19,11 +21,32 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
-import javax.swing.*;
+
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
+import javax.swing.Timer;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.DefaultTableCellRenderer;
+
+import task.timer.back.OS;
+import task.timer.back.Program;
+import task.timer.back.Tarefa;
+import task.timer.util.ExportUtil;
 
 
 public class View extends JFrame {
+    
+    private static final long serialVersionUID = -8160996694338418927L;
     public static int larguraBotao = 148;
     private Timer relogio;
     private Tarefa tarefaAtual;
@@ -67,13 +90,13 @@ public class View extends JFrame {
                 setSize(815, 640);
                 setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
                 setTitle("TT - A simple task timer - v2.0.0 - 28/10/2020");
-                setVisible(true);
                 startApp();
                 criarModel();
                 iniciarConsole();
                 setLocationRelativeTo(null);
                 setarIcones();
                 adicionarListener();
+                setVisible(true);
             });
         }
         catch (InterruptedException | InvocationTargetException ex) {
@@ -187,10 +210,11 @@ public class View extends JFrame {
 
         this.btnSair.addActionListener(evt -> {
             if (program.getRunningTasks().isEmpty()) {
+                relogio.stop();
+                console.dispose();
                 dispose();
-                System.exit(0);
             } else {
-                Mensagem.informacao("Não é possível sair com tarefas em andamento.", null);
+                Mensagem.informacao("Não é possível sair com tarefas em andamento.", this);
             }
         });
 
@@ -401,7 +425,7 @@ public class View extends JFrame {
         this.containerCampos.setLayout(null);
         this.containerCampos.setBounds(0, 2, 780, 170);
 
-        final JLabel lblCodigo = new JLabel("Name/code:");
+        final JLabel lblCodigo = new JLabel("Programa:");
         lblCodigo.setHorizontalAlignment(JLabel.RIGHT);
         lblCodigo.setBounds(10, 10, 140, 21); // y = 31 + 5 // x = 100
         lblCodigo.setFont(notoSansLabel);
@@ -410,7 +434,7 @@ public class View extends JFrame {
         this.txfCodigo.setBounds(155, 10, 90, 21);
         this.txfCodigo.setFont(notoSansInput);
 
-        final JLabel lblNome = new JLabel("Description:");
+        final JLabel lblNome = new JLabel("Nome:");
         lblNome.setHorizontalAlignment(JLabel.RIGHT);
         lblNome.setBounds(30, 36, 120, 21); // y = 57 + 5 // x = 100
         lblNome.setFont(notoSansLabel);
@@ -419,7 +443,7 @@ public class View extends JFrame {
         this.txfNome.setBounds(155, 36, 300, 21);
         this.txfNome.setFont(notoSansInput);
 
-        final JLabel lblSolicitante = new JLabel("Client:*");
+        final JLabel lblSolicitante = new JLabel("Cliente:*");
         lblSolicitante.setHorizontalAlignment(JLabel.RIGHT);
         lblSolicitante.setBounds(0, 62, 150, 21); // y = 83 + 5 // x = 100
         lblSolicitante.setFont(notoSansLabel);
@@ -428,7 +452,7 @@ public class View extends JFrame {
         this.txfSolicitante.setBounds(155, 62, 120, 21);
         this.txfSolicitante.setFont(notoSansInput);
 
-        final JLabel lblObs = new JLabel("Task brief:");
+        final JLabel lblObs = new JLabel("Tarefa:");
         lblObs.setHorizontalAlignment(JLabel.RIGHT);
         lblObs.setBounds(60, 88, 90, 21); // y = 109 + 5 // x = 100
         lblObs.setFont(notoSansLabel);
@@ -437,57 +461,57 @@ public class View extends JFrame {
         this.txfObs.setBounds(155, 88, 400, 21);
         this.txfObs.setFont(notoSansInput);
 
-        this.btnSair = new JButton("Exit");
+        this.btnSair = new JButton("Sair");
         this.btnSair.setBounds(650, 45, 100, 30);
         this.btnSair.setFont(notoSansLabel);
-        this.btnSair.setToolTipText("Close the program and leave");
+        this.btnSair.setToolTipText("Fechar o programa e sair");
         this.btnSair.setFocusable(false);
 
-        this.btnAdd = new JButton("Add");
+        this.btnAdd = new JButton("Adicionar");
         this.btnAdd.setBounds(650, 83, 100, 30);
         this.btnAdd.setFont(notoSansLabel);
         this.btnAdd.setToolTipText("Add task to system board");
         this.btnAdd.setFocusable(false);
 
-        this.btnParar = new JButton("Pause");
+        this.btnParar = new JButton("Parar");
         this.btnParar.setBounds((20 + larguraBotao), 140, larguraBotao, 30);
         this.btnParar.setFont(notoSansLabel);
         this.btnParar.setToolTipText("Para a contagem da tarefa selecionada.");
         this.btnParar.setFocusable(false);
         this.btnParar.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getClassLoader().getResource("images/pause.png"))));
 
-        this.btnContinuar = new JButton("Start");
+        this.btnContinuar = new JButton("Iniciar");
         this.btnContinuar.setBounds(20, 140, larguraBotao, 30);
         this.btnContinuar.setFont(notoSansLabel);
         this.btnContinuar.setToolTipText("Continua a contagem da tarefa selecionada");
         this.btnContinuar.setFocusable(false);
         this.btnContinuar.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getClassLoader().getResource("images/play.png"))));
 
-        this.btnExcluir = new JButton("Remove");
+        this.btnExcluir = new JButton("Excluir");
         this.btnExcluir.setBounds((20 + larguraBotao * 2), 140, larguraBotao, 30);
         this.btnExcluir.setFont(notoSansLabel);
         this.btnExcluir.setToolTipText("Exclui a tarefa selecionada");
         this.btnExcluir.setFocusable(false);
         this.btnExcluir.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getClassLoader().getResource("images/trash.png"))));
 
-        this.btnCancelar = new JButton("Cancel");
+        this.btnCancelar = new JButton("Cancelar");
         this.btnCancelar.setBounds((20 + larguraBotao * 3), 140, larguraBotao, 30);
         this.btnCancelar.setFont(notoSansLabel);
         this.btnCancelar.setToolTipText("Cancelar");
         this.btnCancelar.setFocusable(false);
         this.btnCancelar.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getClassLoader().getResource("images/cancel.png"))));
 
-        this.btnAlterar = new JButton("Edit");
+        this.btnAlterar = new JButton("Alterar");
         this.btnAlterar.setBounds((20 + larguraBotao * 4), 140, larguraBotao, 30);
         this.btnAlterar.setFont(notoSansLabel);
         this.btnAlterar.setToolTipText("Alterar");
         this.btnAlterar.setFocusable(false);
         this.btnAlterar.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getClassLoader().getResource("images/edit.png"))));
 
-        this.btnExportar = new JButton("Do it!");
+        this.btnExportar = new JButton("Exportar!");
         this.btnExportar.setBounds(576, 5, 144, 30);
         this.btnExportar.setFont(notoSansLabel);
-        this.btnExportar.setToolTipText("Exporta para um arquivo CSV.");
+        this.btnExportar.setToolTipText("Exporta para um arquivo CSV no diretório home.");
         this.btnExportar.setFocusable(false);
 
         // Painel que contém as tarefas adicionadas
@@ -503,7 +527,7 @@ public class View extends JFrame {
         this.pnlTempoDecorrido.setLayout(null);
         this.pnlTempoDecorrido.setBorder(BorderFactory.createEtchedBorder());
 
-        final JLabel lblTempoDecorrido = new JLabel("Task timer:");
+        final JLabel lblTempoDecorrido = new JLabel("Tarefa:");
         lblTempoDecorrido.setBounds(10, 10, 135, 21);
         lblTempoDecorrido.setFont(notoSansLabel);
         lblTempoDecorrido.setHorizontalAlignment(JLabel.RIGHT);
@@ -512,7 +536,7 @@ public class View extends JFrame {
         this.lblTotalTarefa.setBounds(150, 10, 115, 21);
         this.lblTotalTarefa.setFont(notoSansLabel);
 
-        final JLabel lblTempoTodos = new JLabel("Total timer:");
+        final JLabel lblTempoTodos = new JLabel("Total:");
         lblTempoTodos.setBounds(510, 10, 115, 21);
         lblTempoTodos.setFont(notoSansLabel);
         lblTempoTodos.setHorizontalAlignment(JLabel.RIGHT);
@@ -527,13 +551,13 @@ public class View extends JFrame {
         this.pnlExportar.setBounds(20, pnlTempoDecorrido.getY() + pnlTempoDecorrido.getHeight() + 10, 740, 40);
         this.pnlExportar.setBorder(BorderFactory.createEtchedBorder());
 
-        final JLabel lblExportarPara = new JLabel("Export:");
+        final JLabel lblExportarPara = new JLabel("Exportar:");
         lblExportarPara.setBounds(25, 10, 100, 21);
         lblExportarPara.setHorizontalAlignment(JLabel.RIGHT);
         lblExportarPara.setFont(notoSansLabel);
 
-        this.txfDiretorio = new JTextField(System.getProperty("user.home"));
-        this.txfDiretorio.setText(this.txfDiretorio.getText() + ((OS.isWindows()) ? "\\Desktop\\Tarefas.csv" : "/Tarefas.csv"));
+        this.txfDiretorio = new JTextField();
+        this.txfDiretorio.setText(ExportUtil.getDestPath());
         this.txfDiretorio.setBounds(130, 10, 400, 21);
         this.txfDiretorio.setFont(notoSansInput);
 
@@ -707,6 +731,23 @@ public class View extends JFrame {
     }
 
     public void addTarefa(final Tarefa pTarefa) {
+        if (pTarefa.getDiagramaPrograma().isEmpty()) {
+            Mensagem.informacao("Informe o programa!", this);
+            return;
+        }
+        if (pTarefa.getCliente().isEmpty()) {
+            Mensagem.informacao("Informe o cliente!", this);
+            return;
+        }
+        if (pTarefa.getServico().isEmpty()) {
+            Mensagem.informacao("Informe a tarefa!", this);
+            return;
+        }
+
+        if (pTarefa.getDescricao().isEmpty()) {
+            pTarefa.setDescricao("Não informado");
+        }
+
         this.contadorModel.addLinha(pTarefa);
     }
 

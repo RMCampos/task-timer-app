@@ -11,8 +11,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Program {
 
+    private final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private final TaskRepository taskRepository;
 
     public Program() {
@@ -97,10 +101,13 @@ public class Program {
     public List<Tarefa> getRunningTasks() {
         List<Tarefa> tarefas = this.taskRepository.getAll();
 
-        return tarefas
+        List<Tarefa> tarefasEA = tarefas
                 .stream()
                 .filter(x -> x.isEmAndamento())
                 .collect(Collectors.toList());
+        
+        logger.info("Running tasks: {}", tarefasEA);
+        return tarefasEA;
     }
 
     /**

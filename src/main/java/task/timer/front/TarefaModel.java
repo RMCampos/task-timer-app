@@ -1,13 +1,16 @@
 package task.timer.front;
 
-import task.timer.back.Tarefa;
-
 import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.table.DefaultTableModel;
+
+import task.timer.back.Tarefa;
 
 public class TarefaModel extends DefaultTableModel {
 
-    private final ArrayList<Tarefa> linhas;
+    private static final long serialVersionUID = 5776968986470155598L;
+    private final List<Tarefa> linhas;
     public static final int COL_COD = 0;
     public static final int COL_NOME = 1;
     public static final int COL_SOL = 2;
@@ -29,47 +32,42 @@ public class TarefaModel extends DefaultTableModel {
     @Override
     public String getColumnName(int column) {
         switch (column) {
-            case COL_COD:
-                return ("Name/code");
-            case COL_NOME:
-                return ("Description");
-            case COL_SOL:
-                return ("Client");
-            case COL_INICIO:
-                return ("Started at");
-            case COL_TERMINO:
-                return ("Finished at");
-            case COL_DECORRIDO:
-                return ("Timer");
-            case COL_ATIVO:
-                return ("Active");
-            default:
-                return ("");
+            case COL_COD: return "Programa";
+            case COL_NOME: return "Nome";
+            case COL_SOL: return "Cliente";
+            case COL_INICIO: return "Início";
+            case COL_TERMINO: return "Fim";
+            case COL_DECORRIDO: return "Timer";
+            case COL_ATIVO: return "Ativo";
+            default: return "";
         }
     }
 
     @Override
     public int getRowCount() {
-        if (this.linhas != null) {
-            return (this.linhas.size());
+        if (linhas == null) {
+            return 0;
         }
-        return (0);
+
+        return linhas.size();
     }
 
     @Override
     public int getColumnCount() {
-        return (NUM_COLUNAS);
+        return NUM_COLUNAS;
     }
 
     public Tarefa getLinha(int linha) {
-        if (linha > this.linhas.size() - 1 || linha < 0) {
-            return (null);
+        try {
+            return linhas.get(linha);
+        } catch (IndexOutOfBoundsException ix) {
+            ix.printStackTrace();
+            return null;
         }
-        return (this.linhas.get(linha));
     }
 
-    public ArrayList<Tarefa> getLinhas() {
-        return (this.linhas);
+    public List<Tarefa> getLinhas() {
+        return linhas;
     }
 
     @Override
@@ -81,37 +79,29 @@ public class TarefaModel extends DefaultTableModel {
         }
 
         switch (column) {
-            case COL_COD:
-                return (dia.getDiagramaPrograma());
-            case COL_NOME:
-                return (dia.getDescricao());
-            case COL_SOL:
-                return (dia.getCliente());
-            case COL_INICIO:
-                return (dia.getHoraInicio());
-            case COL_TERMINO:
-                return (dia.getHoraTermino());
-            case COL_DECORRIDO:
-                return (dia.getDuracao());
-            case COL_ATIVO:
-                return (dia.isEmAndamento()? "S" : "N");
-            default:
-                return (null);
+            case COL_COD: return dia.getDiagramaPrograma();
+            case COL_NOME: return dia.getDescricao();
+            case COL_SOL: return dia.getCliente();
+            case COL_INICIO: return dia.getHoraInicio();
+            case COL_TERMINO: return dia.getHoraTermino();
+            case COL_DECORRIDO: return dia.getDuracao();
+            case COL_ATIVO: return dia.isEmAndamento()? "S" : "N";
+            default: return null;
         }
     }
 
     @Override
     public boolean isCellEditable(int row, int column) {
-        return (false);
+        return false;
     }
 
     public void addLinha(Tarefa pDia) {
-        this.linhas.add(pDia);
+        linhas.add(pDia);
         fireTableDataChanged();
     }
 
     public void removeLinha(Tarefa pDia) {
-        this.linhas.remove(pDia);
+        linhas.remove(pDia);
         fireTableDataChanged();
     }
 }
