@@ -2,8 +2,6 @@ package task.timer.front;
 
 import java.awt.AWTException;
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.Font;
 import java.awt.KeyboardFocusManager;
 import java.awt.Robot;
@@ -296,9 +294,9 @@ public class View extends JFrame {
         this.btnExportar.addActionListener(e -> {
             int count = program.exportAllTaks(getTxfDiretorio());
             if (count == 0) {
-                Mensagem.informacao("No tasks to export!", this);
+                Mensagem.informacao("Nenhuma tarefa para exportar!", this);
             } else {
-                Mensagem.informacao("Taks exported sucessfuly!", this);
+                Mensagem.informacao("Tarefas exportadas com sucesso!", this);
             }
         });
 
@@ -629,44 +627,9 @@ public class View extends JFrame {
         this.pnlContador.setLayout(new BorderLayout());
         this.pnlContador.add(new JScrollPane(contadorTable));
 
-        class RRenderer extends DefaultTableCellRenderer {
-
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                Component comp = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-
-                if (row % 2 == 0) {
-                    comp.setBackground(new Color(202, 225, 255));
-                } else {
-                    comp.setBackground(new Color(254, 254, 254));
-                }
-
-                if (column == 0) {
-                    ((JLabel) comp).setHorizontalAlignment(JLabel.LEFT);
-                } else if (column == 6) {
-                    ((JLabel) comp).setHorizontalAlignment(JLabel.CENTER);
-                } else {
-                    ((JLabel) comp).setHorizontalAlignment(JLabel.LEFT);
-                }
-
-                if (isSelected) {
-                    comp.setBackground(new Color(comp.getBackground().getRed() - 40, comp.getBackground().getGreen() - 40, comp.getBackground().getBlue() - 40));
-
-                    try {
-                        Tarefa t = getLinhaSelecionada();
-                        String toolTip = "Incluído em " + t.getDataHoraInclusao();
-                        ((JLabel) comp).setToolTipText(toolTip);
-                    } catch (Exception ex) {
-                        System.out.println("erro: " + ex.getMessage());
-                    }
-                }
-                return (comp);
-            }
-        }
-
-        this.contadorTable.setDefaultRenderer(Object.class, new RRenderer());
-        this.contadorTable.setDefaultRenderer(String.class, new RRenderer());
-        this.contadorTable.setDefaultRenderer(Character.class, new RRenderer());
+        this.contadorTable.setDefaultRenderer(Object.class, new OneTableCellRenderer());
+        this.contadorTable.setDefaultRenderer(String.class, new OneTableCellRenderer());
+        this.contadorTable.setDefaultRenderer(Character.class, new OneTableCellRenderer());
 
         ((DefaultTableCellRenderer) contadorTable.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
     }

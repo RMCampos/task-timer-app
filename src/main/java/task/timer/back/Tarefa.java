@@ -1,9 +1,10 @@
 package task.timer.back;
 
+import java.awt.event.ActionListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.awt.event.ActionListener;
+
 import javax.swing.Timer;
 
 public class Tarefa {
@@ -20,7 +21,6 @@ public class Tarefa {
     private final Timer timer;
     private String cronometro;
     private String dataHoraInclusao;
-    private String dataHoraTermino;
 
     public Tarefa() {
         this.diagramaPrograma = "";
@@ -31,7 +31,6 @@ public class Tarefa {
         this.duracao = "00:00:00";
         this.horaTermino = "00:00:00";
         this.dataHoraInclusao = "00:00:00";
-        this.dataHoraTermino = "00:00:00";
         this.horaIntervalo = new Date();
         this.emAndamento = false;
         this.finalizada = false;
@@ -65,12 +64,9 @@ public class Tarefa {
     }
 
     public void parar() {
-        DateFormat data = new SimpleDateFormat("HH:mm:ss");
-        DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date date = new Date();
 
-        setHoraTermino(data.format(date));
-        setDataHoraTermino(df.format(date));
+        setHoraTermino(new SimpleDateFormat("HH:mm:ss").format(date));
         setEmAndamento(false);
         setHoraIntervalo(date);
         pararTempo();
@@ -201,10 +197,6 @@ public class Tarefa {
 
     public void setDataHoraInclusao(String pData) {
         this.dataHoraInclusao = pData;
-    }
-
-    public void setDataHoraTermino(String pData) {
-        this.dataHoraTermino = pData;
     }
 
     public boolean finalizada() {

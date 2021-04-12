@@ -111,7 +111,7 @@ public class Program {
     }
 
     /**
-     * Create a TXT file on user Desktop (windows) or home folder
+     * Create a CSV file on user Desktop (windows) or home folder
      * @return The number of exported taks
      */
     public int exportAllTaks(String filePath) {
@@ -122,30 +122,20 @@ public class Program {
         }
 
         if (filePath.isEmpty()) {
-            filePath = System.getProperty("user.home");
-
-            if (OS.isWindows()) {
-                filePath += File.separator + "Desktop";
-            }
-
-            if (!filePath.endsWith(File.separator)) {
-                filePath += File.separator;
-            }
-
-            filePath += "Tarefas.csv";
+            return 0;
         }
 
         File file = new File(filePath);
 
         if (!file.isFile()) {
             throw new RuntimeException(
-                    "File " + filePath + " is not a file!"
+                    "Arquivo " + filePath + " não é um arquivo texto!"
             );
         }
 
         if (!file.canWrite()) {
             throw new RuntimeException(
-                    "File " + filePath + " don't have write permission!"
+                    "Arquivo " + filePath + " não tem permissão de gravação!"
             );
         }
 
@@ -159,36 +149,44 @@ public class Program {
 
         if (arquivo == null) {
             throw new RuntimeException(
-                    "Unable to open file for writing!"
+                    "Não foi possível abrir o arquivo para escrita!"
             );
         }
 
         PrintWriter gravarArq = new PrintWriter(arquivo);
 
-        final String cabecalho = "CODIGO;NOME;SOLICITANTE;TEMPO TOTAL;DATA;HORA INICIO;HORA FIM;OBS";
-        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-        String dataAtual = formatter.format(new Date());
+        final String cabecalho = "Código;Nome;Cliente;Tempo;Tarefa;Acumulado";
 
         gravarArq.println(cabecalho);
 
         String tempoTotalTarefas = "00:00:00";
+        final char separator = ';';
+        final String endline = "\r\n";
         for (Tarefa tarefa : tarefas) {
-            String linha = ((tarefa.getDiagramaPrograma().isEmpty()) ? " N " : tarefa.getDiagramaPrograma()) + ";"
-                    + tarefa.getDescricao() + ";"
-                    + ((tarefa.getCliente().isEmpty()) ? " N " : tarefa.getCliente()) + ";"
-                    + tarefa.getDuracao() + ";"
-                    + dataAtual + ";"
-                    + tarefa.getHoraInicio() + ";"
-                    + tarefa.getHoraTermino() + ";"
-                    + ((tarefa.getServico().isEmpty()) ? "Nenhuma." : tarefa.getServico());
+            StringBuilder sb = new StringBuilder();
+
+            // Código
+            sb.append(tarefa.getDiagramaPrograma()).append(separator);
+
+            // Nome
+            sb.append(tarefa.getDescricao()).append(separator);
+            
+            // Cliente
+            sb.append(tarefa.getCliente()).append(separator);
+
+            // Tempo
+            sb.append(tarefa.getDuracao()).append(separator);
+
+            // Tarefa
+            sb.append(tarefa.getServico()).append(separator);
 
             tempoTotalTarefas = somarTempo(tempoTotalTarefas, tarefa.getCronometro());
 
-            gravarArq.println(linha);
-        }
+            // Acumulado
+            sb.append(tempoTotalTarefas);
 
-        // Grava o tempo Total
-        gravarArq.println("\r\n \r\nTempo total das tarefas: " + tempoTotalTarefas);
+            gravarArq.println(sb.toString() + endline);
+        }
 
         try {
             arquivo.close();
