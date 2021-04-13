@@ -46,10 +46,11 @@ import task.timer.util.JsonUtil;
 public class View extends JFrame {
     
     private static final long serialVersionUID = -8160996694338418927L;
+    private final FrameConsole console = new FrameConsole("Console");
+
     public static int larguraBotao = 148;
     private Timer relogio;
     private Tarefa tarefaAtual;
-    private FrameConsole console;
     private JPanel pnlSuperior;
     private JLabel lblData;
     private JLabel lblHora;
@@ -88,10 +89,9 @@ public class View extends JFrame {
                 setLayout(null);
                 setSize(815, 640);
                 setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-                setTitle("TT - A simple task timer - v2.0.0 - 28/10/2020");
+                setTitle("TT - Task Timer (versão de 13/04/2021)");
                 startApp();
                 criarModel();
-                iniciarConsole();
                 setLocationRelativeTo(null);
                 setarIcones();
                 adicionarListener();
@@ -117,7 +117,7 @@ public class View extends JFrame {
                     console.setVisible(!console.isVisible());
                 }
             } catch (Exception exc) {
-                System.out.println("Erro ao disparar evento de tecla: " + exc.getMessage());
+                exc.printStackTrace();
             }
             return false;
         });
@@ -125,21 +125,21 @@ public class View extends JFrame {
         this.contadorTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-            if (e.getClickCount() == 1) {
-                Tarefa tarefa = getLinhaSelecionada();
+                if (e.getClickCount() == 1) {
+                    Tarefa tarefa = getLinhaSelecionada();
 
-                setTxfCodigo(tarefa.getDiagramaPrograma());
-                setTxfNome(tarefa.getDescricao());
-                setTxfSolicitante(tarefa.getCliente());
-                setTxfObs(tarefa.getServico());
-                habilitarBotoes(true);
-                habilitarContinuar(tarefa.isEmAndamento());
-                habilitarBotaoInserir(false);
-                setLblTotalTarefa(tarefa.getDuracao());
-                habilitarBtnAlterar();
+                    setTxfCodigo(tarefa.getDiagramaPrograma());
+                    setTxfNome(tarefa.getDescricao());
+                    setTxfSolicitante(tarefa.getCliente());
+                    setTxfObs(tarefa.getServico());
+                    habilitarBotoes(true);
+                    habilitarContinuar(tarefa.isEmAndamento());
+                    habilitarBotaoInserir(false);
+                    setLblTotalTarefa(tarefa.getDuracao());
+                    habilitarBtnAlterar();
 
-                setLblTotalTempo(program.obterTempoTodasTarefas());
-            }
+                    setLblTotalTempo(program.obterTempoTodasTarefas());
+                }
             }
         });
 
@@ -364,12 +364,6 @@ public class View extends JFrame {
         this.btnProcurarDiretorio.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getClassLoader().getResource("images/folder.png"))));
     }
 
-    private void iniciarConsole() {
-        this.console = new FrameConsole();
-        this.console.setVisible(false);
-        this.console.setTitle("Console");
-    }
-
     private void iniciarComponentes() {
         this.tarefaAtual = null;
         // Fonte: http://stackoverflow.com/questions/2959718/dynamic-clock-in-java
@@ -388,13 +382,13 @@ public class View extends JFrame {
             try {
                 UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
             } catch (ClassNotFoundException ex) {
-                System.out.println("ClassNotFoundException: " + ex.getLocalizedMessage());
+                ex.printStackTrace();
             } catch (InstantiationException ex) {
-                System.out.println("InstantiationException: " + ex.getLocalizedMessage());
+                ex.printStackTrace();
             } catch (IllegalAccessException ex) {
-                System.out.println("IllegalAccessException: " + ex.getLocalizedMessage());
+                ex.printStackTrace();
             } catch (UnsupportedLookAndFeelException ex) {
-                System.out.println("UnsupportedLookAndFeelException: " + ex.getLocalizedMessage());
+                ex.printStackTrace();
             }
         }
 
@@ -473,7 +467,7 @@ public class View extends JFrame {
         this.btnAdd = new JButton("Adicionar");
         this.btnAdd.setBounds(650, 83, 100, 30);
         this.btnAdd.setFont(notoSansLabel);
-        this.btnAdd.setToolTipText("Add task to system board");
+        this.btnAdd.setToolTipText("Adicionar tarefa ao quadro");
         this.btnAdd.setFocusable(false);
 
         this.btnParar = new JButton("Parar");

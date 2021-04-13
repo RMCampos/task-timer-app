@@ -7,7 +7,12 @@ import java.util.Date;
 
 import javax.swing.Timer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Tarefa {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private String diagramaPrograma;
     private String descricao;
     private String cliente;
@@ -90,14 +95,12 @@ public class Tarefa {
                 min -= 60;
             }
 
-            String horaS = (hora < 10) ? "0" + hora + ":" : hora + ":";
-            String minS = (min < 10) ? "0" + min + ":" : min + ":";
-            String segS = (seg < 10) ? "0" + seg : seg + "";
-
-            return (horaS + minS + segS);
+            String novo = String.format("%02d:%02d:%02d", hora, min, seg);
+            logger.info("incrementarUmSegundo novo: {}", novo);
+            return novo;
         } catch (NumberFormatException e) {
-            System.out.println("NumberFormatException: " + e.getLocalizedMessage());
-            return ("00:00:00");
+            e.printStackTrace();
+            return "00:00:00";
         }
     }
 

@@ -13,10 +13,11 @@ public class FrameConsole extends JFrame {
 	
 	PrintStream printStream;
 
-	public FrameConsole(){
+	public FrameConsole(String title){
 		initComponents();
 		iniciarConsole();
-		this.setDefaultCloseOperation( JFrame.HIDE_ON_CLOSE );
+		setDefaultCloseOperation( JFrame.HIDE_ON_CLOSE );
+		setTitle(title);
 	}
 
 	private void initComponents() {
@@ -55,7 +56,7 @@ public class FrameConsole extends JFrame {
 			.addContainerGap())
 		);
 
-		Font notoSant = new Font("Noto Sant", Font.PLAIN, 12);
+		Font notoSant = new Font("Noto Sans", Font.PLAIN, 12);
 
 		pnlInferior.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 		pnlInferior.setPreferredSize(new java.awt.Dimension(104, 40));
@@ -117,7 +118,6 @@ public class FrameConsole extends JFrame {
 
 	private void iniciarConsole() {
 		this.printStream = new PrintStream(new CustomOutputStream(this.txaConsole), true);
-		this.printStream = new PrintStream(new CustomOutputStream(this.txaConsole));
 		System.setOut(printStream);
 		System.setErr(printStream);
 	}
