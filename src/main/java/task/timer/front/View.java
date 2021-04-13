@@ -50,7 +50,6 @@ public class View extends JFrame {
 
     public static int larguraBotao = 148;
     private Timer relogio;
-    private Tarefa tarefaAtual;
     private JPanel pnlSuperior;
     private JLabel lblData;
     private JLabel lblHora;
@@ -128,10 +127,10 @@ public class View extends JFrame {
                 if (e.getClickCount() == 1) {
                     Tarefa tarefa = getLinhaSelecionada();
 
-                    setTxfCodigo(tarefa.getDiagramaPrograma());
-                    setTxfNome(tarefa.getDescricao());
+                    setTxfCodigo(tarefa.getPrograma());
+                    setTxfNome(tarefa.getNome());
                     setTxfSolicitante(tarefa.getCliente());
-                    setTxfObs(tarefa.getServico());
+                    setTxfObs(tarefa.getTarefa());
                     habilitarBotoes(true);
                     habilitarContinuar(tarefa.isEmAndamento());
                     habilitarBotaoInserir(false);
@@ -211,7 +210,7 @@ public class View extends JFrame {
         });
 
         this.btnSair.addActionListener(evt -> {
-            if (program.getRunningTasks().isEmpty()) {
+            if (!program.isAlgumaTarefaEmAndamento()) {
                 relogio.stop();
                 console.dispose();
                 dispose();
@@ -222,10 +221,10 @@ public class View extends JFrame {
 
         this.btnAdd.addActionListener(e -> {
             Tarefa tarefa = new Tarefa();
-            tarefa.setDiagramaPrograma(getTxfCodigo());
-            tarefa.setDescricao(getTxfNome());
+            tarefa.setPrograma(getTxfCodigo());
+            tarefa.setNome(getTxfNome());
             tarefa.setCliente(getTxfSolicitante());
-            tarefa.setServico(getTxfObs());
+            tarefa.setTarefa(getTxfObs());
 
             program.addTask(tarefa);
             JsonUtil.salvarNome(getTxfCodigo(), getTxfNome());
@@ -251,17 +250,6 @@ public class View extends JFrame {
 
             program.updateTask(tarefa);
 
-            DateFormat data = new SimpleDateFormat("HH:mm:ss");
-
-            if (tarefa.getDuracao().isEmpty()) {
-                String duracao = program.calcularTempoDuracao(tarefa.getHoraTermino(), data.format(tarefa.getHoraIntervalo()));
-                tarefa.setDuracao(duracao);
-            } else {
-                String duracaoAtual = tarefa.getDuracao();
-                String novaDuracao = program.calcularTempoDuracao(tarefa.getHoraTermino(), data.format(tarefa.getHoraIntervalo()));
-                tarefa.setDuracao(program.somarTempo(duracaoAtual, novaDuracao));
-            }
-
             habilitarContinuar(false);
             contadorModel.fireTableDataChanged();
             limpar();
@@ -285,10 +273,10 @@ public class View extends JFrame {
 
         this.btnAlterar.addActionListener(e -> {
             Tarefa tarefa = getLinhaSelecionada();
-            tarefa.setDiagramaPrograma(getTxfCodigo());
-            tarefa.setDescricao(getTxfNome());
+            tarefa.setPrograma(getTxfCodigo());
+            tarefa.setNome(getTxfNome());
             tarefa.setCliente(getTxfSolicitante());
-            tarefa.setServico(getTxfObs());
+            tarefa.setTarefa(getTxfObs());
 
             program.updateTask(tarefa);
 
@@ -365,16 +353,12 @@ public class View extends JFrame {
     }
 
     private void iniciarComponentes() {
-        this.tarefaAtual = null;
         // Fonte: http://stackoverflow.com/questions/2959718/dynamic-clock-in-java
         ActionListener updateClockAction = e -> {
             // Assumes clock is a JLabel
             DateFormat hora = new SimpleDateFormat("HH:mm:ss");
             lblHora.setText(hora.format(new Date()));
             setDataPainel(program.getGreetings());
-            if (tarefaAtual != null) {
-                setLblTotalTarefa(tarefaAtual.getCronometro());
-            }
         };
         this.relogio = new Timer(1000, updateClockAction);
 
@@ -693,7 +677,7 @@ public class View extends JFrame {
     }
 
     public void addTarefa(final Tarefa pTarefa) {
-        if (pTarefa.getDiagramaPrograma().isEmpty()) {
+        if (pTarefa.getPrograma().isEmpty()) {
             Mensagem.informacao("Informe o programa!", this);
             return;
         }
@@ -701,13 +685,13 @@ public class View extends JFrame {
             Mensagem.informacao("Informe o cliente!", this);
             return;
         }
-        if (pTarefa.getServico().isEmpty()) {
+        if (pTarefa.getTarefa().isEmpty()) {
             Mensagem.informacao("Informe a tarefa!", this);
             return;
         }
 
-        if (pTarefa.getDescricao().isEmpty()) {
-            pTarefa.setDescricao("Não informado");
+        if (pTarefa.getTarefa().isEmpty()) {
+            pTarefa.setTarefa("Não informado");
         }
 
         this.contadorModel.addLinha(pTarefa);
@@ -723,7 +707,6 @@ public class View extends JFrame {
 
     public void limparTempoDecorrido() {
         setLblTotalTarefa("00:00:00");
-        setLblTotalTempo("00:00:00");
     }
 
     public Tarefa getLinhaSelecionada() {

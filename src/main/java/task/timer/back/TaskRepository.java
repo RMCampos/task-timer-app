@@ -14,7 +14,7 @@ public class TaskRepository {
     }
 
     public void save(Tarefa tarefa) {
-        taskMap.put(tarefa.getDiagramaPrograma(), tarefa);
+        taskMap.put(tarefa.getPrograma(), tarefa);
     }
 
     public void remove(String id) {

@@ -9,10 +9,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import task.timer.util.TempoUtil;
 
 public class Program {
 
@@ -68,46 +69,42 @@ public class Program {
     }
 
     public void addTask(Tarefa t) {
-        Tarefa bd = taskRepository.getTarefaById(t.getDiagramaPrograma());
+        Tarefa bd = taskRepository.getTarefaById(t.getPrograma());
         if (bd != null) {
-            throw new RuntimeException("Task alread exists!");
+            throw new RuntimeException("Tarefa já adicionada!");
         }
 
         taskRepository.save(t);
     }
 
     public void updateTask(Tarefa t) {
-        Tarefa bd = taskRepository.getTarefaById(t.getDiagramaPrograma());
+        Tarefa bd = taskRepository.getTarefaById(t.getPrograma());
         if (bd == null) {
-            throw new RuntimeException("Task not found!");
+            throw new RuntimeException("Tarefa não encontrada!");
         }
 
         taskRepository.save(t);
     }
 
     public void removeTask(Tarefa t) {
-        Tarefa bd = taskRepository.getTarefaById(t.getDiagramaPrograma());
+        Tarefa bd = taskRepository.getTarefaById(t.getPrograma());
         if (bd == null) {
-            throw new RuntimeException("Task not found!");
+            throw new RuntimeException("Tarefa não encontrada!");
         }
 
-        taskRepository.remove(t.getDiagramaPrograma());
+        taskRepository.remove(t.getPrograma());
     }
 
-    /**
-     * Get the current running tasks
-     * @return A list of running tasks or a empty list
-     */
-    public List<Tarefa> getRunningTasks() {
+    public boolean isAlgumaTarefaEmAndamento() {
         List<Tarefa> tarefas = this.taskRepository.getAll();
 
-        List<Tarefa> tarefasEA = tarefas
+        long count = tarefas
                 .stream()
                 .filter(x -> x.isEmAndamento())
-                .collect(Collectors.toList());
+                .count();
         
-        logger.info("Running tasks: {}", tarefasEA);
-        return tarefasEA;
+        logger.info("Running tasks count: {}", count);
+        return count > 0;
     }
 
     /**
@@ -166,10 +163,10 @@ public class Program {
             StringBuilder sb = new StringBuilder();
 
             // Código
-            sb.append(tarefa.getDiagramaPrograma()).append(separator);
+            sb.append(tarefa.getPrograma()).append(separator);
 
             // Nome
-            sb.append(tarefa.getDescricao()).append(separator);
+            sb.append(tarefa.getNome()).append(separator);
             
             // Cliente
             sb.append(tarefa.getCliente()).append(separator);
@@ -178,9 +175,9 @@ public class Program {
             sb.append(tarefa.getDuracao()).append(separator);
 
             // Tarefa
-            sb.append(tarefa.getServico()).append(separator);
+            sb.append(tarefa.getTarefa()).append(separator);
 
-            tempoTotalTarefas = somarTempo(tempoTotalTarefas, tarefa.getCronometro());
+            tempoTotalTarefas = TempoUtil.somarTempo(tempoTotalTarefas, tarefa.getDuracao());
 
             // Acumulado
             sb.append(tempoTotalTarefas);
@@ -202,79 +199,11 @@ public class Program {
 
         String tempoTotal = "00:00:00";
         for (Tarefa tarefa : TarefaList) {
-            tempoTotal = somarTempo(tempoTotal, tarefa.getCronometro());
+            tempoTotal = TempoUtil.somarTempo(tempoTotal, tarefa.getDuracao());
         }
+
+        logger.info("tempoTotal: {}", tempoTotal);
 
         return tempoTotal;
-    }
-
-    public String somarTempo(String tempo1, String tempo2) {
-        try {
-            int hora1 = Integer.parseInt(tempo1.substring(0, 2));
-            int min1 = Integer.parseInt(tempo1.substring(3, 5));
-            int seg1 = Integer.parseInt(tempo1.substring(6, 8));
-
-            int hora2 = Integer.parseInt(tempo2.substring(0, 2));
-            int min2 = Integer.parseInt(tempo2.substring(3, 5));
-            int seg2 = Integer.parseInt(tempo2.substring(6, 8));
-
-            int hora3 = hora1 + hora2;
-            int min3 = min1 + min2;
-            int seg3 = seg1 + seg2;
-
-            if (seg3 >= 60) {
-                min3++;
-                seg3 -= 60;
-            }
-
-            if (min3 >= 60) {
-                hora3++;
-                min3 -= 60;
-            }
-
-            return String.format("%02d:%02d:%02d", hora3, min3, seg3);
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-            return "00:00:00";
-        }
-    }
-
-    public String calcularTempoDuracao(String fimParam, String inicParam) {
-        try {
-            int horFim = Integer.parseInt(fimParam.substring(0, 2));
-            int minFim = Integer.parseInt(fimParam.substring(3, 5));
-            int segFim = Integer.parseInt(fimParam.substring(6, 8));
-
-            int horIni = Integer.parseInt(inicParam.substring(0, 2));
-            int minIni = Integer.parseInt(inicParam.substring(3, 5));
-            int segIni = Integer.parseInt(inicParam.substring(6, 8));
-
-            int horaFinal = 0;
-            int minFinal;
-            int segFinal;
-
-            if (horFim > horIni) {
-                horaFinal = horFim - horIni;
-            }
-
-            minFinal = minFim - minIni;
-            segFinal = segFim - segIni;
-
-            if (segFinal < 0) {
-                segFinal += 60;
-                minFinal -= 1;
-            }
-
-            if (minFinal < 0) {
-                minFinal += 60;
-                horaFinal -= 1;
-            }
-
-            // constroi a hora final
-            return String.format("%02d:%02d:%02d", horaFinal, minFinal, segFinal);
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        }
-        return "00:00:00";
     }
 }

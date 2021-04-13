@@ -79,8 +79,8 @@ public class TarefaModel extends DefaultTableModel {
         }
 
         switch (column) {
-            case COL_COD: return dia.getDiagramaPrograma();
-            case COL_NOME: return dia.getDescricao();
+            case COL_COD: return dia.getPrograma();
+            case COL_NOME: return dia.getNome();
             case COL_SOL: return dia.getCliente();
             case COL_INICIO: return dia.getHoraInicio();
             case COL_TERMINO: return dia.getHoraTermino();
