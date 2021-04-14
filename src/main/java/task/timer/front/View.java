@@ -3,7 +3,6 @@ package task.timer.front;
 import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.Font;
-import java.awt.KeyboardFocusManager;
 import java.awt.Robot;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -46,7 +45,6 @@ import task.timer.util.JsonUtil;
 public class View extends JFrame {
     
     private static final long serialVersionUID = -8160996694338418927L;
-    private final FrameConsole console = new FrameConsole("Console");
 
     public static int larguraBotao = 148;
     private Timer relogio;
@@ -88,7 +86,7 @@ public class View extends JFrame {
                 setLayout(null);
                 setSize(815, 640);
                 setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-                setTitle("TT - Task Timer (versão de 13/04/2021)");
+                setTitle("TT - Task Timer (versão de 14/04/2021)");
                 startApp();
                 criarModel();
                 setLocationRelativeTo(null);
@@ -108,17 +106,6 @@ public class View extends JFrame {
             public void componentResized(ComponentEvent e) {
                 ajustarPosicao();
             }
-        });
-
-        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(e -> {
-            try {
-                if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_I && e.getID() == KeyEvent.KEY_PRESSED) {
-                    console.setVisible(!console.isVisible());
-                }
-            } catch (Exception exc) {
-                exc.printStackTrace();
-            }
-            return false;
         });
 
         this.contadorTable.addMouseListener(new MouseAdapter() {
@@ -212,7 +199,6 @@ public class View extends JFrame {
         this.btnSair.addActionListener(evt -> {
             if (!program.isAlgumaTarefaEmAndamento()) {
                 relogio.stop();
-                console.dispose();
                 dispose();
             } else {
                 Mensagem.informacao("Não é possível sair com tarefas em andamento.", this);
@@ -669,7 +655,7 @@ public class View extends JFrame {
     }
 
     public String getTxfDiretorio() {
-        return (txfDiretorio.getText());
+        return txfDiretorio.getText();
     }
 
     public void setDataPainel(final String lblParam) {

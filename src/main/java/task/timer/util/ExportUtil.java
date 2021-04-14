@@ -21,7 +21,7 @@ public class ExportUtil {
     }
 
     public static String getCsvName() {
-        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        return new SimpleDateFormat("yyyyMMdd_HHmmss")
             .format(new Date()) + ".csv";
     }
     

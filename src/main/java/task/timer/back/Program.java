@@ -124,6 +124,14 @@ public class Program {
 
         File file = new File(filePath);
 
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
+        }
+
         if (!file.isFile()) {
             throw new RuntimeException(
                     "Arquivo " + filePath + " não é um arquivo texto!"
